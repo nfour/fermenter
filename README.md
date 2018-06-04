@@ -15,12 +15,12 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
 
   Scenario('A simple multiplication test')
     .Given('I have numbers {int} and {int}', getNumbers)
-    .When('I multiply the numbers', addNumbers)
+    .When('I multiply the numbers', multiplyNumbers)
     .Then('I get {int}', checkResult);
 
   ScenarioOutline('A simple subtraction test')
     .Given('I have numbers {int} and {int}', getNumbers)
-    .When('I subtract the numbers', addNumbers)
+    .When('I subtract the numbers', subtractNumbers)
     .Then('I get {int}', checkResult);
 });
 ```
