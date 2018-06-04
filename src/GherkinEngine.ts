@@ -11,7 +11,7 @@ export interface IGherkinEngineOutput {
   ast: any;
   parser: any;
   text: string;
-
+  builder: FeatureBuilder;
 }
 
 export interface IGherkinEngineConfig {
@@ -56,12 +56,7 @@ export function GherkinEngine ({ feature, stackIndex = 2 }: IGherkinEngineConfig
     Background: builder.Background(),
   };
 
-  return {
-    ast,
-    methods,
-    parser,
-    text,
-  };
+  return { ast, methods, parser, text, builder };
 }
 
 export type IGherkinOperations = Map<IMatch, IFluidFnCallback>;
