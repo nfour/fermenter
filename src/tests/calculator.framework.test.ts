@@ -1,4 +1,4 @@
-import { GherkinTest } from '../lib/GherkinTest';
+import { GherkinTest } from '../GherkinTest';
 
 export interface IState {
   a: number;
@@ -26,18 +26,23 @@ const checkResult = ({ c }: IState, expected: number) => {
   expect(c).toBe(expected);
 };
 
-GherkinTest({ feature: '../features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline }) => {
+GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, Hook }) => {
   Background(() => {
-
+    expect(Math).toBeTruthy();
   });
 
-  Scenario('A simple arithmetic test')
+  Scenario('A simple addition test')
     .Given('I have numbers {int} and {int}', getNumbers)
-    .When('I add them', addNumbers)
+    .When('I add the numbers', addNumbers)
     .Then('I get {int}', checkResult);
 
-  ScenarioOutline('A simple arithmetic test')
+  Scenario('A simple multiplication test')
     .Given('I have numbers {int} and {int}', getNumbers)
-    .When('I add them', addNumbers)
+    .When('I multiply the numbers', addNumbers)
+    .Then('I get {int}', checkResult);
+
+  ScenarioOutline('A simple subtraction test')
+    .Given('I have numbers {int} and {int}', getNumbers)
+    .When('I subtract the numbers', addNumbers)
     .Then('I get {int}', checkResult);
 });

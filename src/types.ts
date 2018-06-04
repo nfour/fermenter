@@ -10,8 +10,7 @@ export interface IGherkinMethods {
    * - You can only have one set of Background steps per feature. If you need different Background steps for different scenarios, you'll need to split them into different feature files.
    */
   Background: (fn: any) => IGivenFluid; // FIXME:
-  Hooks: {}; // FIXME:
-  Examples: {}; // FIXME:
+  Hooks?: {}; // FIXME:
 }
 
 // TODO: add But as And alias if necessary
@@ -25,10 +24,25 @@ export interface IScenarioFluid {
   When: IFluidFn<IWhenFluid>;
   Then: IFluidFn<IAndFluid>;
 }
+
+export interface IBackgroundFluid {
+  Given: IFluidFn<IAndFluid>;
+}
+
 export interface IScenarioFluid {
   Given: IFluidFn<IGivenFluid>;
   When: IFluidFn<IWhenFluid>;
   Then: IFluidFn<IAndFluid>;
+}
+
+export interface IScenarioOutlineExamples<N = any> {
+  Examples: IFluidFn<N>;
+}
+
+export interface IScenarioOutlineFluid extends IScenarioOutlineExamples<IScenarioOutlineFluid> {
+  Given: IFluidFn<IGivenFluid>;
+  When: IFluidFn<IWhenFluid>;
+  Then: IFluidFn<IAndFluid & IScenarioOutlineExamples<{}>>;
 }
 
 export interface IGivenFluid {
