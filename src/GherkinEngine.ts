@@ -46,8 +46,6 @@ export function GherkinEngine ({ feature, stackIndex = 2 }: IGherkinEngineConfig
   const parser = new Gherkin.Parser();
   const ast = parser.parse(text);
 
-  console.dir(ast, { depth: 6, colors: true });
-
   const builder = new FeatureBuilder();
 
   const methods = <IGherkinMethods> {
