@@ -1,6 +1,9 @@
+import { IMatch } from './GherkinEngine';
+
 export interface IGherkinMethods {
-  Scenario: (name: string) => IScenarioFluid;
-  ScenarioOutline: (name: string) => IScenarioFluid;
+  Scenario: (match: IMatch) => IScenarioFluid;
+  ScenarioOutline: (match: IMatch) => IScenarioOutlineFluid;
+
   /**
    * Occasionally you'll find yourself repeating the same Given steps in all of the scenarios in a feature.
    * Since it is repeated in every scenario, this is an indication that those steps are not essential to describe the scenarios; they are incidental details. You can literally move such Given steps to the background, by grouping them under a Background section.
@@ -9,7 +12,7 @@ export interface IGherkinMethods {
    * - A Background is run before each scenario, but after any Before hooks. In your feature file, put the Background before the first Scenario.
    * - You can only have one set of Background steps per feature. If you need different Background steps for different scenarios, you'll need to split them into different feature files.
    */
-  Background: (fn: any) => IGivenFluid; // FIXME:
+  Background: (match?: IMatch) => IBackgroundFluid;
   Hooks?: {}; // FIXME:
 }
 
@@ -35,14 +38,14 @@ export interface IScenarioFluid {
   Then: IFluidFn<IAndFluid>;
 }
 
-export interface IScenarioOutlineExamples<N = any> {
+export interface IScenarioOutlineExamplesFluid<N = any> {
   Examples: IFluidFn<N>;
 }
 
-export interface IScenarioOutlineFluid extends IScenarioOutlineExamples<IScenarioOutlineFluid> {
+export interface IScenarioOutlineFluid extends IScenarioOutlineExamplesFluid<IScenarioOutlineFluid> {
   Given: IFluidFn<IGivenFluid>;
   When: IFluidFn<IWhenFluid>;
-  Then: IFluidFn<IAndFluid & IScenarioOutlineExamples<{}>>;
+  Then: IFluidFn<IAndFluid & IScenarioOutlineExamplesFluid<IScenarioOutlineFluid>>;
 }
 
 export interface IGivenFluid {
@@ -57,4 +60,4 @@ export interface IWhenFluid {
 }
 
 export type IFluidFn<Fluid> = (key: RegExp|string, fn: IFluidFnCallback) => Fluid;
-export type IFluidFnCallback = (state: any, ...params: any[]) => void;
+export type IFluidFnCallback<State = any> = (state: State, ...params: any[]) => State;

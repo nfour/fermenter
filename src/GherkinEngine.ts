@@ -1,14 +1,17 @@
 import { readFileSync } from 'fs';
 import * as Gherkin from 'gherkin';
 import { dirname, isAbsolute, resolve } from 'path';
-import { IAndFluid, IBackgroundFluid, IFluidFn, IFluidFnCallback, IGherkinMethods, IGivenFluid, IScenarioFluid, IScenarioOutlineFluid, IWhenFluid } from './types';
+import {
+  IAndFluid, IBackgroundFluid, IFluidFn, IFluidFnCallback, IGherkinMethods,
+  IGivenFluid, IScenarioFluid, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid,
+} from './types';
 
-export interface IGherkinEngineFluid extends IGherkinMethods {
-  feature: {
-    ast: any,
-    parser: any,
-    text: string,
-  };
+export interface IGherkinEngineOutput {
+  methods: IGherkinMethods;
+  ast: any;
+  parser: any;
+  text: string;
+
 }
 
 export interface IGherkinEngineConfig {
@@ -33,34 +36,32 @@ export interface IScenarioOutlineBuilderResult {
 
 export type IMatch = string | RegExp;
 
-export function GherkinEngine ({ feature, stackIndex = 2 }: IGherkinEngineConfig) {
+export function GherkinEngine ({ feature, stackIndex = 2 }: IGherkinEngineConfig): IGherkinEngineOutput {
   const testFilePath = new Error().stack!
     .split('\n')[stackIndex]
     .match(/\(([^:]+):/ig)![0]
     .replace(/^\(|:$/g, '');
 
-  const gherkinText = readInputFile({ filePath: feature, testFilePath });
+  const text = readInputFile({ filePath: feature, testFilePath });
   const parser = new Gherkin.Parser();
-  const ast = parser.parse(gherkinText);
+  const ast = parser.parse(text);
 
   console.dir(ast, { depth: 6, colors: true });
 
-  // TODO: read parser output so that:
-  // - fluid interface can match to scenarios & steps
-  // - match variables, outlines
-
   const builder = new FeatureBuilder();
 
-  const fluid = <IGherkinEngineFluid> {
-    feature: {
-      ast, parser, text: gherkinText,
-    },
+  const methods = <IGherkinMethods> {
     Scenario: builder.Scenario(),
     ScenarioOutline: builder.ScenarioOutline(),
     Background: builder.Background(),
   };
 
-  return fluid;
+  return {
+    ast,
+    methods,
+    parser,
+    text,
+  };
 }
 
 export type IGherkinOperations = Map<IMatch, IFluidFnCallback>;
@@ -95,8 +96,8 @@ class FeatureBuilder {
   };
 
   /** Instruments a ScenarioFluidBuilder */
-  Scenario () {
-    return (match: IMatch): IScenarioFluid => {
+  Scenario (): IGherkinMethods['Scenario'] {
+    return (match) => {
       const { scenario, steps } = ScenarioFluidBuilder(match);
 
       this.feature.Scenarios.set(scenario.match, scenario);
@@ -106,8 +107,8 @@ class FeatureBuilder {
   }
 
   /** Instruments a ScenarioFluidBuilder */
-  ScenarioOutline () {
-    return (match: IMatch): IScenarioOutlineFluid => {
+  ScenarioOutline (): IGherkinMethods['ScenarioOutline'] {
+    return (match) => {
       const { scenarioOutline, steps } = ScenarioOutlineFluidBuilder(match);
 
       this.feature.ScenarioOutlines.set(scenarioOutline.match, scenarioOutline);
@@ -116,16 +117,15 @@ class FeatureBuilder {
     };
   }
 
-  Background () {
-    return (match: IMatch = ''): IBackgroundFluid => {
-      const { background, steps } = ScenarioBackgroundFluidBuilder(match);
+  Background (): IGherkinMethods['Background'] {
+    return (match = '') => {
+      const { background, steps } = BackgroundFluidBuilder(match);
 
       this.feature.Background = background;
 
       return steps;
     };
   }
-
 }
 
 function executeFeature () {
@@ -172,7 +172,7 @@ function ScenarioFluidBuilder (scenarioMatch: IMatch): IScenarioBuilderResult {
   };
 }
 
-function ScenarioBackgroundFluidBuilder (match: IMatch): IBackgroundBuilderResult {
+function BackgroundFluidBuilder (match: IMatch): IBackgroundBuilderResult {
   const background: Required<IGherkinBackground> = {
     match,
     Given: new Map(),
@@ -189,23 +189,26 @@ function ScenarioBackgroundFluidBuilder (match: IMatch): IBackgroundBuilderResul
 }
 
 function ScenarioOutlineFluidBuilder (match: IMatch): IScenarioOutlineBuilderResult {
-  const { scenario, steps } = ScenarioFluidBuilder(match);
+  const { scenario, steps: { Given, When } } = ScenarioFluidBuilder(match);
 
   const scenarioOutline = <IGherkinScenarioOutline> {
     ...scenario,
     Examples: new Map(),
   };
 
+  const steps = <IScenarioOutlineFluid> { Given, When };
+
   const Examples = FluidFn(steps, scenarioOutline.Examples);
+
+  const thenFluid = <IScenarioOutlineExamplesFluid & IAndFluid> { Examples };
+  const Then = FluidFn(thenFluid, scenarioOutline.Then!);
+
+  thenFluid.And = Then;
 
   return {
     scenarioOutline,
-    steps: { ...steps, Examples },
+    steps: { Given, When, Then, Examples },
   };
-
-}
-
-function BackgroundFluidBuilder (match: IMatch): IGherkinFeature['Background']! {
 
 }
 
