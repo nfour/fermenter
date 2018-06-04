@@ -77,17 +77,34 @@ class FeatureBuilder {
     ScenarioOutlines: new Map(),
   };
 
-  /** Generates a ScenarioFluidBuilder by which is instrumented in this class */
+  /** Instruments a ScenarioFluidBuilder */
   Scenario () {
-    return (match: string) => {
+    return (match: IMatch) => {
       const { scenario, ...steps } = ScenarioFluidBuilder(match);
 
-      this.feature.Scenario;
+      this.feature.Scenarios.set(scenario.match, scenario);
 
       return steps;
     };
-    this.scenario;
   }
+
+  /** Instruments a ScenarioFluidBuilder */
+  ScenarioOutline () {
+    return (match: IMatch) => {
+      const { scenario, ...steps } = ScenarioFluidBuilder(match);
+
+      this.feature.ScenarioOutlines.set(scenario.match, scenario);
+
+      return steps;
+    };
+  }
+
+  Background () {
+    return (match?: IMatch) => {
+
+    }
+  }
+
 }
 
 function executeFeature () {
@@ -98,7 +115,7 @@ function mapGherkinToFeature () {
 
 }
 
-function ScenarioFluidBuilder (scenarioMatch: string): IScenarioBuilderFluid {
+function ScenarioFluidBuilder (scenarioMatch: IMatch): IScenarioBuilderFluid {
   const scenario: Required<IGherkinScenario> = {
     match: scenarioMatch,
     Given: new Map(),
