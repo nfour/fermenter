@@ -61,3 +61,33 @@ export interface IWhenFluid {
 
 export type IFluidFn<Fluid> = (key: RegExp|string, fn: IFluidFnCallback) => Fluid;
 export type IFluidFnCallback<State = any> = (state: State, ...params: any[]) => State;
+
+export interface IGherkinAst {
+  type: 'GherkinDocument';
+  feature: IGherkinAstEntity & {
+    type: 'Feature'
+    language: string;
+    children: IGherkinAstBackground[]
+  };
+}
+
+export interface IGherkinAstEntity {
+  tags: Array<{ type: 'Tag', name: string, location: any }>;
+  location: any;
+  keyword: string;
+  name: string;
+  description?: string;
+}
+
+export interface IGherkinAstBackground extends IGherkinAstEntity {
+  type: 'Background';
+
+}
+
+export interface IGherkinAstStep {
+  type: 'Step';
+  location: any;
+  keyword: string;
+  text: string;
+  argument?: string;
+}

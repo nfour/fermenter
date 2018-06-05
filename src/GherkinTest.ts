@@ -4,7 +4,7 @@ import { IGherkinMethods } from './types';
 export function GherkinTest ({ feature }: IGherkinEngineConfig, methodsSetup: (t: IGherkinMethods) => void) {
   const { builder, ast, methods } = GherkinEngine({ feature, stackIndex: 3 });
 
-  console.dir(ast, { depth: 6, colors: true });
+  console.dir(ast, { depth: 10, colors: true });
 
   /**
    * TODO:
@@ -18,6 +18,9 @@ export function GherkinTest ({ feature }: IGherkinEngineConfig, methodsSetup: (t
    *
    * - after `methodsSetup`
    *   - execute the executeFeature based on the now-populated FeatureBuilder instance
+   *
+   *
+   *
    *
    */
 
