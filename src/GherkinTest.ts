@@ -1,3 +1,4 @@
+import { writeFileSync } from 'fs';
 import { GherkinEngine, IGherkinEngineConfig } from './GherkinEngine';
 import { IGherkinMethods } from './types';
 
@@ -5,6 +6,8 @@ export function GherkinTest ({ feature }: IGherkinEngineConfig, methodsSetup: (t
   const { builder, ast, methods } = GherkinEngine({ feature, stackIndex: 3 });
 
   console.dir(ast, { depth: 10, colors: true });
+
+  writeFileSync('./ast.json', JSON.stringify(ast, null, 2));
 
   /**
    * TODO:

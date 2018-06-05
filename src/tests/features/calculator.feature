@@ -1,9 +1,11 @@
 @math
+# Some comment
 Feature: using feature files in jest
   As a developer
   I want to write tests in cucumber
   So that the business can understand my tests
 
+  # Bar
   Background: Calculator
     Given I can calculate
 
@@ -14,6 +16,7 @@ Feature: using feature files in jest
     Then I get 7
 
   @multiplication
+  # Foo
   Scenario: A simple multiplication test
     Given I have numbers 3 and 4
     When I multiply the numbers

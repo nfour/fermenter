@@ -2,14 +2,13 @@ import { readFileSync } from 'fs';
 import * as Gherkin from 'gherkin';
 import { dirname, isAbsolute, resolve } from 'path';
 import {
-  IAndFluid, IBackgroundFluid, IFluidFn, IFluidFnCallback, IGherkinMethods,
-  IGivenFluid, IScenarioFluid, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid,
+  IAndFluid, IBackgroundFluid, IFluidFn, IFluidFnCallback, IGherkinAst,
+  IGherkinMethods, IGivenFluid, IScenarioFluid, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid,
 } from './types';
 
 export interface IGherkinEngineOutput {
   methods: IGherkinMethods;
-  ast: any;
-  parser: any;
+  ast: IGherkinAst;
   text: string;
   builder: FeatureBuilder;
 }
@@ -36,27 +35,6 @@ export interface IScenarioOutlineBuilderResult {
 
 export type IMatch = string | RegExp;
 
-export function GherkinEngine ({ feature, stackIndex = 2 }: IGherkinEngineConfig): IGherkinEngineOutput {
-  const testFilePath = new Error().stack!
-    .split('\n')[stackIndex]
-    .match(/\(([^:]+):/ig)![0]
-    .replace(/^\(|:$/g, '');
-
-  const text = readInputFile({ filePath: feature, testFilePath });
-  const parser = new Gherkin.Parser();
-  const ast = parser.parse(text);
-
-  const builder = new FeatureBuilder();
-
-  const methods = <IGherkinMethods> {
-    Scenario: builder.Scenario(),
-    ScenarioOutline: builder.ScenarioOutline(),
-    Background: builder.Background(),
-  };
-
-  return { ast, methods, parser, text, builder };
-}
-
 export type IGherkinOperations = Map<IMatch, IFluidFnCallback>;
 
 export interface IGherkinScenario {
@@ -80,6 +58,27 @@ export interface IGherkinFeature {
   Background?: IGherkinBackground;
   Scenarios: Map<IMatch, IGherkinScenario>;
   ScenarioOutlines: Map<IMatch, IGherkinScenarioOutline>;
+}
+
+export function GherkinEngine ({ feature, stackIndex = 2 }: IGherkinEngineConfig): IGherkinEngineOutput {
+  const testFilePath = new Error().stack!
+    .split('\n')[stackIndex]
+    .match(/\(([^:]+):/ig)![0]
+    .replace(/^\(|:$/g, '');
+
+  const text = readInputFile({ filePath: feature, testFilePath });
+  const parser = new Gherkin.Parser();
+  const ast: IGherkinAst = parser.parse(text);
+
+  const builder = new FeatureBuilder();
+
+  const methods = <IGherkinMethods> {
+    Scenario: builder.Scenario(),
+    ScenarioOutline: builder.ScenarioOutline(),
+    Background: builder.Background(),
+  };
+
+  return { ast, methods, text, builder };
 }
 
 class FeatureBuilder {

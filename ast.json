@@ -1,0 +1,329 @@
+{
+  "type": "GherkinDocument",
+  "feature": {
+    "type": "Feature",
+    "tags": [
+      {
+        "type": "Tag",
+        "location": {
+          "line": 1,
+          "column": 1
+        },
+        "name": "@math"
+      }
+    ],
+    "location": {
+      "line": 3,
+      "column": 1
+    },
+    "language": "en",
+    "keyword": "Feature",
+    "name": "using feature files in jest",
+    "description": "  As a developer\n  I want to write tests in cucumber\n  So that the business can understand my tests",
+    "children": [
+      {
+        "type": "Background",
+        "location": {
+          "line": 9,
+          "column": 3
+        },
+        "keyword": "Background",
+        "name": "Calculator",
+        "steps": [
+          {
+            "type": "Step",
+            "location": {
+              "line": 10,
+              "column": 5
+            },
+            "keyword": "Given ",
+            "text": "I can calculate"
+          }
+        ]
+      },
+      {
+        "type": "Scenario",
+        "tags": [
+          {
+            "type": "Tag",
+            "location": {
+              "line": 12,
+              "column": 3
+            },
+            "name": "@addition"
+          }
+        ],
+        "location": {
+          "line": 13,
+          "column": 3
+        },
+        "keyword": "Scenario",
+        "name": "A simple addition test",
+        "steps": [
+          {
+            "type": "Step",
+            "location": {
+              "line": 14,
+              "column": 5
+            },
+            "keyword": "Given ",
+            "text": "I have numbers 3 and 4"
+          },
+          {
+            "type": "Step",
+            "location": {
+              "line": 15,
+              "column": 5
+            },
+            "keyword": "When ",
+            "text": "I add the numbers"
+          },
+          {
+            "type": "Step",
+            "location": {
+              "line": 16,
+              "column": 5
+            },
+            "keyword": "Then ",
+            "text": "I get 7"
+          }
+        ]
+      },
+      {
+        "type": "Scenario",
+        "tags": [
+          {
+            "type": "Tag",
+            "location": {
+              "line": 18,
+              "column": 3
+            },
+            "name": "@multiplication"
+          }
+        ],
+        "location": {
+          "line": 20,
+          "column": 3
+        },
+        "keyword": "Scenario",
+        "name": "A simple multiplication test",
+        "steps": [
+          {
+            "type": "Step",
+            "location": {
+              "line": 21,
+              "column": 5
+            },
+            "keyword": "Given ",
+            "text": "I have numbers 3 and 4"
+          },
+          {
+            "type": "Step",
+            "location": {
+              "line": 22,
+              "column": 5
+            },
+            "keyword": "When ",
+            "text": "I multiply the numbers"
+          },
+          {
+            "type": "Step",
+            "location": {
+              "line": 23,
+              "column": 5
+            },
+            "keyword": "Then ",
+            "text": "I get 12"
+          }
+        ]
+      },
+      {
+        "type": "ScenarioOutline",
+        "tags": [
+          {
+            "type": "Tag",
+            "location": {
+              "line": 25,
+              "column": 3
+            },
+            "name": "@substraction"
+          }
+        ],
+        "location": {
+          "line": 26,
+          "column": 3
+        },
+        "keyword": "Scenario Outline",
+        "name": "A simple substraction test",
+        "steps": [
+          {
+            "type": "Step",
+            "location": {
+              "line": 27,
+              "column": 5
+            },
+            "keyword": "Given ",
+            "text": "I have numbers <num1> and <num2>"
+          },
+          {
+            "type": "Step",
+            "location": {
+              "line": 28,
+              "column": 5
+            },
+            "keyword": "When ",
+            "text": "I substract the numbers"
+          },
+          {
+            "type": "Step",
+            "location": {
+              "line": 29,
+              "column": 5
+            },
+            "keyword": "Then ",
+            "text": "I get <total>"
+          }
+        ],
+        "examples": [
+          {
+            "type": "Examples",
+            "tags": [],
+            "location": {
+              "line": 31,
+              "column": 5
+            },
+            "keyword": "Examples",
+            "name": "",
+            "tableHeader": {
+              "type": "TableRow",
+              "location": {
+                "line": 32,
+                "column": 7
+              },
+              "cells": [
+                {
+                  "type": "TableCell",
+                  "location": {
+                    "line": 32,
+                    "column": 9
+                  },
+                  "value": "num1"
+                },
+                {
+                  "type": "TableCell",
+                  "location": {
+                    "line": 32,
+                    "column": 16
+                  },
+                  "value": "num2"
+                },
+                {
+                  "type": "TableCell",
+                  "location": {
+                    "line": 32,
+                    "column": 23
+                  },
+                  "value": "total"
+                }
+              ]
+            },
+            "tableBody": [
+              {
+                "type": "TableRow",
+                "location": {
+                  "line": 33,
+                  "column": 7
+                },
+                "cells": [
+                  {
+                    "type": "TableCell",
+                    "location": {
+                      "line": 33,
+                      "column": 9
+                    },
+                    "value": "3"
+                  },
+                  {
+                    "type": "TableCell",
+                    "location": {
+                      "line": 33,
+                      "column": 16
+                    },
+                    "value": "4"
+                  },
+                  {
+                    "type": "TableCell",
+                    "location": {
+                      "line": 33,
+                      "column": 23
+                    },
+                    "value": "-1"
+                  }
+                ]
+              },
+              {
+                "type": "TableRow",
+                "location": {
+                  "line": 34,
+                  "column": 7
+                },
+                "cells": [
+                  {
+                    "type": "TableCell",
+                    "location": {
+                      "line": 34,
+                      "column": 9
+                    },
+                    "value": "10"
+                  },
+                  {
+                    "type": "TableCell",
+                    "location": {
+                      "line": 34,
+                      "column": 16
+                    },
+                    "value": "2"
+                  },
+                  {
+                    "type": "TableCell",
+                    "location": {
+                      "line": 34,
+                      "column": 23
+                    },
+                    "value": "8"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "comments": [
+    {
+      "type": "Comment",
+      "location": {
+        "line": 2,
+        "column": 1
+      },
+      "text": "# Some comment"
+    },
+    {
+      "type": "Comment",
+      "location": {
+        "line": 8,
+        "column": 1
+      },
+      "text": "  # Bar"
+    },
+    {
+      "type": "Comment",
+      "location": {
+        "line": 19,
+        "column": 1
+      },
+      "text": "  # Foo"
+    }
+  ]
+}
