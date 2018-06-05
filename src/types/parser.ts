@@ -1,8 +1,4 @@
 
-//
-// PARSER AST
-//
-
 export interface IGherkinAst {
   type: 'GherkinDocument';
   feature: IGherkinAstFeature;

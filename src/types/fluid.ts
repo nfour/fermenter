@@ -13,12 +13,8 @@ export interface IGherkinMethods {
    * - You can only have one set of Background steps per feature. If you need different Background steps for different scenarios, you'll need to split them into different feature files.
    */
   Background: (match?: IMatch) => IBackgroundFluid;
-  Hooks?: {}; // FIXME:
+  Hook?: {}; // FIXME:
 }
-
-//
-// FLUID INTERFACES
-//
 
 export interface IAndFluid {
   And: IFluidFn<IAndFluid>;
