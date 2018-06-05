@@ -4,7 +4,7 @@ Feature: using feature files in jest
   I want to write tests in cucumber
   So that the business can understand my tests
 
-  Background: Bananas
+  Background: Calculator
     Given I can calculate
 
   @addition
