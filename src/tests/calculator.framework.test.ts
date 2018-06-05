@@ -27,7 +27,7 @@ const checkResult = ({ c }: IState, expected: number) => {
 };
 
 GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, Hook }) => {
-  Background('Calculator')
+  Background()
     .Given('I can calculate', () => {
       expect(Math).toBeTruthy();
     });

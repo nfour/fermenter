@@ -4,9 +4,10 @@ When it's done you'll be able to do something like this:
 
 ```ts
 GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, Hook }) => {
-  Background(() => {
-    expect(Math).toBeTruthy();
-  });
+  Background()
+    .Given('I can calculate', () => {
+      expect(Math).toBeTruthy();
+    });
 
   Scenario('A simple addition test')
     .Given('I have numbers {int} and {int}', getNumbers)
