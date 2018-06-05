@@ -6,10 +6,6 @@
     "test": "jest src/tests/calculator.framework.test.ts",
     "cucumber": "cucumber-js src/**/*.feature --require-module ts-node/register --require src/**/*.cucumber.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@src.temando.io:temando-services/phoenix-regression-suite.git"
-  },
   "author": "nfour",
   "license": "ISC",
   "dependencies": {
