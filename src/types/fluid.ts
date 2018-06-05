@@ -1,4 +1,4 @@
-import { IMatch } from '../GherkinEngine';
+import { IMatch } from '.';
 
 export interface IGherkinMethods {
   Scenario: (match: IMatch) => IScenarioFluid;

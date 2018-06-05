@@ -1,87 +1,6 @@
-import { readFileSync } from 'fs';
-import * as Gherkin from 'gherkin';
-import { dirname, isAbsolute, resolve } from 'path';
-import {
-  IAndFluid, IBackgroundFluid, IFluidFn, IFluidFnCallback, IGherkinAst,
-  IGherkinMethods, IGivenFluid, IScenarioFluid, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid,
-} from './types';
+import { IAndFluid, IBackgroundBuilderResult, IFluidFn, IGherkinBackground, IGherkinFeature, IGherkinMethods, IGherkinOperations, IGherkinScenario, IGherkinScenarioOutline, IGivenFluid, IMatch, IScenarioBuilderResult, IScenarioOutlineBuilderResult, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid } from './types';
 
-export interface IGherkinEngineOutput {
-  methods: IGherkinMethods;
-  ast: IGherkinAst;
-  text: string;
-  builder: FeatureBuilder;
-}
-
-export interface IGherkinEngineConfig {
-  feature: string;
-  stackIndex?: number;
-}
-
-export interface IScenarioBuilderResult {
-  steps: IScenarioFluid;
-  scenario: IGherkinScenario;
-}
-
-export interface IBackgroundBuilderResult {
-  steps: IBackgroundFluid;
-  background: IGherkinBackground;
-}
-
-export interface IScenarioOutlineBuilderResult {
-  steps: IScenarioOutlineFluid;
-  scenarioOutline: IGherkinScenarioOutline;
-}
-
-export type IMatch = string | RegExp;
-
-export type IGherkinOperations = Map<IMatch, IFluidFnCallback>;
-
-export interface IGherkinScenario {
-  match: IMatch;
-
-  Given?: IGherkinOperations;
-  When?: IGherkinOperations;
-  Then?: IGherkinOperations;
-}
-
-export interface IGherkinScenarioOutline extends IGherkinScenario {
-  Examples: IGherkinOperations; // TODO: may need remediated structure
-}
-
-export interface IGherkinBackground {
-  match: IMatch;
-  Given: IGherkinOperations;
-}
-
-export interface IGherkinFeature {
-  Background?: IGherkinBackground;
-  Scenarios: Map<IMatch, IGherkinScenario>;
-  ScenarioOutlines: Map<IMatch, IGherkinScenarioOutline>;
-}
-
-export function GherkinEngine ({ feature, stackIndex = 2 }: IGherkinEngineConfig): IGherkinEngineOutput {
-  const testFilePath = new Error().stack!
-    .split('\n')[stackIndex]
-    .match(/\(([^:]+):/ig)![0]
-    .replace(/^\(|:$/g, '');
-
-  const text = readInputFile({ filePath: feature, testFilePath });
-  const parser = new Gherkin.Parser();
-  const ast: IGherkinAst = parser.parse(text);
-
-  const builder = new FeatureBuilder();
-
-  const methods = <IGherkinMethods> {
-    Scenario: builder.Scenario(),
-    ScenarioOutline: builder.ScenarioOutline(),
-    Background: builder.Background(),
-  };
-
-  return { ast, methods, text, builder };
-}
-
-class FeatureBuilder {
+export class FeatureBuilder {
   feature: IGherkinFeature = {
     Scenarios: new Map(),
     ScenarioOutlines: new Map(),
@@ -118,14 +37,6 @@ class FeatureBuilder {
       return steps;
     };
   }
-}
-
-function executeFeature () {
-
-}
-
-function mapGherkinToFeature () {
-
 }
 
 // FIXME: document this
@@ -201,15 +112,4 @@ function ScenarioOutlineFluidBuilder (match: IMatch): IScenarioOutlineBuilderRes
     scenarioOutline,
     steps: { Given, When, Then, Examples },
   };
-
-}
-
-function readInputFile ({ filePath, testFilePath }: { filePath: string, testFilePath?: string }) {
-  if (isAbsolute(filePath)) {
-    return readFileSync(filePath, 'utf8');
-  } else {
-    const testDirectory = dirname(testFilePath!);
-
-    return readFileSync(resolve(testDirectory, filePath), 'utf8');
-  }
 }

@@ -1,78 +1,43 @@
+import { IBackgroundFluid, IFluidFnCallback, IScenarioFluid, IScenarioOutlineFluid } from '.';
 
-export interface IGherkinAst {
-  type: 'GherkinDocument';
-  feature: IGherkinAstFeature;
-  comments: IGherkinAstComment[];
+export interface IScenarioBuilderResult {
+  steps: IScenarioFluid;
+  scenario: IGherkinScenario;
 }
 
-export interface IGherkinAstLocation {
-  line: number;
-  column: number;
+export interface IBackgroundBuilderResult {
+  steps: IBackgroundFluid;
+  background: IGherkinBackground;
 }
 
-export interface IGherkinAstFeature extends IGherkinAstEntity {
-  type: 'Feature';
-  language: string;
-  children: IGherkinAstBackground[];
+export interface IScenarioOutlineBuilderResult {
+  steps: IScenarioOutlineFluid;
+  scenarioOutline: IGherkinScenarioOutline;
 }
 
-export interface IGherkinAstComment {
-  type: 'Comment';
-  location: IGherkinAstLocation;
-  text: string;
+export type IMatch = string | RegExp;
+
+export type IGherkinOperations = Map<IMatch, IFluidFnCallback>;
+
+export interface IGherkinScenario {
+  match: IMatch;
+
+  Given?: IGherkinOperations;
+  When?: IGherkinOperations;
+  Then?: IGherkinOperations;
 }
 
-export interface IGherkinAstTag {
-  type: 'Tag';
-  name: string;
-  location: IGherkinAstLocation;
+export interface IGherkinScenarioOutline extends IGherkinScenario {
+  Examples: IGherkinOperations; // TODO: may need remediated structure
 }
 
-export interface IGherkinAstEntity {
-  tags?: IGherkinAstTag[];
-  location: IGherkinAstLocation;
-  keyword: string;
-  name: string;
-  description?: string;
+export interface IGherkinBackground {
+  match: IMatch;
+  Given: IGherkinOperations;
 }
 
-export interface IGherkinAstBackground extends IGherkinAstEntity {
-  type: 'Background';
-  steps: IGherkinAstStep[];
-}
-
-export interface IGherkinAstScenarioOutline extends IGherkinAstEntity {
-  type: 'ScenarioOutline';
-  steps: IGherkinAstStep[];
-}
-
-export interface IGherkinAstScenario extends IGherkinAstEntity {
-  type: 'Scenario';
-  steps: IGherkinAstStep[];
-}
-
-export interface IGherkinAstStep {
-  type: 'Step';
-  location: IGherkinAstLocation;
-  keyword: string;
-  text: string;
-  argument: undefined | string;
-}
-
-export interface IGherkinAstExamples extends IGherkinAstEntity {
-  type: 'Examples';
-  tableHeader: IGherkinAstTableRow;
-  tableBody: IGherkinAstTableRow;
-}
-
-export interface IGherkinAstTableRow {
-  type: 'TableRow';
-  location: IGherkinAstLocation;
-  cells: IGherkinAstTableCell[];
-}
-
-export interface IGherkinAstTableCell {
-  type: 'TableCell';
-  location: IGherkinAstLocation;
-  value: string;
+export interface IGherkinFeature {
+  Background?: IGherkinBackground;
+  Scenarios: Map<IMatch, IGherkinScenario>;
+  ScenarioOutlines: Map<IMatch, IGherkinScenarioOutline>;
 }

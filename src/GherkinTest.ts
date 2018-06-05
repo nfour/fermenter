@@ -1,13 +1,10 @@
-import { writeFileSync } from 'fs';
-import { GherkinEngine, IGherkinEngineConfig } from './GherkinEngine';
+import { IGherkinParserConfig, parseFeature } from './parseFeature';
 import { IGherkinMethods } from './types';
 
-export function GherkinTest ({ feature }: IGherkinEngineConfig, methodsSetup: (t: IGherkinMethods) => void) {
-  const { builder, ast, methods } = GherkinEngine({ feature, stackIndex: 3 });
+export function GherkinTest ({ feature }: IGherkinParserConfig, methodsSetup: (t: IGherkinMethods) => void) {
+  const { builder, ast, methods } = parseFeature({ feature, stackIndex: 3 });
 
   console.dir(ast, { depth: 10, colors: true });
-
-  writeFileSync('./ast.json', JSON.stringify(ast, null, 2));
 
   /**
    * TODO:
@@ -29,5 +26,6 @@ export function GherkinTest ({ feature }: IGherkinEngineConfig, methodsSetup: (t
 
   return test('test', async () => {
     await methodsSetup(methods);
+
   });
 }
