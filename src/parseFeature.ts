@@ -4,10 +4,9 @@ import { readInputFile } from './lib';
 import { IGherkinAst, IGherkinMethods } from './types';
 
 export interface IGherkinParserOutput {
-  methods: IGherkinMethods;
   ast: IGherkinAst;
   text: string;
-  builder: FeatureBuilder;
+  featureBuilder: FeatureBuilder;
 }
 
 export interface IGherkinParserConfig {
@@ -25,13 +24,7 @@ export function parseFeature ({ feature, stackIndex = 2 }: IGherkinParserConfig)
   const parser = new Gherkin.Parser();
   const ast: IGherkinAst = parser.parse(text);
 
-  const builder = new FeatureBuilder();
+  const featureBuilder = new FeatureBuilder();
 
-  const methods = <IGherkinMethods> {
-    Scenario: builder.Scenario(),
-    ScenarioOutline: builder.ScenarioOutline(),
-    Background: builder.Background(),
-  };
-
-  return { ast, methods, text, builder };
+  return { ast, text, featureBuilder };
 }
