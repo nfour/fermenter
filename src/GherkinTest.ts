@@ -1,29 +1,11 @@
 import { executeFeature } from './executeFeature';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
-import { IGherkinAst, IGherkinFeature, IGherkinMethods, IGherkinOperations, IGherkinScenario } from './types';
+import { IGherkinAst, IGherkinMethods, IGherkinOperations, IGherkinScenario } from './types';
 
 export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
   console.dir(ast, { depth: 10, colors: true });
-
-  /**
-   * TODO:
-   * - read the feature file, parse out & match:
-   *   - scenario name -> test(name)
-   *   - feature name -> describe(name)
-   *   - background name -> beforeAll(() => background())
-   *   - tags
-   *     - test(`${name} ${tags.map((tag) => `@${tag}`).join(' ')}`)
-   *     - same for the describe()
-   *
-   * - after `methodsSetup`
-   *   - execute the executeFeature based on the now-populated FeatureBuilder instance
-   *
-   *
-   *
-   *
-   */
 
   const methods = <IGherkinMethods> {
     Scenario: featureBuilder.Scenario(),
@@ -42,6 +24,11 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
 
     // TODO: outlines
     // TODO: background
+
+    /**
+     * TODO: constraints:
+     * - tests must be defined statically in order to ensure filtering etc. works
+     */
 
     executeFeature({ featureBuilder, ast });
   });

@@ -1,4 +1,9 @@
-import { IAndFluid, IBackgroundBuilderResult, IFluidFn, IGherkinBackground, IGherkinFeature, IGherkinMethods, IGherkinOperations, IGherkinScenario, IGherkinScenarioOutline, IGivenFluid, IMatch, IScenarioBuilderResult, IScenarioOutlineBuilderResult, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid } from './types';
+import {
+  IAndFluid, IBackgroundBuilderResult, IFluidFn, IGherkinBackground,
+  IGherkinFeature, IGherkinMethods, IGherkinOperations, IGherkinScenario,
+  IGherkinScenarioOutline, IGivenFluid, IMatch, IScenarioBuilderResult, IScenarioOutlineBuilderResult,
+  IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid,
+} from './types';
 
 export class FeatureBuilder {
   feature: IGherkinFeature = {
