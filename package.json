@@ -6,8 +6,16 @@
     "test": "jest src/tests/calculator.framework.test.ts",
     "cucumber": "cucumber-js src/**/*.feature --require-module ts-node/register --require src/**/*.cucumber.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nfour/gherkin-framework"
+  },
   "author": "nfour",
   "license": "ISC",
+  "contributors": [
+    "nfour <https://github.com/nfour>",
+    "viresse19 <https://github.com/viresse19>"
+  ],
   "dependencies": {
     "@types/bluebird": "^3.5.20",
     "@types/lodash": "^4.14.109",
