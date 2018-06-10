@@ -39,16 +39,22 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
   });
 }
 
-function testGherkinOperations (operations: IGherkinOperations) {
+function testGherkinOperations (operations: IGherkinOperations, state = {}) {
   operations.forEach((operation, match) => {
     // TODO: this needs to be wrapped in state machine
-    test(match.toString(), operation, 99999); // TODO: add timeout config opt
+    test(match.toString(), async () => {
+      // TODO: must run expression parser here on `match` to extract params
+      const params: any[] = [];
+
+      return operation(state, ...params);
+    }, 99999); // TODO: add timeout config opt
   });
 }
 
 function describeScenario (scenario: IGherkinScenario) {
   // TODO: wheres my background @?
   describe(scenario.match.toString(), () => {
+    // TODO: define state here
     testGherkinOperations(new Map([
       ...scenario.Given || [],
       ...scenario.When || [],
