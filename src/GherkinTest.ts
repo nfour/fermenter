@@ -28,9 +28,7 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
     /**
      * TODO: constraints:
      * - tests must be defined statically in order to ensure filtering etc. works
-     * - features are not defined statically and thus will not be defined until jest executes the functions ??
-     *
-     * afk fooood
+     * - make the FeatureBuilder become aware of gherkin AST so that context is avaliable on test definition
      *
      *
      */
@@ -42,7 +40,11 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
 function testGherkinOperations (operations: IGherkinOperations, state = {}) {
   operations.forEach((operation, match) => {
     // TODO: this needs to be wrapped in state machine
-    test(match.toString(), async () => {
+
+    const testName = match.toString();
+
+    test(testName, async () => {
+      // TODO: need access to feature AST for given operation so can parse expression!
       // TODO: must run expression parser here on `match` to extract params
       const params: any[] = [];
 
