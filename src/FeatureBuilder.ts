@@ -1,8 +1,9 @@
+import { matchInGherkinChildren } from './lib';
 import {
   IAndFluid, IBackgroundBuilderResult, IFluidFn, IGherkinAst,
-  IGherkinBackground, IGherkinFeature, IGherkinMethods, IGherkinOperations,
-  IGherkinScenario, IGherkinScenarioOutline, IGivenFluid, IMatch, IScenarioBuilderResult,
-  IScenarioOutlineBuilderResult, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid,
+  IGherkinAstChildren, IGherkinAstFeature, IGherkinAstScenario, IGherkinBackground,
+  IGherkinFeature, IGherkinMethods, IGherkinOperations, IGherkinScenario, IGherkinScenarioOutline,
+  IGivenFluid, IMatch, IScenarioBuilderResult, IScenarioOutlineBuilderResult, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid,
 } from './types';
 
 // FIXME: fix everything here to conform to new types
@@ -12,15 +13,19 @@ export class FeatureBuilder {
     ScenarioOutlines: new Map(),
   };
 
-  constructor (private ast: IGherkinAst) {
-    this.ast = ast;
-
+  constructor (ast: IGherkinAst) {
     this.feature.gherkin = ast.feature;
   }
 
   Scenario (): IGherkinMethods['Scenario'] {
+    const { gherkin: { children } } = this.feature;
+
+    // TODO: so what i SHOULD do is make the FluidBuilder functions return a Partial<> without the gherkin/match props
+    // and I should spread those in here instead as they are static props
+    // which is nice because suddenly those functions become way dumber
+    // cnf rite now tho
     return (match) => {
-      const { scenario, steps } = ScenarioFluidBuilder(match);
+      const { scenario, steps } = ScenarioFluidBuilder({ match, children });
 
       this.feature.Scenarios.set(scenario.match, scenario);
 
@@ -29,8 +34,10 @@ export class FeatureBuilder {
   }
 
   ScenarioOutline (): IGherkinMethods['ScenarioOutline'] {
+    const { gherkin: { children } } = this.feature;
+
     return (match) => {
-      const { scenarioOutline, steps } = ScenarioOutlineFluidBuilder(match);
+      const { scenarioOutline, steps } = ScenarioOutlineFluidBuilder({ match, children });
 
       this.feature.ScenarioOutlines.set(scenarioOutline.match, scenarioOutline);
 
@@ -39,8 +46,10 @@ export class FeatureBuilder {
   }
 
   Background (): IGherkinMethods['Background'] {
+    const { gherkin: { children } } = this.feature;
+
     return (match = '') => {
-      const { background, steps } = BackgroundFluidBuilder(match);
+      const { background, steps } = BackgroundFluidBuilder({ match, children });
 
       this.feature.Background = background;
 
@@ -57,9 +66,17 @@ const FluidFn = <R>(fluid: R, store: IGherkinOperations): IFluidFn<R> =>
     return fluid;
   };
 
-function ScenarioFluidBuilder (scenarioMatch: IMatch, feature: IGherkinAst['feature']): IScenarioBuilderResult {
+function ScenarioFluidBuilder ({ match, children }: {
+  match: IMatch
+  children: IGherkinAstChildren[],
+}): IScenarioBuilderResult {
   const scenario: Required<IGherkinScenario> = {
-    match: scenarioMatch,
+    match,
+    gherkin: matchInGherkinChildren({
+      match,
+      children,
+      type: 'Scenario',
+    }),
     Given: new Map(),
     Then: new Map(),
     When: new Map(),
@@ -85,9 +102,15 @@ function ScenarioFluidBuilder (scenarioMatch: IMatch, feature: IGherkinAst['feat
   };
 }
 
-function BackgroundFluidBuilder (match: IMatch): IBackgroundBuilderResult {
+function BackgroundFluidBuilder ({ match, children }: {
+  match: IMatch
+  children: IGherkinAstChildren[],
+}): IBackgroundBuilderResult {
   const background: Required<IGherkinBackground> = {
     match,
+    gherkin: matchInGherkinChildren({
+      children, match, type: 'Background',
+    }),
     Given: new Map(),
   };
 
@@ -101,11 +124,20 @@ function BackgroundFluidBuilder (match: IMatch): IBackgroundBuilderResult {
   };
 }
 
-function ScenarioOutlineFluidBuilder (match: IMatch): IScenarioOutlineBuilderResult {
-  const { scenario, steps: { Given, When } } = ScenarioFluidBuilder(match);
+function ScenarioOutlineFluidBuilder ({ match, children }: {
+  match: IMatch
+  children: IGherkinAstChildren[],
+}): IScenarioOutlineBuilderResult {
+  // FIXME: I Just realized that because I am composing these functions that I should not
+  // be passing in the children - it's basically a side effect - should compute this beforehand :(
+  const { scenario, steps: { Given, When } } = ScenarioFluidBuilder({ match, children: [] });
 
   const scenarioOutline = <IGherkinScenarioOutline> {
     ...scenario,
+    gherkin: matchInGherkinChildren({
+      children, match,
+      type: 'ScenarioOutline',
+    }),
     Examples: new Map(),
   };
 
