@@ -1,17 +1,21 @@
 import {
-  IAndFluid, IBackgroundBuilderResult, IFluidFn, IGherkinBackground,
-  IGherkinFeature, IGherkinMethods, IGherkinOperations, IGherkinScenario,
-  IGherkinScenarioOutline, IGivenFluid, IMatch, IScenarioBuilderResult, IScenarioOutlineBuilderResult,
-  IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid,
+  IAndFluid, IBackgroundBuilderResult, IFluidFn, IGherkinAst,
+  IGherkinBackground, IGherkinFeature, IGherkinMethods, IGherkinOperations,
+  IGherkinScenario, IGherkinScenarioOutline, IGivenFluid, IMatch, IScenarioBuilderResult,
+  IScenarioOutlineBuilderResult, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid,
 } from './types';
 
+// FIXME: fix everything here to conform to new types
 export class FeatureBuilder {
   feature: IGherkinFeature = {
     Scenarios: new Map(),
     ScenarioOutlines: new Map(),
   };
 
-  /** Instruments a ScenarioFluidBuilder */
+  constructor (private ast: IGherkinAst) {
+    this.ast = ast;
+  }
+
   Scenario (): IGherkinMethods['Scenario'] {
     return (match) => {
       const { scenario, steps } = ScenarioFluidBuilder(match);
@@ -22,7 +26,6 @@ export class FeatureBuilder {
     };
   }
 
-  /** Instruments a ScenarioFluidBuilder */
   ScenarioOutline (): IGherkinMethods['ScenarioOutline'] {
     return (match) => {
       const { scenarioOutline, steps } = ScenarioOutlineFluidBuilder(match);

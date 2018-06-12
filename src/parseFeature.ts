@@ -24,7 +24,7 @@ export function parseFeature ({ feature, stackIndex = 2 }: IGherkinParserConfig)
   const parser = new Gherkin.Parser();
   const ast: IGherkinAst = parser.parse(text);
 
-  const featureBuilder = new FeatureBuilder();
+  const featureBuilder = new FeatureBuilder(ast);
 
   return { ast, text, featureBuilder };
 }

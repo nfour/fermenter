@@ -1,4 +1,5 @@
-import { IBackgroundFluid, IFluidFnCallback, IScenarioFluid, IScenarioOutlineFluid } from '.';
+import { IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline, IScenarioFluid, IScenarioOutlineFluid } from '.';
+import { IGherkinAstBackground, IGherkinAstExamples, IGherkinAstFeature } from './ast';
 
 export interface IScenarioBuilderResult {
   steps: IScenarioFluid;
@@ -19,24 +20,37 @@ export type IMatch = string | RegExp;
 
 export type IGherkinOperations = Map<IMatch, IFluidFnCallback>;
 
-export interface IGherkinScenario {
+export interface IGherkinScenarioBase {
   match: IMatch;
-
   Given?: IGherkinOperations;
   When?: IGherkinOperations;
   Then?: IGherkinOperations;
 }
 
-export interface IGherkinScenarioOutline extends IGherkinScenario {
-  Examples: IGherkinOperations; // TODO: may need remediated structure
+export interface IGherkinScenario extends IGherkinScenarioBase {
+  gherkin: IGherkinAstScenario;
+}
+
+export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
+  gherkin: IGherkinAstScenarioOutline;
+  Examples: IGherkinExamples;
+}
+
+export interface IGherkinExamples {
+  match: IMatch;
+  gherkin: IGherkinAstExamples;
 }
 
 export interface IGherkinBackground {
   match: IMatch;
+  gherkin: IGherkinAstBackground;
   Given: IGherkinOperations;
 }
 
 export interface IGherkinFeature {
+  match: IMatch;
+  gherkin: IGherkinAstFeature;
+
   Background?: IGherkinBackground;
   Scenarios: Map<IMatch, IGherkinScenario>;
   ScenarioOutlines: Map<IMatch, IGherkinScenarioOutline>;
