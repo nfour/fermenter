@@ -48,7 +48,6 @@ export interface IGherkinBackground {
 }
 
 export interface IGherkinFeature {
-  match: IMatch;
   gherkin: IGherkinAstFeature;
 
   Background?: IGherkinBackground;

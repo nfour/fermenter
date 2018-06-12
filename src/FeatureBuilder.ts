@@ -7,13 +7,15 @@ import {
 
 // FIXME: fix everything here to conform to new types
 export class FeatureBuilder {
-  feature: IGherkinFeature = {
+  feature = <IGherkinFeature> {
     Scenarios: new Map(),
     ScenarioOutlines: new Map(),
   };
 
   constructor (private ast: IGherkinAst) {
     this.ast = ast;
+
+    this.feature.gherkin = ast.feature;
   }
 
   Scenario (): IGherkinMethods['Scenario'] {
@@ -55,7 +57,7 @@ const FluidFn = <R>(fluid: R, store: IGherkinOperations): IFluidFn<R> =>
     return fluid;
   };
 
-function ScenarioFluidBuilder (scenarioMatch: IMatch): IScenarioBuilderResult {
+function ScenarioFluidBuilder (scenarioMatch: IMatch, feature: IGherkinAst['feature']): IScenarioBuilderResult {
   const scenario: Required<IGherkinScenario> = {
     match: scenarioMatch,
     Given: new Map(),

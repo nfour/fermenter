@@ -13,7 +13,7 @@ export interface IGherkinAstLocation {
 export interface IGherkinAstFeature extends IGherkinAstEntity {
   type: 'Feature';
   language: string;
-  children: IGherkinAstBackground[];
+  children: Array<IGherkinAstBackground | IGherkinAstScenarioOutline  | IGherkinAstScenario>;
 }
 
 export interface IGherkinAstComment {
