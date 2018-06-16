@@ -16,12 +16,12 @@ export interface IGherkinMatchCollectionParams {
   type: IGherkinAstCollections['type'];
   match: IMatch;
   collection: IGherkinAstCollections[];
-  matchProperty?: 'name' | 'text';
+  matchProperty: 'name' | 'text';
 }
 
 export function matchInGherkinCollection<
   In extends IGherkinAstCollections = IGherkinAstCollections
-> ({ type, match, collection, matchProperty = 'name' }: IGherkinMatchCollectionParams): In {
+> ({ type, match, collection, matchProperty }: IGherkinMatchCollectionParams): In {
   const matchingChild = collection
     .filter((child) => child.type === type)
     .find((child: any) => matchGherkinText(child[matchProperty], match));

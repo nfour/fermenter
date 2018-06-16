@@ -1,6 +1,6 @@
 import {
   IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline,
-  IScenarioFluid, IScenarioOutlineFluid, Omit,
+  IScenarioFluid, IScenarioOutlineFluid,
 } from '.';
 import { IGherkinAstBackground, IGherkinAstEntity, IGherkinAstExamples, IGherkinAstFeature, IGherkinAstStep } from './ast';
 
@@ -29,22 +29,25 @@ export interface IBackgroundBuilder {
  */
 export interface IScenarioOutlineBuilder {
   steps: IScenarioOutlineFluid;
-
   scenarioOutline: IGherkinScenarioOutline;
 }
 
 export type IMatch = string | RegExp;
 
 export type IGherkinCollectionItemShape = IGherkinAstEntity | IGherkinAstStep;
+export type IGherkinCollectionItemIndex = IGherkinAstEntity & IGherkinAstStep;
+
 export type IGherkinOperationStore<
-  G extends IGherkinCollectionItemShape= IGherkinCollectionItemShape
+  G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
 > = Map<IMatch, {
   fn: IFluidFnCallback,
+  name: string;
   gherkin: G;
 }>;
 
 export interface IGherkinScenarioBase {
   match: IMatch;
+  name: IGherkinAstScenario['name'];
   Given?: IGherkinOperationStore<IGherkinAstStep>;
   When?: IGherkinOperationStore<IGherkinAstStep>;
   Then?: IGherkinOperationStore<IGherkinAstStep>;
@@ -61,12 +64,14 @@ export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
 
 export interface IGherkinBackground {
   match: IMatch;
+  name: IGherkinAstBackground['name'];
   gherkin: IGherkinAstBackground;
   Given: IGherkinOperationStore<IGherkinAstStep>;
 }
 
 export interface IGherkinFeature {
   gherkin: IGherkinAstFeature;
+  name: IGherkinAstFeature['name'];
 
   Background?: IGherkinBackground;
   Scenarios: Map<IMatch, IGherkinScenario>;

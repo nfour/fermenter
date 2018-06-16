@@ -5,8 +5,6 @@ import { IGherkinAst, IGherkinMethods, IGherkinOperationStore, IGherkinScenario 
 export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
-  console.dir(ast, { depth: 10, colors: true });
-
   const methods = <IGherkinMethods> {
     Scenario: featureBuilder.Scenario(),
     ScenarioOutline: featureBuilder.ScenarioOutline(),
@@ -25,30 +23,26 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
     // TODO: outlines
     // TODO: background
 
-    /**
-     * TODO: constraints:
-     * - tests must be defined statically in order to ensure filtering etc. works
-     * - make the FeatureBuilder become aware of gherkin AST so that context is avaliable on test definition
-     *
-     *
-     */
-
     executeFeature({ featureBuilder, ast });
   });
 }
 
-function testGherkinOperations (operations: IGherkinOperationStore, state = {}) {
+function testGherkinOperations (operations: IGherkinOperationStore, initialState = {}) {
+
+  let state: any = initialState;
+
+  // TODO: this needs to be wrapped in state machine
   operations.forEach((operation, match) => {
-    // TODO: this needs to be wrapped in state machine
 
     const testName = match.toString();
 
     test(testName, async () => {
-      // TODO: need access to feature AST for given operation so can parse expression!
       // TODO: must run expression parser here on `match` to extract params
       const params: any[] = [];
 
-      return operation.fn(state, ...params);
+      const returnedState = await operation.fn(state, ...params);
+
+      if (returnedState !== undefined) { state = returnedState; }
     }, 99999); // TODO: add timeout config opt
   });
 }

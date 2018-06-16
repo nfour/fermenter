@@ -2,9 +2,9 @@ import { IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib';
 import {
   IAndFluid, IBackgroundBuilder, IFluidFn, IGherkinAst,
   IGherkinAstBackground, IGherkinAstScenario, IGherkinAstScenarioOutline,
-  IGherkinFeature, IGherkinMethods, IGherkinOperationStore, IGherkinScenario,
-  IGherkinScenarioOutline, IGivenFluid, IMatch,
-  IScenarioBuilder, IScenarioOutlineBuilder, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid, Omit,
+  IGherkinCollectionItemIndex, IGherkinFeature, IGherkinMethods, IGherkinOperationStore,
+  IGherkinScenario, IGherkinScenarioOutline, IGivenFluid,
+  IMatch, IScenarioBuilder, IScenarioOutlineBuilder, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid, Omit,
 } from './types';
 
 /**
@@ -85,12 +85,15 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
   collectionParams: Omit<IGherkinMatchCollectionParams, 'match'>,
 }): IFluidFn<R> {
   return (match, fn) => {
+    const gherkin: IGherkinCollectionItemIndex = matchInGherkinCollection({
+      match,
+      ...collectionParams,
+    });
+
     store.set(match, {
       fn,
-      gherkin: matchInGherkinCollection({
-        match,
-        ...collectionParams,
-      }),
+      name: gherkin[collectionParams.matchProperty],
+      gherkin,
     });
 
     return fluid;
@@ -103,8 +106,8 @@ function ScenarioFluidBuilder<
   const { steps: collection } = gherkin;
 
   const scenario = <IScenarioBuilder<G>['scenario']> {
-    match,
-    gherkin,
+    match, gherkin,
+    name: gherkin.name,
     Given: new Map(),
     Then: new Map(),
     When: new Map(),
@@ -179,6 +182,7 @@ function BackgroundFluidBuilder (match: IMatch, gherkin: IGherkinAstBackground):
 
   const background: IBackgroundBuilder['background'] = {
     gherkin, match,
+    name: gherkin.name,
     Given: new Map(),
   };
 
