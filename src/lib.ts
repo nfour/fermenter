@@ -31,7 +31,8 @@ export function matchInGherkinCollection<
 
   if (!matchingChild) {
     throw new Error([
-      `Couldn't find a match for ${c.cyan(type)} expression: ${c.red(match.toString())}`,
+      `Couldn't find a match for ${c.cyan(type)} expression:`,
+      `  ${c.red(match.toString())}`,
       `Possible matches:`,
       ...filteredByType.map((child) => c.grey(`  - ${c.yellow(child[matchProperty])}`)),
       '',
