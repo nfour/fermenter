@@ -1,7 +1,7 @@
 import * as c from 'colors';
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, resolve } from 'path';
-import { IGherkinAstCollections, IMatch } from './types';
+import { IGherkinAstCollections, IGherkinCollectionItemIndex, IMatch } from './types';
 
 export function readInputFile ({ filePath, testFilePath }: { filePath: string, testFilePath?: string }) {
   if (isAbsolute(filePath)) {
@@ -23,13 +23,19 @@ export interface IGherkinMatchCollectionParams {
 export function matchInGherkinCollection<
   In extends IGherkinAstCollections = IGherkinAstCollections
 > ({ type, match, collection, matchProperty }: IGherkinMatchCollectionParams): In {
-  const matchingChild = collection
-    .filter((child) => child.type === type)
-    .find((child: any) => matchGherkinText(child[matchProperty], match));
+  const filteredByType = <IGherkinCollectionItemIndex[]> collection
+    .filter((child) => child.type === type);
+
+  const matchingChild = filteredByType
+    .find((child) => matchGherkinText(child[matchProperty], match));
 
   if (!matchingChild) {
-    console.dir(collection);
-    throw new Error(`Couldn't find a match for ${c.cyan(type)} '${c.red(match.toString())}'`);
+    throw new Error([
+      `Couldn't find a match for ${c.cyan(type)} expression: ${c.red(match.toString())}`,
+      `Possible matches:`,
+      ...filteredByType.map((child) => c.grey(`  - ${c.yellow(child[matchProperty])}`)),
+      '',
+    ].join('\n'));
   }
 
   return matchingChild as In;
