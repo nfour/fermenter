@@ -16,6 +16,8 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
   return describe(featureTitle, async () => {
     configure(methods);
 
+    console.dir(featureBuilder.feature, { depth: 10, colors: true });
+
     const { Background, ScenarioOutlines, Scenarios } = featureBuilder.feature;
 
     Scenarios.forEach(describeScenario);

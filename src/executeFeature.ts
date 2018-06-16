@@ -7,7 +7,6 @@ export function executeFeature ({ featureBuilder, ast }: {
 }) {
   const reader = new GherkinAstReader(ast);
 
-  reader.getScenario();
 }
 
 class GherkinAstReader {

@@ -1,3 +1,4 @@
+import * as c from 'colors';
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, resolve } from 'path';
 import { IGherkinAstCollections, IMatch } from './types';
@@ -27,7 +28,8 @@ export function matchInGherkinCollection<
     .find((child: any) => matchGherkinText(child[matchProperty], match));
 
   if (!matchingChild) {
-    throw new Error(`Could not find a match for ${type} ${match} in feature`);
+    console.dir(collection);
+    throw new Error(`Couldn't find a match for ${c.cyan(type)} '${c.red(match.toString())}'`);
   }
 
   return matchingChild as In;
