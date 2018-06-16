@@ -1,6 +1,6 @@
 import { executeFeature } from './executeFeature';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
-import { IGherkinAst, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
+import { IGherkinAst, IGherkinAstFeature, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
 
 export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
@@ -11,7 +11,7 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
     Background: featureBuilder.Background(),
   };
 
-  const featureTitle = extractFeatureTestTitle(ast);
+  const featureTitle = extractFeatureTestTitle(ast.feature);
 
   return describe(featureTitle, async () => {
     configure(methods);
@@ -34,9 +34,8 @@ function testGherkinOperations (operations: IGherkinOperationStore, initialState
   // TODO: this needs to be wrapped in state machine
   operations.forEach((operation, match) => {
 
-    const testName = match.toString();
-
-    test(testName, async () => {
+    // TODO: must also populate @tags etc. like feature title
+    test(operation.name, async () => {
       // TODO: must run expression parser here on `match` to extract params
       const params: any[] = [];
 
@@ -59,13 +58,13 @@ function describeScenario (scenario: IGherkinScenario) {
   });
 }
 
-function extractFeatureTestTitle (ast: IGherkinAst): string {
-  const tags = ast.feature.tags
-    ? `${ast.feature.tags.map(({ name }) => name).join(' ')}`
+function extractFeatureTestTitle (feature: IGherkinAstFeature): string {
+  const tags = feature.tags
+    ? `${feature.tags.map(({ name }) => name).join(' ')}`
     : '';
 
   return [
-    `${ast.feature.name} ${tags}`,
-    `${ast.feature.description || ''}`,
+    `${feature.name} ${tags}`,
+    `${feature.description || ''}`,
   ].join('\n');
 }
