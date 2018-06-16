@@ -1,4 +1,7 @@
-import { IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline, IScenarioFluid, IScenarioOutlineFluid, Omit } from '.';
+import {
+  IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline,
+  IScenarioFluid, IScenarioOutlineFluid, Omit,
+} from '.';
 import { IGherkinAstBackground, IGherkinAstEntity, IGherkinAstExamples, IGherkinAstFeature, IGherkinAstStep } from './ast';
 
 // tslint:disable-next-line
@@ -8,14 +11,16 @@ export interface IGherkinFeatureMappings<Ge = any> {
   gherkin: Ge;
 }
 
-export interface IScenarioBuilder {
+export interface IScenarioBuilder<
+  S extends IGherkinScenario | IGherkinScenarioOutline = IGherkinScenario
+> {
   steps: IScenarioFluid;
-  scenario: Omit<IGherkinScenario, keyof IGherkinFeatureMappings>;
+  scenario: S;
 }
 
 export interface IBackgroundBuilder {
   steps: IBackgroundFluid;
-  background: Omit<IGherkinBackground, keyof IGherkinFeatureMappings>;
+  background: IGherkinBackground;
 }
 
 /**
@@ -25,7 +30,7 @@ export interface IBackgroundBuilder {
 export interface IScenarioOutlineBuilder {
   steps: IScenarioOutlineFluid;
 
-  scenarioOutline: Omit<IGherkinScenarioOutline, keyof IGherkinFeatureMappings>;
+  scenarioOutline: IGherkinScenarioOutline;
 }
 
 export type IMatch = string | RegExp;

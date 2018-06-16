@@ -2,12 +2,18 @@ import { IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib';
 import {
   IAndFluid, IBackgroundBuilder, IFluidFn, IGherkinAst,
   IGherkinAstBackground, IGherkinAstScenario, IGherkinAstScenarioOutline,
-  IGherkinFeature, IGherkinMethods, IGherkinOperationStore, IGivenFluid,
-  IScenarioBuilder, IScenarioOutlineBuilder, IScenarioOutlineExamplesFluid,
-  IScenarioOutlineFluid, IWhenFluid, Omit,
+  IGherkinFeature, IGherkinMethods, IGherkinOperationStore, IGherkinScenario,
+  IGherkinScenarioOutline, IGivenFluid, IMatch,
+  IScenarioBuilder, IScenarioOutlineBuilder, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid, Omit,
 } from './types';
 
-// FIXME: fix everything here to conform to new types
+/**
+ * This class populates the `feature` property with
+ * a data structure that is mapped to a gherkin feature file.
+ *
+ * The feature file is built up as Scenario()() etc. are invoked,
+ * causing the gherkin AST to be parsed and mapped up to the invoking function.
+ */
 export class FeatureBuilder {
   feature = <IGherkinFeature> {
     Scenarios: new Map(),
@@ -28,12 +34,9 @@ export class FeatureBuilder {
         type: 'Scenario',
       });
 
-      const { scenario, steps } = ScenarioFluidBuilder(gherkin);
+      const { scenario, steps } = ScenarioFluidBuilder<IGherkinScenario>(match, gherkin);
 
-      this.feature.Scenarios.set(match, {
-        match, gherkin,
-        ...scenario,
-      });
+      this.feature.Scenarios.set(match, scenario);
 
       return steps;
     };
@@ -49,12 +52,9 @@ export class FeatureBuilder {
         type: 'ScenarioOutline',
       });
 
-      const { scenarioOutline, steps } = ScenarioOutlineFluidBuilder(gherkin);
+      const { scenarioOutline, steps } = ScenarioOutlineFluidBuilder(match, gherkin);
 
-      this.feature.ScenarioOutlines.set(match, {
-        match, gherkin,
-        ...scenarioOutline,
-      });
+      this.feature.ScenarioOutlines.set(match, scenarioOutline);
 
       return steps;
     };
@@ -70,12 +70,9 @@ export class FeatureBuilder {
         type: 'Background',
       });
 
-      const { background, steps } = BackgroundFluidBuilder(gherkin);
+      const { background, steps } = BackgroundFluidBuilder(match, gherkin);
 
-      this.feature.Background = {
-        gherkin, match,
-        ...background,
-      };
+      this.feature.Background = background;
 
       return steps;
     };
@@ -100,8 +97,14 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
   };
 }
 
-function ScenarioFluidBuilder ({ steps: collection }: Pick<IGherkinAstScenario, 'steps'>): IScenarioBuilder {
-  const scenario: IScenarioBuilder['scenario'] = {
+function ScenarioFluidBuilder<
+  G extends IGherkinScenario | IGherkinScenarioOutline
+> (match: IMatch, gherkin: G['gherkin']): IScenarioBuilder<G> {
+  const { steps: collection } = gherkin;
+
+  const scenario = <IScenarioBuilder<G>['scenario']> {
+    match,
+    gherkin,
     Given: new Map(),
     Then: new Map(),
     When: new Map(),
@@ -139,8 +142,8 @@ function ScenarioFluidBuilder ({ steps: collection }: Pick<IGherkinAstScenario, 
   };
 }
 
-function ScenarioOutlineFluidBuilder (gherkin: Pick<IGherkinAstScenarioOutline, 'steps' | 'examples'>): IScenarioOutlineBuilder {
-  const { scenario, steps: { Given, When } } = ScenarioFluidBuilder(gherkin);
+function ScenarioOutlineFluidBuilder (match: IMatch, gherkin: IGherkinAstScenarioOutline): IScenarioOutlineBuilder {
+  const { scenario, steps: { Given, When } } = ScenarioFluidBuilder<IGherkinScenarioOutline>(match, gherkin);
 
   const scenarioOutline: IScenarioOutlineBuilder['scenarioOutline'] = {
     ...scenario,
@@ -171,8 +174,11 @@ function ScenarioOutlineFluidBuilder (gherkin: Pick<IGherkinAstScenarioOutline, 
   };
 }
 
-function BackgroundFluidBuilder ({ steps: collection }: Pick<IGherkinAstBackground, 'steps'>): IBackgroundBuilder {
+function BackgroundFluidBuilder (match: IMatch, gherkin: IGherkinAstBackground): IBackgroundBuilder {
+  const { steps: collection } = gherkin;
+
   const background: IBackgroundBuilder['background'] = {
+    gherkin, match,
     Given: new Map(),
   };
 
