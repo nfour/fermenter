@@ -32,6 +32,21 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
       expect(Math).toBeTruthy();
     });
 
+  const getNumbersMatch = 'I have numbers {int} and {int}';
+
+  Given('I have numbers {int} and {int}', () => {
+
+  });
+
+  When('I add the numbers', addNumbers);
+  Then('I get {int}', checkResult);
+
+  When('I multiply the numbers', addNumbers);
+
+  When('I subtract the numbers', addNumbers);
+
+  /// or
+
   Scenario('A simple addition test')
     .Given('I have numbers {int} and {int}', getNumbers)
     .When('I add the numbers', addNumbers)

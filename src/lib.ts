@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, resolve } from 'path';
-import { IGherkinAstChildren, IMatch } from './types';
+import { IGherkinAstCollections, IMatch } from './types';
 
 export function readInputFile ({ filePath, testFilePath }: { filePath: string, testFilePath?: string }) {
   if (isAbsolute(filePath)) {
@@ -12,16 +12,19 @@ export function readInputFile ({ filePath, testFilePath }: { filePath: string, t
   }
 }
 
-export function matchInGherkinChildren<
-  In extends IGherkinAstChildren = IGherkinAstChildren
-> ({ type, match, children }: {
-  type: IGherkinAstChildren['type']
-  match: IMatch
-  children: IGherkinAstChildren[];
-}): In {
-  const matchingChild = children
+export interface IGherkinMatchCollectionParams {
+  type: IGherkinAstCollections['type'];
+  match: IMatch;
+  collection: IGherkinAstCollections[];
+  matchProperty?: 'name' | 'text';
+}
+
+export function matchInGherkinCollection<
+  In extends IGherkinAstCollections = IGherkinAstCollections
+> ({ type, match, collection, matchProperty = 'name' }: IGherkinMatchCollectionParams): In {
+  const matchingChild = collection
     .filter((child) => child.type === type)
-    .find((child) => matchGherkinText(child.name, match));
+    .find((child: any) => matchGherkinText(child[matchProperty], match));
 
   if (!matchingChild) {
     throw new Error(`Could not find a match for ${type} ${match} in feature`);

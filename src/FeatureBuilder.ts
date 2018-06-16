@@ -1,9 +1,10 @@
-import { matchInGherkinChildren } from './lib';
+import { IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib';
 import {
-  IAndFluid, IBackgroundBuilderResult, IFluidFn, IGherkinAst,
-  IGherkinAstChildren, IGherkinAstFeature, IGherkinAstScenario, IGherkinBackground,
-  IGherkinFeature, IGherkinMethods, IGherkinOperations, IGherkinScenario, IGherkinScenarioOutline,
-  IGivenFluid, IMatch, IScenarioBuilderResult, IScenarioOutlineBuilderResult, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid,
+  IAndFluid, IBackgroundBuilder, IFluidFn, IGherkinAst,
+  IGherkinAstBackground, IGherkinAstScenario, IGherkinAstScenarioOutline,
+  IGherkinFeature, IGherkinMethods, IGherkinOperationStore, IGivenFluid,
+  IScenarioBuilder, IScenarioOutlineBuilder, IScenarioOutlineExamplesFluid,
+  IScenarioOutlineFluid, IWhenFluid, Omit,
 } from './types';
 
 // FIXME: fix everything here to conform to new types
@@ -18,78 +19,114 @@ export class FeatureBuilder {
   }
 
   Scenario (): IGherkinMethods['Scenario'] {
-    const { gherkin: { children } } = this.feature;
+    const { gherkin: { children: collection } } = this.feature;
 
-    // TODO: so what i SHOULD do is make the FluidBuilder functions return a Partial<> without the gherkin/match props
-    // and I should spread those in here instead as they are static props
-    // which is nice because suddenly those functions become way dumber
-    // cnf rite now tho
     return (match) => {
-      const { scenario, steps } = ScenarioFluidBuilder({ match, children });
+      const gherkin = matchInGherkinCollection<IGherkinAstScenario>({
+        collection, match,
+        matchProperty: 'name',
+        type: 'Scenario',
+      });
 
-      this.feature.Scenarios.set(scenario.match, scenario);
+      const { scenario, steps } = ScenarioFluidBuilder(gherkin);
+
+      this.feature.Scenarios.set(match, {
+        match, gherkin,
+        ...scenario,
+      });
 
       return steps;
     };
   }
 
   ScenarioOutline (): IGherkinMethods['ScenarioOutline'] {
-    const { gherkin: { children } } = this.feature;
+    const { gherkin: { children: collection } } = this.feature;
 
     return (match) => {
-      const { scenarioOutline, steps } = ScenarioOutlineFluidBuilder({ match, children });
+      const gherkin = matchInGherkinCollection<IGherkinAstScenarioOutline>({
+        collection, match,
+        matchProperty: 'name',
+        type: 'ScenarioOutline',
+      });
 
-      this.feature.ScenarioOutlines.set(scenarioOutline.match, scenarioOutline);
+      const { scenarioOutline, steps } = ScenarioOutlineFluidBuilder(gherkin);
+
+      this.feature.ScenarioOutlines.set(match, {
+        match, gherkin,
+        ...scenarioOutline,
+      });
 
       return steps;
     };
   }
 
   Background (): IGherkinMethods['Background'] {
-    const { gherkin: { children } } = this.feature;
+    const { gherkin: { children: collection } } = this.feature;
 
     return (match = '') => {
-      const { background, steps } = BackgroundFluidBuilder({ match, children });
+      const gherkin = matchInGherkinCollection<IGherkinAstBackground>({
+        collection, match,
+        matchProperty: 'name',
+        type: 'Background',
+      });
 
-      this.feature.Background = background;
+      const { background, steps } = BackgroundFluidBuilder(gherkin);
+
+      this.feature.Background = {
+        gherkin, match,
+        ...background,
+      };
 
       return steps;
     };
   }
 }
 
-// FIXME: document this
-const FluidFn = <R>(fluid: R, store: IGherkinOperations): IFluidFn<R> =>
-  (match, fn) => {
-    store.set(match, fn);
+function FluidFn <R> ({ fluid, collectionParams, store }: {
+  fluid: R,
+  store: IGherkinOperationStore,
+  collectionParams: Omit<IGherkinMatchCollectionParams, 'match'>,
+}): IFluidFn<R> {
+  return (match, fn) => {
+    store.set(match, {
+      fn,
+      gherkin: matchInGherkinCollection({
+        match,
+        ...collectionParams,
+      }),
+    });
 
     return fluid;
   };
+}
 
-function ScenarioFluidBuilder ({ match, children }: {
-  match: IMatch
-  children: IGherkinAstChildren[],
-}): IScenarioBuilderResult {
-  const scenario: Required<IGherkinScenario> = {
-    match,
-    gherkin: matchInGherkinChildren({
-      match,
-      children,
-      type: 'Scenario',
-    }),
+function ScenarioFluidBuilder ({ steps: collection }: Pick<IGherkinAstScenario, 'steps'>): IScenarioBuilder {
+  const scenario: IScenarioBuilder['scenario'] = {
     Given: new Map(),
     Then: new Map(),
     When: new Map(),
   };
 
   const thenFluid = <IAndFluid> {};
-  const Then = FluidFn(thenFluid, scenario.Then);
+  const Then = FluidFn({
+    fluid: thenFluid,
+    store: scenario.Then!,
+    collectionParams: { collection, matchProperty: 'text', type: 'Step' },
+  });
 
   const whenFluid = <IWhenFluid> { Then };
-  const When = FluidFn(whenFluid, scenario.When);
+  const When = FluidFn({
+    fluid: whenFluid,
+    store: scenario.When!,
+    collectionParams: { collection, matchProperty: 'text', type: 'Step' },
+  });
 
   const givenFluid = <IGivenFluid> { Then, When };
-  const Given = FluidFn(givenFluid, scenario.Given);
+  const Given = FluidFn({
+    fluid: givenFluid,
+    store: scenario.Given!,
+    collectionParams: { collection, matchProperty: 'text', type: 'Step' },
+  });
 
   // Apply conjuctions via mutation
   thenFluid.And = Then;
@@ -102,56 +139,54 @@ function ScenarioFluidBuilder ({ match, children }: {
   };
 }
 
-function BackgroundFluidBuilder ({ match, children }: {
-  match: IMatch
-  children: IGherkinAstChildren[],
-}): IBackgroundBuilderResult {
-  const background: Required<IGherkinBackground> = {
-    match,
-    gherkin: matchInGherkinChildren({
-      children, match, type: 'Background',
-    }),
-    Given: new Map(),
-  };
+function ScenarioOutlineFluidBuilder (gherkin: Pick<IGherkinAstScenarioOutline, 'steps' | 'examples'>): IScenarioOutlineBuilder {
+  const { scenario, steps: { Given, When } } = ScenarioFluidBuilder(gherkin);
 
-  const givenFluid = <IGivenFluid> {};
-  const Given = FluidFn(givenFluid, background.Given);
-  givenFluid.And = Given;
-
-  return {
-    background,
-    steps: { Given },
-  };
-}
-
-function ScenarioOutlineFluidBuilder ({ match, children }: {
-  match: IMatch
-  children: IGherkinAstChildren[],
-}): IScenarioOutlineBuilderResult {
-  // FIXME: I Just realized that because I am composing these functions that I should not
-  // be passing in the children - it's basically a side effect - should compute this beforehand :(
-  const { scenario, steps: { Given, When } } = ScenarioFluidBuilder({ match, children: [] });
-
-  const scenarioOutline = <IGherkinScenarioOutline> {
+  const scenarioOutline: IScenarioOutlineBuilder['scenarioOutline'] = {
     ...scenario,
-    gherkin: matchInGherkinChildren({
-      children, match,
-      type: 'ScenarioOutline',
-    }),
     Examples: new Map(),
   };
 
   const steps = <IScenarioOutlineFluid> { Given, When };
+  const { examples, steps: collection } = gherkin;
 
-  const Examples = FluidFn(steps, scenarioOutline.Examples);
+  const Examples = FluidFn({
+    fluid: steps,
+    store: scenarioOutline.Examples,
+    collectionParams: { collection: examples, matchProperty: 'name', type: 'Examples' },
+  });
 
   const thenFluid = <IScenarioOutlineExamplesFluid & IAndFluid> { Examples };
-  const Then = FluidFn(thenFluid, scenarioOutline.Then!);
+  const Then = FluidFn({
+    fluid: thenFluid,
+    store: scenarioOutline.Then!,
+    collectionParams: { collection, matchProperty: 'text', type: 'Step' },
+  });
 
   thenFluid.And = Then;
 
   return {
     scenarioOutline,
     steps: { Given, When, Then, Examples },
+  };
+}
+
+function BackgroundFluidBuilder ({ steps: collection }: Pick<IGherkinAstBackground, 'steps'>): IBackgroundBuilder {
+  const background: IBackgroundBuilder['background'] = {
+    Given: new Map(),
+  };
+
+  const givenFluid = <IGivenFluid> {};
+  const Given = FluidFn({
+    fluid: givenFluid,
+    store: background.Given,
+    collectionParams: { collection, matchProperty: 'text', type: 'Step' },
+  });
+
+  givenFluid.And = Given;
+
+  return {
+    background,
+    steps: { Given },
   };
 }

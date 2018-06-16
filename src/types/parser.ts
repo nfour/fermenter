@@ -1,30 +1,48 @@
-import { IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline, IScenarioFluid, IScenarioOutlineFluid } from '.';
-import { IGherkinAstBackground, IGherkinAstExamples, IGherkinAstFeature } from './ast';
+import { IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline, IScenarioFluid, IScenarioOutlineFluid, Omit } from '.';
+import { IGherkinAstBackground, IGherkinAstEntity, IGherkinAstExamples, IGherkinAstFeature, IGherkinAstStep } from './ast';
 
-export interface IScenarioBuilderResult {
+// tslint:disable-next-line
+
+export interface IGherkinFeatureMappings<Ge = any> {
+  match: IMatch;
+  gherkin: Ge;
+}
+
+export interface IScenarioBuilder {
   steps: IScenarioFluid;
-  scenario: IGherkinScenario;
+  scenario: Omit<IGherkinScenario, keyof IGherkinFeatureMappings>;
 }
 
-export interface IBackgroundBuilderResult {
+export interface IBackgroundBuilder {
   steps: IBackgroundFluid;
-  background: IGherkinBackground;
+  background: Omit<IGherkinBackground, keyof IGherkinFeatureMappings>;
 }
 
-export interface IScenarioOutlineBuilderResult {
+/**
+ * Produces a subset ScenarioOutline that looks like this:
+ * @example { Given, When, Then, Examples: { operations } }
+ */
+export interface IScenarioOutlineBuilder {
   steps: IScenarioOutlineFluid;
-  scenarioOutline: IGherkinScenarioOutline;
+
+  scenarioOutline: Omit<IGherkinScenarioOutline, keyof IGherkinFeatureMappings>;
 }
 
 export type IMatch = string | RegExp;
 
-export type IGherkinOperations = Map<IMatch, IFluidFnCallback>;
+export type IGherkinCollectionItemShape = IGherkinAstEntity | IGherkinAstStep;
+export type IGherkinOperationStore<
+  G extends IGherkinCollectionItemShape= IGherkinCollectionItemShape
+> = Map<IMatch, {
+  fn: IFluidFnCallback,
+  gherkin: G;
+}>;
 
 export interface IGherkinScenarioBase {
   match: IMatch;
-  Given?: IGherkinOperations;
-  When?: IGherkinOperations;
-  Then?: IGherkinOperations;
+  Given?: IGherkinOperationStore<IGherkinAstStep>;
+  When?: IGherkinOperationStore<IGherkinAstStep>;
+  Then?: IGherkinOperationStore<IGherkinAstStep>;
 }
 
 export interface IGherkinScenario extends IGherkinScenarioBase {
@@ -33,18 +51,13 @@ export interface IGherkinScenario extends IGherkinScenarioBase {
 
 export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
   gherkin: IGherkinAstScenarioOutline;
-  Examples: IGherkinExamples;
-}
-
-export interface IGherkinExamples {
-  match: IMatch;
-  gherkin: IGherkinAstExamples;
+  Examples: IGherkinOperationStore<IGherkinAstExamples>;
 }
 
 export interface IGherkinBackground {
   match: IMatch;
   gherkin: IGherkinAstBackground;
-  Given: IGherkinOperations;
+  Given: IGherkinOperationStore<IGherkinAstStep>;
 }
 
 export interface IGherkinFeature {

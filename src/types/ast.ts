@@ -13,10 +13,14 @@ export interface IGherkinAstLocation {
 export interface IGherkinAstFeature extends IGherkinAstEntity {
   type: 'Feature';
   language: string;
-  children: IGherkinAstChildren[];
+  children: IGherkinAstCollections[];
 }
 
-export type IGherkinAstChildren = IGherkinAstBackground | IGherkinAstScenarioOutline | IGherkinAstScenario;
+export type IGherkinAstCollections = (
+  IGherkinAstExamples | IGherkinAstBackground |
+  IGherkinAstScenarioOutline | IGherkinAstScenario |
+  IGherkinAstStep
+);
 
 export interface IGherkinAstComment {
   type: 'Comment';
@@ -46,6 +50,7 @@ export interface IGherkinAstBackground extends IGherkinAstEntity {
 export interface IGherkinAstScenarioOutline extends IGherkinAstEntity {
   type: 'ScenarioOutline';
   steps: IGherkinAstStep[];
+  examples: IGherkinAstExamples[];
 }
 
 export interface IGherkinAstScenario extends IGherkinAstEntity {

@@ -1,6 +1,6 @@
 import { executeFeature } from './executeFeature';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
-import { IGherkinAst, IGherkinMethods, IGherkinOperations, IGherkinScenario } from './types';
+import { IGherkinAst, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
 
 export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
@@ -37,7 +37,7 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
   });
 }
 
-function testGherkinOperations (operations: IGherkinOperations, state = {}) {
+function testGherkinOperations (operations: IGherkinOperationStore, state = {}) {
   operations.forEach((operation, match) => {
     // TODO: this needs to be wrapped in state machine
 
@@ -48,7 +48,7 @@ function testGherkinOperations (operations: IGherkinOperations, state = {}) {
       // TODO: must run expression parser here on `match` to extract params
       const params: any[] = [];
 
-      return operation(state, ...params);
+      return operation.fn(state, ...params);
     }, 99999); // TODO: add timeout config opt
   });
 }
