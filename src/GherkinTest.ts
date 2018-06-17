@@ -2,7 +2,7 @@ import * as expression from 'cucumber-expressions';
 import { executeFeature } from './executeFeature';
 import { getExpressionMatcher } from './lib';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
-import { IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
+import { IGherkinAstStep, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
 
 export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
@@ -42,10 +42,18 @@ function testGherkinOperations (operations: IGherkinOperationStore, initialState
     // TODO: must also populate @tags etc. like feature title
     test(operation.name, async () => {
 
-      const matcher = getExpressionMatcher(match, parameterTypeRegistry);
-      const matches = matcher.match(operation.name);
+      let params: any[] = [];
 
-      const params: any[] = matches ? matches.map((arg) => arg.getValue()) : [];
+      // TODO: fix type
+      const { argument } = operation.gherkin as IGherkinAstStep;
+
+      if (argument && argument.type) {
+        params = argument.type === 'DocString' ? [argument.content] : [argument.rows];
+      } else {
+        const matcher = getExpressionMatcher(match, parameterTypeRegistry);
+        const matches = matcher.match(operation.name);
+        params = matches ? matches.map((arg) => arg.getValue()) : [];
+      }
 
       const returnedState = await operation.fn(state, ...params);
 

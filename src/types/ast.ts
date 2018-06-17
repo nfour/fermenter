@@ -34,6 +34,18 @@ export interface IGherkinAstTag {
   location: IGherkinAstLocation;
 }
 
+export interface IGherkinAstDocString {
+  type: 'DocString';
+  location: IGherkinAstLocation;
+  content: string;
+}
+
+export interface IGherkinAstDataTable {
+  type: 'DataTable';
+  location: IGherkinAstLocation;
+  rows: IGherkinAstTableRow[];
+}
+
 export interface IGherkinAstEntity {
   tags?: IGherkinAstTag[];
   location: IGherkinAstLocation;
@@ -63,7 +75,7 @@ export interface IGherkinAstStep {
   location: IGherkinAstLocation;
   keyword: string;
   text: string;
-  argument: undefined | string;
+  argument: undefined | IGherkinAstDocString | IGherkinAstDataTable;
 }
 
 export interface IGherkinAstExamples extends IGherkinAstEntity {
