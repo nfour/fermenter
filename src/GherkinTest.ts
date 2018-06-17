@@ -1,6 +1,6 @@
 import { executeFeature } from './executeFeature';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
-import { IGherkinAst, IGherkinAstFeature, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
+import { IGherkinAstStep, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
 
 export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
@@ -16,7 +16,7 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
   return describe(featureTitle, async () => {
     configure(methods);
 
-    console.dir(featureBuilder.feature, { depth: 10, colors: true });
+    // console.dir(featureBuilder.feature, { depth: 10, colors: true });
 
     const { Background, ScenarioOutlines, Scenarios } = featureBuilder.feature;
 
@@ -38,8 +38,9 @@ function testGherkinOperations (operations: IGherkinOperationStore, initialState
 
     // TODO: must also populate @tags etc. like feature title
     test(operation.name, async () => {
-      // TODO: must run expression parser here on `match` to extract params
-      const params: any[] = [];
+      // TODO: fix type
+      const gherkin = operation.gherkin;
+      const params: any[] = gherkin.argument || [];
 
       const returnedState = await operation.fn(state, ...params);
 

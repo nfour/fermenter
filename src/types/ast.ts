@@ -63,7 +63,7 @@ export interface IGherkinAstStep {
   location: IGherkinAstLocation;
   keyword: string;
   text: string;
-  argument: undefined | string;
+  argument: undefined | any[];
 }
 
 export interface IGherkinAstExamples extends IGherkinAstEntity {

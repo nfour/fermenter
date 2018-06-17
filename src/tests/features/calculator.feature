@@ -22,14 +22,13 @@ Feature: using feature files in jest
     When I multiply the numbers
     Then I get 12
 
-  @substraction
-  Scenario Outline: A simple substraction test
-    Given I have numbers <num1> and <num2>
-    When I substract the numbers
-    Then I get <total>
+  # @substraction
+  # Scenario Outline: A simple subtraction test
+  #   Given I have numbers <num1> and <num2>
+  #   When I substract the numbers
+  #   Then I get <total>
 
-    Examples:
-      | num1 | num2 | total |
-      | 3    | 4    | -1    |
-      | 10   | 2    | 8     |
-
+  #   Examples:
+  #     | num1 | num2 | total |
+  #     | 3    | 4    | -1    |
+  #     | 10   | 2    | 8     |
