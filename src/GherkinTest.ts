@@ -1,6 +1,8 @@
+import * as expression from 'cucumber-expressions';
 import { executeFeature } from './executeFeature';
+import { getExpressionMatcher } from './lib';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
-import { IGherkinAstStep, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
+import { IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
 
 export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
@@ -32,15 +34,18 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
 function testGherkinOperations (operations: IGherkinOperationStore, initialState = {}) {
 
   let state: any = initialState;
+  const parameterTypeRegistry = new expression.ParameterTypeRegistry();
 
   // TODO: this needs to be wrapped in state machine
   operations.forEach((operation, match) => {
 
     // TODO: must also populate @tags etc. like feature title
     test(operation.name, async () => {
-      // TODO: fix type
-      const gherkin = operation.gherkin;
-      const params: any[] = gherkin.argument || [];
+
+      const matcher = getExpressionMatcher(match, parameterTypeRegistry);
+      const matches = matcher.match(operation.name);
+
+      const params: any[] = matches ? matches.map((arg) => arg.getValue()) : [];
 
       const returnedState = await operation.fn(state, ...params);
 

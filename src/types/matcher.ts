@@ -1,4 +1,6 @@
 export interface IExpressionMatcher {
+  regexp: RegExp;
+
   match: (subject: string) => undefined|IArgument[];
 }
 

@@ -32,11 +32,7 @@ export function matchInGherkinCollection<
   // TODO: this needs to ALSO filter on `keyword`!
 
   const matchingChild = filteredByType
-    .map((child) => (<IGherkinCollectionItemIndex> {
-      ...child,
-      argument: matchGherkinText(child[matchProperty], match),
-    }))
-    .find((child) => !!child.argument);
+    .find((child) => matchGherkinText(child[matchProperty], match));
 
   if (!matchingChild) {
     throw new Error([
@@ -51,21 +47,18 @@ export function matchInGherkinCollection<
   return matchingChild as In;
 }
 
-/**
- * Match and returns arguments based on expression
- */
-function matchGherkinText (subject: string, match: IMatch): any[]|undefined {
-  const registry = new expression.ParameterTypeRegistry();
+function matchGherkinText (subject: string, match: IMatch): boolean {
+  const matcher = getExpressionMatcher(match);
 
-  const matcher: IExpressionMatcher = (typeof match === 'string') ?
-    new expression.CucumberExpression(match, registry) :
-    new expression.RegularExpression(match, registry);
+  return !!(subject.match(matcher.regexp) || []).length;
+}
 
-  const args = matcher.match(subject);
-
-  if (args) {
-    return args.map((arg) => arg.getValue());
+export function getExpressionMatcher (match: IMatch, registry?: any): IExpressionMatcher {
+  if (!registry) {
+    registry = new expression.ParameterTypeRegistry();
   }
 
-  return;
+  return (typeof match === 'string') ?
+    new expression.CucumberExpression(match, registry) :
+    new expression.RegularExpression(match, registry);
 }
