@@ -29,6 +29,8 @@ export function matchInGherkinCollection<
   const filteredByType = <IGherkinCollectionItemIndex[]> collection
     .filter((child) => child.type === type);
 
+  // TODO: this needs to ALSO filter on `keyword`!
+
   const matchingChild = filteredByType
     .map((child) => (<IGherkinCollectionItemIndex> {
       ...child,
