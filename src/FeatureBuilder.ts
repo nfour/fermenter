@@ -1,4 +1,4 @@
-import { IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib';
+import { getStepParameters, IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib';
 import {
   IAndFluid, IBackgroundBuilder, IFluidFn, IGherkinAst,
   IGherkinAstBackground, IGherkinAstScenario, IGherkinAstScenarioOutline,
@@ -94,6 +94,7 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
       fn,
       name: gherkin[collectionParams.matchProperty],
       gherkin,
+      params: getStepParameters(gherkin, match),
     });
 
     return fluid;

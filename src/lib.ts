@@ -2,7 +2,7 @@ import * as c from 'colors';
 import * as expression from 'cucumber-expressions';
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, resolve } from 'path';
-import { IGherkinAstCollections, IGherkinCollectionItemIndex, IMatch } from './types';
+import { IGherkinAstCollections, IGherkinAstStep, IGherkinCollectionItemIndex, IMatch } from './types';
 import { IExpressionMatcher } from './types/matcher';
 
 export function readInputFile ({ filePath, testFilePath }: { filePath: string, testFilePath?: string }) {
@@ -53,7 +53,7 @@ function matchGherkinText (subject: string, match: IMatch): boolean {
   return !!(subject.match(matcher.regexp) || []).length;
 }
 
-export function getExpressionMatcher (match: IMatch, registry?: any): IExpressionMatcher {
+function getExpressionMatcher (match: IMatch, registry?: any): IExpressionMatcher {
   if (!registry) {
     registry = new expression.ParameterTypeRegistry();
   }
@@ -61,4 +61,22 @@ export function getExpressionMatcher (match: IMatch, registry?: any): IExpressio
   return (typeof match === 'string') ?
     new expression.CucumberExpression(match, registry) :
     new expression.RegularExpression(match, registry);
+}
+
+export function getStepParameters (step: IGherkinAstStep, match: IMatch): any[] {
+  const { argument } = step;
+
+  const matcher = getExpressionMatcher(match);
+  const matches = matcher.match(step.text);
+  const params: any[] = matches ? matches.map((arg) => arg.getValue()) : [];
+
+  if (argument && argument.type) {
+    if (argument.type === 'DocString') {
+      params.push(argument.content);
+    } else if (argument.type === 'DataTable') {
+      params.push(argument.rows);
+    }
+  }
+
+  return params;
 }
