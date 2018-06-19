@@ -1,4 +1,5 @@
-import { getStepParameters, IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib';
+import { getStepParameters, IGherkinMatchCollectionParams } from './lib/index';
+import { matchInGherkinCollection } from "./lib/matchInGherkinCollection";
 import {
   IAndFluid, IBackgroundBuilder, IFluidFn, IGherkinAst,
   IGherkinAstBackground, IGherkinAstScenario, IGherkinAstScenarioOutline,

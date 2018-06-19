@@ -1,9 +1,27 @@
+// tslint:disable:max-classes-per-file
+
 declare module 'gherkin' {
   const v: any;
   export = v;
 }
 
 declare module 'cucumber-expressions' {
-  const v: any;
-  export = v;
+  type IMatch = RegExp|string;
+
+  class ExpressionMatcher {
+    regexp: RegExp;
+    source: IMatch;
+
+    constructor (match: IMatch, registry?: ParameterTypeRegistry);
+
+    match (match: IMatch): undefined|IExpressionArgument[];
+  }
+
+  interface IExpressionArgument {
+    getValue: () => string|number;
+  }
+
+  export class CucumberExpression extends ExpressionMatcher {}
+  export class RegularExpression extends ExpressionMatcher {}
+  export class ParameterTypeRegistry {}
 }

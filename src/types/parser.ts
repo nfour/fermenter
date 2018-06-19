@@ -2,9 +2,73 @@ import {
   IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline,
   IScenarioFluid, IScenarioOutlineFluid,
 } from '.';
-import { IGherkinAstBackground, IGherkinAstEntity, IGherkinAstExamples, IGherkinAstFeature, IGherkinAstStep } from './ast';
+import { IGherkinAstBackground, IGherkinAstEntity, IGherkinAstExamples, IGherkinAstFeature, IGherkinAstStep, IGherkinAstTableRow } from './ast';
 
 // tslint:disable-next-line
+
+export type IMatch = string | RegExp;
+
+export type IGherkinCollectionItemShape = IGherkinAstEntity | IGherkinAstStep;
+export type IGherkinCollectionItemIndex = IGherkinAstEntity & IGherkinAstStep;
+
+export type IGherkinParams = string | number | IGherkinAstTableRow;
+
+export interface IGherkinTableParam {
+
+  /**
+   * @example
+   *   table.rows()
+   *   === ['a', 'b']
+   */
+  rows: {
+    (): string[][];
+
+    /**
+     * @example
+     *   table.rows.mapTop()
+     *   === [['header', 'cellValue']]
+     */
+    mapByTop (): Array<Map<string, string>>;
+
+    /**
+     * @example
+     *   table.rows.mapLeft()
+     *   === [['firstColumnCellValue', 'cellValue']]
+     */
+    mapByLeft (): Array<Map<string, string>>;
+
+  };
+
+  /**
+   * @example
+   *   table.dict().get(someKey)
+   *   === ['a', 'b', 'c']
+   */
+  dict: {
+    (): Map<string, string[]>;
+
+    /**
+     * @example
+     *   table.dict.byTop().get(someKey)
+     *   === ['a', 'b', 'c']
+     */
+    byTop (): Map<string, string[]>;
+
+    /**
+     * @example
+     *   table.dict.byLeft().get(someKeyFromFirstColumnCell)
+     *   === ['a', 'b', 'c']
+     */
+    byLeft (): Map<string, string[]>;
+  };
+
+  /**
+   * @example
+   *   table.headers()
+   *   === ['type', 'name', 'size']
+   */
+  headers (): string[];
+}
 
 export interface IGherkinFeatureMappings<Ge = any> {
   match: IMatch;
@@ -31,11 +95,6 @@ export interface IScenarioOutlineBuilder {
   steps: IScenarioOutlineFluid;
   scenarioOutline: IGherkinScenarioOutline;
 }
-
-export type IMatch = string | RegExp;
-
-export type IGherkinCollectionItemShape = IGherkinAstEntity | IGherkinAstStep;
-export type IGherkinCollectionItemIndex = IGherkinAstEntity & IGherkinAstStep;
 
 export type IGherkinOperationStore<
   G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
