@@ -67,12 +67,71 @@
               "column": 5
             },
             "keyword": "Given ",
-            "text": "I have numbers 3 and 4"
+            "text": "I have the following numbers:",
+            "argument": {
+              "type": "DataTable",
+              "location": {
+                "line": 15,
+                "column": 7
+              },
+              "rows": [
+                {
+                  "type": "TableRow",
+                  "location": {
+                    "line": 15,
+                    "column": 7
+                  },
+                  "cells": [
+                    {
+                      "type": "TableCell",
+                      "location": {
+                        "line": 15,
+                        "column": 9
+                      },
+                      "value": "a"
+                    },
+                    {
+                      "type": "TableCell",
+                      "location": {
+                        "line": 15,
+                        "column": 13
+                      },
+                      "value": "3"
+                    }
+                  ]
+                },
+                {
+                  "type": "TableRow",
+                  "location": {
+                    "line": 16,
+                    "column": 7
+                  },
+                  "cells": [
+                    {
+                      "type": "TableCell",
+                      "location": {
+                        "line": 16,
+                        "column": 9
+                      },
+                      "value": "b"
+                    },
+                    {
+                      "type": "TableCell",
+                      "location": {
+                        "line": 16,
+                        "column": 13
+                      },
+                      "value": "4"
+                    }
+                  ]
+                }
+              ]
+            }
           },
           {
             "type": "Step",
             "location": {
-              "line": 15,
+              "line": 17,
               "column": 5
             },
             "keyword": "When ",
@@ -81,11 +140,19 @@
           {
             "type": "Step",
             "location": {
-              "line": 16,
+              "line": 18,
               "column": 5
             },
             "keyword": "Then ",
-            "text": "I get 7"
+            "text": "I get",
+            "argument": {
+              "type": "DocString",
+              "location": {
+                "line": 19,
+                "column": 7
+              },
+              "content": "7"
+            }
           }
         ]
       },
@@ -95,14 +162,14 @@
           {
             "type": "Tag",
             "location": {
-              "line": 18,
+              "line": 23,
               "column": 3
             },
             "name": "@multiplication"
           }
         ],
         "location": {
-          "line": 20,
+          "line": 25,
           "column": 3
         },
         "keyword": "Scenario",
@@ -111,7 +178,7 @@
           {
             "type": "Step",
             "location": {
-              "line": 21,
+              "line": 26,
               "column": 5
             },
             "keyword": "Given ",
@@ -120,7 +187,7 @@
           {
             "type": "Step",
             "location": {
-              "line": 22,
+              "line": 27,
               "column": 5
             },
             "keyword": "When ",
@@ -129,7 +196,7 @@
           {
             "type": "Step",
             "location": {
-              "line": 23,
+              "line": 28,
               "column": 5
             },
             "keyword": "Then ",
@@ -143,23 +210,23 @@
           {
             "type": "Tag",
             "location": {
-              "line": 25,
+              "line": 30,
               "column": 3
             },
             "name": "@substraction"
           }
         ],
         "location": {
-          "line": 26,
+          "line": 31,
           "column": 3
         },
         "keyword": "Scenario Outline",
-        "name": "A simple substraction test",
+        "name": "A simple subtraction test",
         "steps": [
           {
             "type": "Step",
             "location": {
-              "line": 27,
+              "line": 32,
               "column": 5
             },
             "keyword": "Given ",
@@ -168,7 +235,7 @@
           {
             "type": "Step",
             "location": {
-              "line": 28,
+              "line": 33,
               "column": 5
             },
             "keyword": "When ",
@@ -177,7 +244,7 @@
           {
             "type": "Step",
             "location": {
-              "line": 29,
+              "line": 34,
               "column": 5
             },
             "keyword": "Then ",
@@ -189,7 +256,7 @@
             "type": "Examples",
             "tags": [],
             "location": {
-              "line": 31,
+              "line": 36,
               "column": 5
             },
             "keyword": "Examples",
@@ -197,14 +264,14 @@
             "tableHeader": {
               "type": "TableRow",
               "location": {
-                "line": 32,
+                "line": 37,
                 "column": 7
               },
               "cells": [
                 {
                   "type": "TableCell",
                   "location": {
-                    "line": 32,
+                    "line": 37,
                     "column": 9
                   },
                   "value": "num1"
@@ -212,7 +279,7 @@
                 {
                   "type": "TableCell",
                   "location": {
-                    "line": 32,
+                    "line": 37,
                     "column": 16
                   },
                   "value": "num2"
@@ -220,7 +287,7 @@
                 {
                   "type": "TableCell",
                   "location": {
-                    "line": 32,
+                    "line": 37,
                     "column": 23
                   },
                   "value": "total"
@@ -231,14 +298,14 @@
               {
                 "type": "TableRow",
                 "location": {
-                  "line": 33,
+                  "line": 38,
                   "column": 7
                 },
                 "cells": [
                   {
                     "type": "TableCell",
                     "location": {
-                      "line": 33,
+                      "line": 38,
                       "column": 9
                     },
                     "value": "3"
@@ -246,7 +313,7 @@
                   {
                     "type": "TableCell",
                     "location": {
-                      "line": 33,
+                      "line": 38,
                       "column": 16
                     },
                     "value": "4"
@@ -254,7 +321,7 @@
                   {
                     "type": "TableCell",
                     "location": {
-                      "line": 33,
+                      "line": 38,
                       "column": 23
                     },
                     "value": "-1"
@@ -264,14 +331,14 @@
               {
                 "type": "TableRow",
                 "location": {
-                  "line": 34,
+                  "line": 39,
                   "column": 7
                 },
                 "cells": [
                   {
                     "type": "TableCell",
                     "location": {
-                      "line": 34,
+                      "line": 39,
                       "column": 9
                     },
                     "value": "10"
@@ -279,7 +346,7 @@
                   {
                     "type": "TableCell",
                     "location": {
-                      "line": 34,
+                      "line": 39,
                       "column": 16
                     },
                     "value": "2"
@@ -287,7 +354,7 @@
                   {
                     "type": "TableCell",
                     "location": {
-                      "line": 34,
+                      "line": 39,
                       "column": 23
                     },
                     "value": "8"
@@ -320,7 +387,7 @@
     {
       "type": "Comment",
       "location": {
-        "line": 19,
+        "line": 24,
         "column": 1
       },
       "text": "  # Foo"

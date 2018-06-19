@@ -43,6 +43,7 @@ export type IGherkinOperationStore<
   fn: IFluidFnCallback,
   name: string;
   gherkin: G;
+  params: any[], // TODO: this needs to be array of string/int/data table
 }>;
 
 export interface IGherkinScenarioBase {

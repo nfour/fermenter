@@ -1,7 +1,9 @@
 import * as c from 'colors';
+import * as expression from 'cucumber-expressions';
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, resolve } from 'path';
-import { IGherkinAstCollections, IGherkinCollectionItemIndex, IMatch } from './types';
+import { IGherkinAstCollections, IGherkinAstStep, IGherkinCollectionItemIndex, IMatch } from './types';
+import { IExpressionMatcher } from './types/matcher';
 
 export function readInputFile ({ filePath, testFilePath }: { filePath: string, testFilePath?: string }) {
   if (isAbsolute(filePath)) {
@@ -23,6 +25,7 @@ export interface IGherkinMatchCollectionParams {
 export function matchInGherkinCollection<
   In extends IGherkinAstCollections = IGherkinAstCollections
 > ({ type, match, collection, matchProperty }: IGherkinMatchCollectionParams): In {
+
   const filteredByType = <IGherkinCollectionItemIndex[]> collection
     .filter((child) => child.type === type);
 
@@ -44,8 +47,36 @@ export function matchInGherkinCollection<
   return matchingChild as In;
 }
 
-export function matchGherkinText (subject: string, match: IMatch) {
-  // TODO: use expression parser here?
+function matchGherkinText (subject: string, match: IMatch): boolean {
+  const matcher = getExpressionMatcher(match);
 
-  return !!(subject.match(match) || []).length;
+  return !!(subject.match(matcher.regexp) || []).length;
+}
+
+function getExpressionMatcher (match: IMatch, registry?: any): IExpressionMatcher {
+  if (!registry) {
+    registry = new expression.ParameterTypeRegistry();
+  }
+
+  return (typeof match === 'string') ?
+    new expression.CucumberExpression(match, registry) :
+    new expression.RegularExpression(match, registry);
+}
+
+export function getStepParameters (step: IGherkinAstStep, match: IMatch): any[] {
+  const { argument } = step;
+
+  const matcher = getExpressionMatcher(match);
+  const matches = matcher.match(step.text);
+  const params: any[] = matches ? matches.map((arg) => arg.getValue()) : [];
+
+  if (argument && argument.type) {
+    if (argument.type === 'DocString') {
+      params.push(argument.content);
+    } else if (argument.type === 'DataTable') {
+      params.push(argument.rows);
+    }
+  }
+
+  return params;
 }
