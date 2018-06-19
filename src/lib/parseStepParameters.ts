@@ -21,15 +21,31 @@ function parseStepArgument (argument: IGherkinAstStep['argument']) {
   if (!argument) { return; }
 
   if (argument.type === 'DataTable') {
-    return createGherkinTable(argument.rows);
+    return GherkinTableReader(argument.rows);
   }
 
   if (argument.type === 'DocString') {
     return argument.content;
   }
 }
-
-function createGherkinTable ({ rows: inputRows }: {
+/**
+ * From a feature files rows:
+ *
+ *   | a | b | c |
+ *   | 1 | 2 | 1 |
+ *   | 3 | 4 | 3 |
+ *
+ * which becomes input as `IGherkinAstTableRows[]`
+ *
+ * @example
+ *
+ *   const table = GherkinTableReader({ rows })
+ *
+ *   [ ...table.dict.byTop() ]
+ *   === [['a', '1']]
+ *
+ */
+function GherkinTableReader ({ rows: inputRows }: {
   rows: IGherkinAstTableRow[],
 }): IGherkinTableParam {
 
@@ -38,10 +54,14 @@ function createGherkinTable ({ rows: inputRows }: {
   });
 
   dict.byLeft = () => {
-    const indexCells = inputRows.map((row) => row.cells[0].value);
+    const leftCells = inputRows.map((row) => row.cells[0].value);
 
     const mapTuples = inputRows.map((row, index) => {
-      return [row.];
+      /** The cells, after the left-most */
+      const valueCells = row.cells.slice(1)
+        .map(({ value }) => value);
+
+      return [leftCells[index], valueCells];
     });
   };
 

@@ -24,19 +24,25 @@ export interface IGherkinTableParam {
     (): string[][];
 
     /**
+     * With Gherkin:
+     * ```
+     * | a | b |
+     * | 1 | 2 |
+     * | 3 | 4 |
+     * ```
+     *
      * @example
-     *   table.rows.mapTop()
-     *   === [['header', 'cellValue']]
+     *
+     * table.rows.mapHead()
+     *
+     * // returns
+     *
+     * [
+     *   [ ['a', '1'], ['b', '2'] ],
+     *   [ ['a', '3'], ['b', '4'] ],
+     * ]
      */
-    mapByTop (): Array<Map<string, string>>;
-
-    /**
-     * @example
-     *   table.rows.mapLeft()
-     *   === [['firstColumnCellValue', 'cellValue']]
-     */
-    mapByLeft (): Array<Map<string, string>>;
-
+    mapHead (): Array<Map<string, string>>;
   };
 
   /**
@@ -49,17 +55,10 @@ export interface IGherkinTableParam {
 
     /**
      * @example
-     *   table.dict.byTop().get(someKey)
-     *   === ['a', 'b', 'c']
-     */
-    byTop (): Map<string, string[]>;
-
-    /**
-     * @example
      *   table.dict.byLeft().get(someKeyFromFirstColumnCell)
      *   === ['a', 'b', 'c']
      */
-    byLeft (): Map<string, string[]>;
+    left (): Map<string, string[]>;
   };
 
   /**
