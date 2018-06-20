@@ -1,6 +1,6 @@
 import { executeFeature } from './executeFeature';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
-import { IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
+import { IGherkinAstFeature, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
 
 export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
@@ -13,12 +13,15 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
 
   const featureTitle = extractFeatureTestTitle(ast.feature);
 
-  return describe(featureTitle, async () => {
+  describe(featureTitle, async () => {
     configure(methods);
 
     console.dir(featureBuilder.feature, { depth: 10, colors: true });
 
     const { Background, ScenarioOutlines, Scenarios } = featureBuilder.feature;
+
+    Background;
+    ScenarioOutlines;
 
     Scenarios.forEach(describeScenario);
 

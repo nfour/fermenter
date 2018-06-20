@@ -75,13 +75,13 @@ export interface IGherkinAstStep {
   location: IGherkinAstLocation;
   keyword: string;
   text: string;
-  argument: undefined | IGherkinAstDocString | IGherkinAstDataTable;
+  argument?: IGherkinAstDocString | IGherkinAstDataTable;
 }
 
 export interface IGherkinAstExamples extends IGherkinAstEntity {
   type: 'Examples';
-  tableHeader: IGherkinAstTableRow;
-  tableBody: IGherkinAstTableRow;
+  tableHeader: IGherkinAstTableRow[];
+  tableBody: IGherkinAstTableRow[];
 }
 
 export interface IGherkinAstTableRow {
