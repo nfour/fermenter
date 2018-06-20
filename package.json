@@ -3,8 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "test": "jest src/tests/calculator.framework.test.ts",
-    "cucumber": "cucumber-js src/**/*.feature --require-module ts-node/register --require src/**/*.cucumber.ts"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
