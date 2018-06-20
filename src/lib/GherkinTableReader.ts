@@ -1,17 +1,17 @@
 import { IGherkinAstTableRow, IGherkinTableParam } from '../types';
 
 /**
- * A gherkin feature file's rows:
+ * A gherkin feature file's table:
  *
  *   | a | b |
  *   | 1 | 2 |
- *   | 3 | 4 |
  *
  * Becomes `IGherkinAstTableRows[]`
  *
  * @example
  *
- * const table = GherkinTableReader({ rows })
+ * const table = GherkinTableReader({ rows });
+ * table.dict();
  */
 export function GherkinTableReader ({ rows: inputRows = [] }: {
   rows: IGherkinAstTableRow[],

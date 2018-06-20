@@ -1,15 +1,21 @@
-import { IGherkinAstStep, IMatch } from '../types';
+import { IGherkinAstExamples, IGherkinAstStep, IMatch } from '../types';
 import { ExpressionMatcher } from './ExpressionMatcher';
 import { GherkinTableReader } from './GherkinTableReader';
 
-export function parseStepParameters (step: IGherkinAstStep, match: IMatch) {
-  const { argument, text } = step;
+export function parseStepParameters (stepOrExamples: IGherkinAstStep | IGherkinAstExamples, match: IMatch) {
+  const text = stepOrExamples.type === 'Step'
+    ? stepOrExamples.text
+    : stepOrExamples.name;
 
   const matcher = ExpressionMatcher(match);
   const matches = matcher.match(text) || [];
-
   const simpleParams = matches.map((arg) => arg.getValue());
-  const argumentParam = parseStepArgument(argument);
+
+  const paramSource = stepOrExamples.type === 'Step'
+    ? stepOrExamples.argument
+    : stepOrExamples;
+
+  const argumentParam = parseGherkinForParam(paramSource);
 
   const params = argumentParam
     ? [...simpleParams, argumentParam]
@@ -18,14 +24,23 @@ export function parseStepParameters (step: IGherkinAstStep, match: IMatch) {
   return params;
 }
 
-function parseStepArgument (argument: IGherkinAstStep['argument']) {
-  if (!argument) { return; }
+function parseGherkinForParam (arg: IGherkinAstStep['argument'] | IGherkinAstExamples) {
+  if (!arg) { return; }
 
-  if (argument.type === 'DataTable') {
-    return GherkinTableReader({ rows: argument.rows });
+  if (arg.type === 'DataTable') {
+    return GherkinTableReader({ rows: arg.rows });
   }
 
-  if (argument.type === 'DocString') {
-    return argument.content;
+  if (arg.type === 'Examples') {
+    const rows = [
+      ...arg.tableHeader || [],
+      ...arg.tableBody || [],
+    ];
+
+    return GherkinTableReader({ rows });
+  }
+
+  if (arg.type === 'DocString') {
+    return arg.content;
   }
 }

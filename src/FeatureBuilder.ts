@@ -93,8 +93,8 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
 
     store.set(match, {
       fn,
-      name: gherkin[collectionParams.matchProperty],
       gherkin,
+      name: gherkin[collectionParams.matchProperty],
       params: parseStepParameters(gherkin, match),
     });
 

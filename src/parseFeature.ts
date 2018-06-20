@@ -1,7 +1,7 @@
 import * as Gherkin from 'gherkin';
 import { FeatureBuilder } from './FeatureBuilder';
-import { IGherkinAst } from './types';
 import { readInputFile } from './lib/readInputFile';
+import { IGherkinAst } from './types';
 
 export interface IGherkinParserOutput {
   ast: IGherkinAst;
