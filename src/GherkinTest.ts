@@ -14,6 +14,8 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: I
   const featureTitle = extractFeatureTestTitle(ast.feature);
 
   describe(featureTitle, async () => {
+    // TODO: in the calculator test, ScenarioOutlines definitions are failing due to
+    // unmatched step defs as we cant parse <>
     configure(methods);
 
     console.dir(featureBuilder.feature, { depth: 10, colors: true });
