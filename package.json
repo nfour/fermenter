@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "lint": "tslint --project tsconfig.json"
   },
   "repository": {
     "type": "git",
