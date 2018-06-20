@@ -47,7 +47,7 @@ export interface IGherkinTableParam {
      *
      * @example
      *
-     * table.rows.mapHead()
+     * table.rows.mapByTop()
      *
      * // returns an array of Map's, mapped to the header as keys
      *
@@ -56,7 +56,7 @@ export interface IGherkinTableParam {
      *   [ ['a', '3'], ['b', '4'] ],
      * ]
      */
-    mapHead (): Array<Map<string, string>>;
+    mapByTop (): Array<Map<string, string>>;
   };
 
   /**
@@ -100,6 +100,27 @@ export interface IGherkinTableParam {
      *
      */
     left (): Map<string, string[]>;
+
+    /**
+     * With Gherkin:
+     * ```
+     * |   | x | y |
+     * | a | 1 | 3 |
+     * | b | 2 | 4 |
+     * ```
+     * @example
+     *
+     * [ ...table.dict.matrix() ]
+     *
+     * // returns a Map, mapped to the left column as keys into a Map of head column keys
+     *
+     * [
+     *   [ 'a', [[ 'x', '1' ], ['y', '3']] ],
+     *   [ 'b', [[ 'x', '2' ], ['y', '4']] ],
+     * ]
+     *
+     */
+    matrix (): Map<string, Map<string, string>>
   };
 
   /**
