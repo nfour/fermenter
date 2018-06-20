@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GherkinTableReader table.dict() from a headerless table:
+| 1 | 2 |
+| 3 | 4 |
+ 1`] = `
+Map {
+  "1" => Array [
+    "3",
+  ],
+  "2" => Array [
+    "4",
+  ],
+}
+`;
+
+exports[`GherkinTableReader table.dict() from a table with a header:
+| a | b |
+| 1 | 3 |
+| 2 | 4 |
+ 1`] = `
+Map {
+  "a" => Array [
+    "1",
+    "2",
+  ],
+  "b" => Array [
+    "3",
+    "4",
+  ],
+}
+`;
+
+exports[`GherkinTableReader table.dict.left() from a table with a header on the left:
+| a | 1 | 2 |
+| b | 3 | 4 |
+ 1`] = `
+Map {
+  "a" => Array [
+    "1",
+    "2",
+  ],
+  "b" => Array [
+    "3",
+    "4",
+  ],
+}
+`;
+
+exports[`GherkinTableReader table.dict.matrix() from a table with a header on the left and the top:
+|   | x | y |
+| a | 1 | 2 |
+| b | 3 | 4 |
+ 1`] = `
+Map {
+  "a" => Map {
+    "x" => "1",
+    "y" => "3",
+  },
+  "b" => Map {
+    "x" => "2",
+    "y" => "4",
+  },
+}
+`;
+
+exports[`GherkinTableReader table.rows() from a headerless table:
+| 1 | 2 |
+| 3 | 4 |
+ 1`] = `
+Array [
+  Array [
+    "1",
+    "2",
+  ],
+  Array [
+    "3",
+    "4",
+  ],
+]
+`;
+
+exports[`GherkinTableReader table.rows.mapByTop() from a table with a header:
+| a | b |
+| 1 | 3 |
+| 2 | 4 |
+ 1`] = `
+Array [
+  Map {
+    "a" => "1",
+    "b" => "3",
+  },
+  Map {
+    "a" => "2",
+    "b" => "4",
+  },
+]
+`;

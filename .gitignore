@@ -4,4 +4,5 @@ node_modules
 build
 logs
 .DS_Store
+.coverage
 
