@@ -6,6 +6,7 @@ export function executeFeature ({ featureBuilder, ast }: {
   ast: IGherkinAst;
 }) {
   const reader = new GherkinAstReader(ast);
+  reader;
 
 }
 
