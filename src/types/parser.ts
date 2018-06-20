@@ -1,8 +1,19 @@
 import {
-  IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline,
-  IScenarioFluid, IScenarioOutlineFluid,
+  IBackgroundFluid,
+  IFluidFnCallback,
+  IGherkinAstScenario,
+  IGherkinAstScenarioOutline,
+  IScenarioFluid,
+  IScenarioOutlineFluid,
 } from '.';
-import { IGherkinAstBackground, IGherkinAstEntity, IGherkinAstExamples, IGherkinAstFeature, IGherkinAstStep, IGherkinAstTableRow } from './ast';
+import {
+  IGherkinAstBackground,
+  IGherkinAstEntity,
+  IGherkinAstExamples,
+  IGherkinAstFeature,
+  IGherkinAstStep,
+  IGherkinAstTableRow,
+} from './ast';
 
 // tslint:disable-next-line
 
