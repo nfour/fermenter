@@ -2,7 +2,7 @@ import { IGherkinAstExamples, IGherkinAstStep, IMatch } from '../types';
 import { ExpressionMatcher } from './ExpressionMatcher';
 import { GherkinTableReader } from './GherkinTableReader';
 
-export function parseStepParameters (stepOrExamples: IGherkinAstStep | IGherkinAstExamples, match: IMatch) {
+export function parseGherkinParameters (stepOrExamples: IGherkinAstStep | IGherkinAstExamples, match: IMatch) {
   const text = stepOrExamples.type === 'Step'
     ? stepOrExamples.text
     : stepOrExamples.name;
@@ -15,7 +15,7 @@ export function parseStepParameters (stepOrExamples: IGherkinAstStep | IGherkinA
     ? stepOrExamples.argument
     : stepOrExamples;
 
-  const argumentParam = parseGherkinForParam(paramSource);
+  const argumentParam = parseGherkinForParameter(paramSource);
 
   const params = argumentParam
     ? [...simpleParams, argumentParam]
@@ -24,7 +24,7 @@ export function parseStepParameters (stepOrExamples: IGherkinAstStep | IGherkinA
   return params;
 }
 
-function parseGherkinForParam (arg: IGherkinAstStep['argument'] | IGherkinAstExamples) {
+function parseGherkinForParameter (arg: IGherkinAstStep['argument'] | IGherkinAstExamples) {
   if (!arg) { return; }
 
   if (arg.type === 'DataTable') {
