@@ -28,53 +28,54 @@ function parseStepArgument (argument: IGherkinAstStep['argument']) {
     return argument.content;
   }
 }
+
 /**
- * From a feature files rows:
+ * A gherkin feature file's rows:
  *
- *   | a | b | c |
- *   | 1 | 2 | 1 |
- *   | 3 | 4 | 3 |
+ *   | a | b |
+ *   | 1 | 2 |
+ *   | 3 | 4 |
  *
- * which becomes input as `IGherkinAstTableRows[]`
+ * Becomes `IGherkinAstTableRows[]`
  *
  * @example
  *
- *   const table = GherkinTableReader({ rows })
- *
- *   [ ...table.dict.byTop() ]
- *   === [['a', '1']]
- *
+ * const table = GherkinTableReader({ rows })
  */
-function GherkinTableReader ({ rows: inputRows }: {
+function GherkinTableReader ({ rows: inputRows = [] }: {
   rows: IGherkinAstTableRow[],
 }): IGherkinTableParam {
 
   const dict = <IGherkinTableParam['dict']> (() => {
-    return ;
+    const keys = headers();
+
+    // TODO: continueeeeeeeeeeeeeeeeeeeeee
+    // TODO: continueeeeeeeeeeeeeeeeeeeeee
+    // TODO: continueeeeeeeeeeeeeeeeeeeeee
+    // TODO: continueeeeeeeeeeeeeeeeeeeeee
+    // TODO: continueeeeeeeeeeeeeeeeeeeeee
+    // TODO: continueeeeeeeeeeeeeeeeeeeeee
+    // TODO: continueeeeeeeeeeeeeeeeeeeeee
   });
 
-  dict.byLeft = () => {
-    const leftCells = inputRows.map((row) => row.cells[0].value);
+  dict.left = () => {
+    const keys = inputRows.map((row) => row.cells[0].value);
 
     const mapTuples = inputRows.map((row, index) => {
       /** The cells, after the left-most */
       const valueCells = row.cells.slice(1)
         .map(({ value }) => value);
 
-      return [leftCells[index], valueCells];
+      return [keys[index], valueCells];
     });
   };
 
-  dict.byTop = () => {
-
-  };
-
   const rows = <IGherkinTableParam['rows']> (() => {
-
+    return inputRows.map(({ cells }) => cells.map(({ value }) => value));
   });
 
   const headers = <IGherkinTableParam['headers']> (() => {
-
+    return inputRows[0].cells.map(({ value }) => value);
   });
 
   return {

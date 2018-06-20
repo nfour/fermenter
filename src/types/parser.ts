@@ -16,15 +16,29 @@ export type IGherkinParams = string | number | IGherkinAstTableRow;
 export interface IGherkinTableParam {
 
   /**
+   * With Gherkin:
+   * ```
+   * | a | b |
+   * | 1 | 2 |
+   * ```
    * @example
-   *   table.rows()
-   *   === ['a', 'b']
+   *
+   * [ ...table.rows() ]
+   *
+   * // returns
+   *
+   * [
+   *   [ 'a', 'b' ],
+   *   [ '1', '2' ],
+   * ]
+   *
    */
   rows: {
     (): string[][];
 
     /**
      * With Gherkin:
+     *
      * ```
      * | a | b |
      * | 1 | 2 |
@@ -35,7 +49,7 @@ export interface IGherkinTableParam {
      *
      * table.rows.mapHead()
      *
-     * // returns
+     * // returns an array of Map's, mapped to the header as keys
      *
      * [
      *   [ ['a', '1'], ['b', '2'] ],
@@ -46,25 +60,62 @@ export interface IGherkinTableParam {
   };
 
   /**
+   * With Gherkin:
+   * ```
+   * | a | b |
+   * | 1 | 2 |
+   * | 1 | 2 |
+   * ```
    * @example
-   *   table.dict().get(someKey)
-   *   === ['a', 'b', 'c']
+   *
+   * [ ...table.dict() ]
+   *
+   * // returns a Map, mapped to the header as keys
+   *
+   * [
+   *   [ 'a', ['1', '1'] ],
+   *   [ 'b', ['2', '2'] ],
+   * ]
+   *
    */
   dict: {
     (): Map<string, string[]>;
 
     /**
+     * With Gherkin:
+     * ```
+     * | a | 1 | 3 |
+     * | b | 2 | 4 |
+     * ```
      * @example
-     *   table.dict.byLeft().get(someKeyFromFirstColumnCell)
-     *   === ['a', 'b', 'c']
+     *
+     * [ ...table.dict.left() ]
+     *
+     * // returns a Map, mapped to the left column as keys
+     *
+     * [
+     *   [ 'a', ['1', '3'] ],
+     *   [ 'b', ['2', '4'] ],
+     * ]
+     *
      */
     left (): Map<string, string[]>;
   };
 
   /**
+   * With Gherkin:
+   * ```
+   * | a | b |
+   * | 1 | 2 |
+   * | 1 | 2 |
+   * ```
    * @example
-   *   table.headers()
-   *   === ['type', 'name', 'size']
+   *
+   * [ ...table.headers() ]
+   *
+   * // returns
+   *
+   * ['a', 'b']
    */
   headers (): string[];
 }
