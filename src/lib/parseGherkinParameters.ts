@@ -1,4 +1,4 @@
-import { IGherkinAstExamples, IGherkinAstStep, IMatch } from '../types';
+import { IGherkinAstExamples, IGherkinAstStep, IGherkinParameter, IMatch } from '../types';
 import { ExpressionMatcher } from './ExpressionMatcher';
 import { GherkinTableReader } from './GherkinTableReader';
 
@@ -24,7 +24,7 @@ export function parseGherkinParameters (stepOrExamples: IGherkinAstStep | IGherk
   return params;
 }
 
-function parseGherkinForParameter (arg: IGherkinAstStep['argument'] | IGherkinAstExamples) {
+function parseGherkinForParameter (arg: IGherkinAstStep['argument'] | IGherkinAstExamples): undefined | IGherkinParameter {
   if (!arg) { return; }
 
   if (arg.type === 'DataTable') {

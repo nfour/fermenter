@@ -178,13 +178,15 @@ export interface IScenarioOutlineBuilder {
   scenarioOutline: IGherkinScenarioOutline;
 }
 
+export type IGherkinParameter = string | number | IGherkinTableParam;
+
 export type IGherkinOperationStore<
   G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
 > = Map<IMatch, {
   fn: IFluidFnCallback,
   name: string;
   gherkin: G;
-  params: any[], // TODO: this needs to be array of string/int/data table
+  params: IGherkinParameter[]
 }>;
 
 export interface IGherkinScenarioBase {
