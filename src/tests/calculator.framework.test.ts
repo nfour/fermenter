@@ -56,6 +56,7 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
       return { ...state, a: parseInt(a, 10), b: parseInt(b, 10) };
     })
     .When('I add the numbers', addNumbers)
+    .And('I do nothing', (state) => state)
     .Then('I get', (state, text: string) => {
       expect(parseInt(text, 10)).toBe(state.c);
       return state;
@@ -67,7 +68,7 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
     .Then('I get {int}', checkResult);
 
   ScenarioOutline('A simple subtraction test')
-    .Given('I have numbers {int} and {int}', getNumbers)
+    .Given('I have numbers <num1> and <num2>', getNumbers)
     .When('I subtract the numbers', addNumbers)
-    .Then('I get {int}', checkResult);
+    .Then('I get <result>', checkResult);
 });

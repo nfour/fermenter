@@ -1,9 +1,13 @@
+import { writeJsonSync } from 'fs-extra';
+import { join } from 'path';
 import { executeFeature } from './executeFeature';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
 import { IGherkinAstFeature, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
 
 export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
+
+  writeJsonSync(join(__dirname, '../reference/ast.json'), ast, { spaces: 2 });
 
   const methods = <IGherkinMethods> {
     Scenario: featureBuilder.Scenario(),

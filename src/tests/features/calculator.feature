@@ -15,6 +15,7 @@ Feature: using feature files in jest
       | a | 3 |
       | b | 4 |
     When I add the numbers
+    And I do nothing
     Then I get
       """
       7

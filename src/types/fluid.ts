@@ -54,7 +54,7 @@ export interface IGivenFluid {
 
 export interface IWhenFluid {
   Then: IFluidFn<IAndFluid>;
-  And: IFluidFn<IAndFluid>;
+  And: IFluidFn<IWhenFluid>;
 }
 
 export type IFluidFn<Fluid> = (key: RegExp|string, fn: IFluidFnCallback) => Fluid;

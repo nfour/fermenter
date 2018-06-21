@@ -143,12 +143,21 @@
               "line": 18,
               "column": 5
             },
+            "keyword": "And ",
+            "text": "I do nothing"
+          },
+          {
+            "type": "Step",
+            "location": {
+              "line": 19,
+              "column": 5
+            },
             "keyword": "Then ",
             "text": "I get",
             "argument": {
               "type": "DocString",
               "location": {
-                "line": 19,
+                "line": 20,
                 "column": 7
               },
               "content": "7"
@@ -162,14 +171,14 @@
           {
             "type": "Tag",
             "location": {
-              "line": 23,
+              "line": 24,
               "column": 3
             },
             "name": "@multiplication"
           }
         ],
         "location": {
-          "line": 25,
+          "line": 26,
           "column": 3
         },
         "keyword": "Scenario",
@@ -178,7 +187,7 @@
           {
             "type": "Step",
             "location": {
-              "line": 26,
+              "line": 27,
               "column": 5
             },
             "keyword": "Given ",
@@ -187,7 +196,7 @@
           {
             "type": "Step",
             "location": {
-              "line": 27,
+              "line": 28,
               "column": 5
             },
             "keyword": "When ",
@@ -196,7 +205,7 @@
           {
             "type": "Step",
             "location": {
-              "line": 28,
+              "line": 29,
               "column": 5
             },
             "keyword": "Then ",
@@ -210,14 +219,14 @@
           {
             "type": "Tag",
             "location": {
-              "line": 30,
+              "line": 31,
               "column": 3
             },
             "name": "@substraction"
           }
         ],
         "location": {
-          "line": 31,
+          "line": 32,
           "column": 3
         },
         "keyword": "Scenario Outline",
@@ -226,7 +235,7 @@
           {
             "type": "Step",
             "location": {
-              "line": 32,
+              "line": 33,
               "column": 5
             },
             "keyword": "Given ",
@@ -235,7 +244,7 @@
           {
             "type": "Step",
             "location": {
-              "line": 33,
+              "line": 34,
               "column": 5
             },
             "keyword": "When ",
@@ -244,7 +253,7 @@
           {
             "type": "Step",
             "location": {
-              "line": 34,
+              "line": 35,
               "column": 5
             },
             "keyword": "Then ",
@@ -256,7 +265,7 @@
             "type": "Examples",
             "tags": [],
             "location": {
-              "line": 36,
+              "line": 37,
               "column": 5
             },
             "keyword": "Examples",
@@ -264,14 +273,14 @@
             "tableHeader": {
               "type": "TableRow",
               "location": {
-                "line": 37,
+                "line": 38,
                 "column": 7
               },
               "cells": [
                 {
                   "type": "TableCell",
                   "location": {
-                    "line": 37,
+                    "line": 38,
                     "column": 9
                   },
                   "value": "num1"
@@ -279,7 +288,7 @@
                 {
                   "type": "TableCell",
                   "location": {
-                    "line": 37,
+                    "line": 38,
                     "column": 16
                   },
                   "value": "num2"
@@ -287,7 +296,7 @@
                 {
                   "type": "TableCell",
                   "location": {
-                    "line": 37,
+                    "line": 38,
                     "column": 23
                   },
                   "value": "total"
@@ -295,39 +304,6 @@
               ]
             },
             "tableBody": [
-              {
-                "type": "TableRow",
-                "location": {
-                  "line": 38,
-                  "column": 7
-                },
-                "cells": [
-                  {
-                    "type": "TableCell",
-                    "location": {
-                      "line": 38,
-                      "column": 9
-                    },
-                    "value": "3"
-                  },
-                  {
-                    "type": "TableCell",
-                    "location": {
-                      "line": 38,
-                      "column": 16
-                    },
-                    "value": "4"
-                  },
-                  {
-                    "type": "TableCell",
-                    "location": {
-                      "line": 38,
-                      "column": 23
-                    },
-                    "value": "-1"
-                  }
-                ]
-              },
               {
                 "type": "TableRow",
                 "location": {
@@ -341,7 +317,7 @@
                       "line": 39,
                       "column": 9
                     },
-                    "value": "10"
+                    "value": "3"
                   },
                   {
                     "type": "TableCell",
@@ -349,12 +325,45 @@
                       "line": 39,
                       "column": 16
                     },
-                    "value": "2"
+                    "value": "4"
                   },
                   {
                     "type": "TableCell",
                     "location": {
                       "line": 39,
+                      "column": 23
+                    },
+                    "value": "-1"
+                  }
+                ]
+              },
+              {
+                "type": "TableRow",
+                "location": {
+                  "line": 40,
+                  "column": 7
+                },
+                "cells": [
+                  {
+                    "type": "TableCell",
+                    "location": {
+                      "line": 40,
+                      "column": 9
+                    },
+                    "value": "10"
+                  },
+                  {
+                    "type": "TableCell",
+                    "location": {
+                      "line": 40,
+                      "column": 16
+                    },
+                    "value": "2"
+                  },
+                  {
+                    "type": "TableCell",
+                    "location": {
+                      "line": 40,
                       "column": 23
                     },
                     "value": "8"
@@ -387,7 +396,7 @@
     {
       "type": "Comment",
       "location": {
-        "line": 24,
+        "line": 25,
         "column": 1
       },
       "text": "  # Foo"
