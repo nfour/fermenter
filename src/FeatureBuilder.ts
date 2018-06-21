@@ -191,6 +191,8 @@ function ScenarioOutlineFluidBuilder (match: IMatch, gherkin: IGherkinScenarioOu
       steps: scenarioSteps,
     });
 
+    // TODO: this is getting ahead of yourself
+    // need to wait for the outline steps to be called, then use them to structure the Scenario
     function runScenarioFluidAgainstSteps (methods: IScenarioFluid, steps: IGherkinAstStep[]) {
       outlineSteps.forEach(({ keyword, text }) => {
         const methodKey = Object.keys(methods)
