@@ -157,11 +157,9 @@ export interface IGherkinFeatureMappings<Ge = any> {
   gherkin: Ge;
 }
 
-export interface IScenarioBuilder<
-  S extends IGherkinScenario | IGherkinScenarioOutline = IGherkinScenario
-> {
+export interface IScenarioBuilder {
   steps: IScenarioFluid;
-  scenario: S;
+  scenario: IGherkinScenario;
 }
 
 export interface IBackgroundBuilder {
@@ -203,7 +201,7 @@ export interface IGherkinScenario extends IGherkinScenarioBase {
 
 export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
   gherkin: IGherkinAstScenarioOutline;
-  Examples: IGherkinOperationStore<IGherkinAstExamples>;
+  scenarios: IGherkinScenario;
 }
 
 export interface IGherkinBackground {

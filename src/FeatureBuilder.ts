@@ -1,11 +1,14 @@
+import * as Interpolator from 'trans-interpolator';
+import { GherkinTableReader } from './lib/GherkinTableReader';
 import { IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib/matchInGherkinCollection';
 import { parseGherkinParameters } from './lib/parseGherkinParameters';
+import { mapToObject } from './lib/utils';
 import {
   IAndFluid, IBackgroundBuilder, IFluidFn, IGherkinAst,
   IGherkinAstBackground, IGherkinAstScenario, IGherkinAstScenarioOutline,
-  IGherkinCollectionItemIndex, IGherkinFeature, IGherkinMethods, IGherkinOperationStore,
-  IGherkinScenario, IGherkinScenarioOutline, IGivenFluid,
-  IMatch, IScenarioBuilder, IScenarioOutlineBuilder, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid, Omit,
+  IGherkinAstStep, IGherkinCollectionItemIndex, IGherkinFeature, IGherkinMethods,
+  IGherkinOperationStore, IGherkinScenario, IGherkinScenarioOutline,
+  IGivenFluid, IMatch, IScenarioBuilder, IScenarioFluid, IScenarioOutlineBuilder, IScenarioOutlineExamplesFluid, IScenarioOutlineFluid, IWhenFluid, Omit,
 } from './types';
 
 /**
@@ -102,12 +105,10 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
   };
 }
 
-function ScenarioFluidBuilder<
-  G extends IGherkinScenario | IGherkinScenarioOutline
-> (match: IMatch, gherkin: G['gherkin']): IScenarioBuilder<G> {
+function ScenarioFluidBuilder (match: IMatch, gherkin: IGherkinScenario['gherkin']): IScenarioBuilder {
   const { steps: collection } = gherkin;
 
-  const scenario = <IScenarioBuilder<G>['scenario']> {
+  const scenario = <IScenarioBuilder['scenario']> {
     match, gherkin,
     name: gherkin.name,
     Given: new Map(),
@@ -147,45 +148,81 @@ function ScenarioFluidBuilder<
   };
 }
 
-function ScenarioOutlineFluidBuilder (match: IMatch, gherkin: IGherkinAstScenarioOutline): IScenarioOutlineBuilder {
+function ScenarioOutlineFluidBuilder (match: IMatch, gherkin: IGherkinScenarioOutline['gherkin']): IScenarioOutlineBuilder {
   /**
    * TODO:
-   * - match the gherkin.examples IMMEDIATELY - if no examples #fuckThisShitImOut
-   * - read the AST for a table, parse it
-   * - generate a new Scenario for each row of the examples via table.mapByTop()
-   * - read the ScenarioOutline AST and parse all `<varName>` as table.mapByTop().get('varName')
-   * - use the resulting interpolated text to generate new IGherkinAstStep[] inside a new IGherkinAstScenario
-   * - run ScenarioFluidBuilder over the newly generated AST
-   * - execute the resulting builder instances immediately, saving each scenario's stores inside the ScenarioOutline
-   *
+   * x make IGherkinScenarioOutline interface store an array of IGherkinScenario
+   * x match the gherkin.examples IMMEDIATELY - if no examples #fuckThisShitImOut
+   * x read the AST for a table, parse it
+   * x generate a new Scenario for each row of the examples via table.mapByTop()
+   * x read the ScenarioOutline AST and parse all `<varName>` as table.mapByTop().get('varName')
+   * x use the resulting interpolated text to generate new IGherkinAstStep[] inside a new IGherkinAstScenario
+   * - wait for ScenarioOutline fluid methods to be called, so that the `match` and `fn` can be used to generate a new Scenario
+   * - run ScenarioFluidBuilder over the newly generated AST against the last outline fluid method definitions
+   * - execute the resulting builder instances, saving each scenario's stores inside the IGherkinScenarioOutline['scenarios']
    */
 
+  const {
+    examples: [exampleSrc],
+    steps: outlineSteps,
+  } = gherkin;
+
+  const examples = GherkinTableReader({
+    rows: [...exampleSrc.tableHeader, ...exampleSrc.tableBody],
+
+  }).rows.mapByTop();
+
+  const scenarioBuilders = examples.map((example) => {
+    const { interpolate } = new Interpolator(
+      mapToObject(example),
+      { open: '<', close: '>' },
+    );
+
+    const scenarioSteps = outlineSteps.map((step) => {
+      return {
+        ...step,
+        text: interpolate(step.text),
+      };
+    });
+
+    const { scenario, steps: methods } = ScenarioFluidBuilder(match, {
+      ...gherkin as any,
+      type: 'Scenario',
+      steps: scenarioSteps,
+    });
+
+    function runScenarioFluidAgainstSteps (methods: IScenarioFluid, steps: IGherkinAstStep[]) {
+      outlineSteps.forEach(({ keyword, text }) => {
+        const methodKey = Object.keys(methods)
+          .find((key) => keyword.startsWith(key));
+
+        if (methodKey) {
+          const method = methods[methodKey as keyof typeof methods];
+
+          method(text);
+        }
+    }
+
+    runScenarioFluidAgainstSteps(methods, outlineSteps);
+    });
+
+  const FluidFnProxy = (context: any, proxyFn: any) => (match: IMatch, fn: any) => {
+    proxyFn(match, fn);
+
+    return context;
+  };
+
+  const scenarios = scenarioBuilders.map((Scenario) => {
+    Scenario();
+  });
+
   const scenarioOutline: IScenarioOutlineBuilder['scenarioOutline'] = {
-    ...scenario,
-    Examples: new Map(),
+    scenarioBuilders,
+    gherkin,
+    match,
+    name: gherkin.name,
+
   };
-
-  const Given = (match, fn) => {
-    scenario.Given.set(match);
-  };
-
-  const steps = <IScenarioOutlineFluid> { Given, When };
-  const { examples, steps: collection } = gherkin;
-
-  const Examples = FluidFn({
-    fluid: steps,
-    store: scenarioOutline.Examples,
-    collectionParams: { collection: examples, matchProperty: 'name', type: 'Examples' },
-  });
-
-  const thenFluid = <IScenarioOutlineExamplesFluid & IAndFluid> { Examples };
-  const Then = FluidFn({
-    fluid: thenFluid,
-    store: scenarioOutline.Then!,
-    collectionParams: { collection, matchProperty: 'text', type: 'Step' },
-  });
-
-  thenFluid.And = Then;
 
   return {
     scenarioOutline,
