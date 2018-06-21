@@ -148,11 +148,25 @@ function ScenarioFluidBuilder<
 }
 
 function ScenarioOutlineFluidBuilder (match: IMatch, gherkin: IGherkinAstScenarioOutline): IScenarioOutlineBuilder {
-  const { scenario, steps: { Given, When } } = ScenarioFluidBuilder<IGherkinScenarioOutline>(match, gherkin);
+  /**
+   * TODO:
+   * - match the gherkin.examples IMMEDIATELY - if no examples #fuckThisShitImOut
+   * - read the AST for a table, parse it
+   * - generate a new Scenario for each row of the examples via table.mapByTop()
+   * - read the ScenarioOutline AST and parse all `<varName>` as table.mapByTop().get('varName')
+   * - use the resulting interpolated text to generate new IGherkinAstStep[] inside a new IGherkinAstScenario
+   * - run ScenarioFluidBuilder over the newly generated AST
+   * - execute the resulting builder instances immediately, saving each scenario's stores inside the ScenarioOutline
+   *
+   */
 
   const scenarioOutline: IScenarioOutlineBuilder['scenarioOutline'] = {
     ...scenario,
     Examples: new Map(),
+  };
+
+  const Given = (match, fn) => {
+    scenario.Given.set(match);
   };
 
   const steps = <IScenarioOutlineFluid> { Given, When };

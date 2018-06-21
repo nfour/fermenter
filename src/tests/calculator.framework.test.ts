@@ -68,7 +68,7 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
     .Then('I get {int}', checkResult);
 
   ScenarioOutline('A simple subtraction test')
-    .Given('I have numbers <num1> and <num2>', getNumbers)
+    .Given('I have numbers {int} and {int}', getNumbers)
     .When('I subtract the numbers', addNumbers)
-    .Then('I get <result>', checkResult);
+    .Then('I get {int}', checkResult);
 });

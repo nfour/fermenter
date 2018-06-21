@@ -61,7 +61,7 @@ export interface IGherkinAstBackground extends IGherkinAstEntity {
 
 export interface IGherkinAstScenarioOutline extends IGherkinAstEntity {
   type: 'ScenarioOutline';
-  steps: IGherkinAstStep[];
+  scenarios: IGherkinAstScenario[];
   examples: IGherkinAstExamples[];
 }
 
