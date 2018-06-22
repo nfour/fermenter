@@ -22,6 +22,7 @@ export type IGherkinCollectionItemIndex = IGherkinAstEntity & IGherkinAstStep;
 
 export type IGherkinParams = string | number | IGherkinAstTableRow;
 
+// TODO: convert the Map to regular objects - it's better to support destructuring etc.
 export interface IGherkinTableParam {
 
   /**

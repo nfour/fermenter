@@ -1,6 +1,6 @@
 import { fromPairs } from 'lodash';
 import { GherkinTest } from '../GherkinTest';
-import { IGherkinAstTableRow } from '../types';
+import { IGherkinAstTableRow, IGherkinTableParam } from '../types';
 
 export interface IState {
   a: number;
@@ -49,16 +49,20 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
     });
 
   Scenario('A simple addition test')
-    .Given('I have the following numbers:', (state, table: IGherkinAstTableRow[]) => {
-      const { a, b } = fromPairs(table.map((row) =>
-        row.cells.map((cell) => cell.value),
-      ));
-      return { ...state, a: parseInt(a, 10), b: parseInt(b, 10) };
+    .Given('I have the following numbers:', (state, table: IGherkinTableParam) => {
+      const data = table.dict();
+
+      return {
+        ...state,
+        a: data.get('a'),
+        b: data.get('b'),
+      };
     })
     .When('I add the numbers', addNumbers)
     .And('I do nothing', (state) => state)
     .Then('I get', (state, text: string) => {
       expect(parseInt(text, 10)).toBe(state.c);
+
       return state;
     });
 
