@@ -2,7 +2,7 @@ import { IMatch } from '.';
 
 export interface IGherkinMethods {
   Scenario: (match: IMatch) => IScenarioFluid;
-  ScenarioOutline: (match: IMatch) => IScenarioOutlineFluid;
+  ScenarioOutline: (match: IMatch) => IScenarioFluid;
 
   /**
    * Occasionally you'll find yourself repeating the same Given steps in all of the scenarios in a feature.
@@ -34,16 +34,6 @@ export interface IScenarioFluid {
   Given: IFluidFn<IGivenFluid>;
   When: IFluidFn<IWhenFluid>;
   Then: IFluidFn<IAndFluid>;
-}
-
-export interface IScenarioOutlineExamplesFluid<N = any> {
-  Examples: IFluidFn<N>;
-}
-
-export interface IScenarioOutlineFluid extends IScenarioOutlineExamplesFluid<IScenarioOutlineFluid> {
-  Given: IFluidFn<IGivenFluid>;
-  When: IFluidFn<IWhenFluid>;
-  Then: IFluidFn<IAndFluid & IScenarioOutlineExamplesFluid<IScenarioOutlineFluid>>;
 }
 
 export interface IGivenFluid {

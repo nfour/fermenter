@@ -4,12 +4,10 @@ import {
   IGherkinAstScenario,
   IGherkinAstScenarioOutline,
   IScenarioFluid,
-  IScenarioOutlineFluid,
 } from '.';
 import {
   IGherkinAstBackground,
   IGherkinAstEntity,
-  IGherkinAstExamples,
   IGherkinAstFeature,
   IGherkinAstStep,
   IGherkinAstTableRow,
@@ -172,8 +170,9 @@ export interface IBackgroundBuilder {
  * @example { Given, When, Then, Examples: { operations } }
  */
 export interface IScenarioOutlineBuilder {
-  steps: IScenarioOutlineFluid;
+  steps: IScenarioFluid;
   scenarioOutline: IGherkinScenarioOutline;
+  scenarios: IGherkinFeature['Scenarios'];
 }
 
 export type IGherkinParameter = string | number | IGherkinTableParam;
@@ -201,7 +200,9 @@ export interface IGherkinScenario extends IGherkinScenarioBase {
 
 export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
   gherkin: IGherkinAstScenarioOutline;
-  scenarios: IGherkinScenario;
+
+  // TODO: remove this once it's clear it's not needed as we are pushing these to the feature.scenarios
+  scenarios: Map<IMatch, IGherkinScenario>;
 }
 
 export interface IGherkinBackground {

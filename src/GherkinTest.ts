@@ -1,3 +1,4 @@
+import {  } from 'bluebird';
 import { writeJsonSync } from 'fs-extra';
 import { join } from 'path';
 import { executeFeature } from './executeFeature';
@@ -5,33 +6,33 @@ import { IGherkinParserConfig, parseFeature } from './parseFeature';
 import { IGherkinAstFeature, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
 
 export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
+  // TODO: stop erroring here, instead `describe` first so we dont have test-less jest files
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
   writeJsonSync(join(__dirname, '../reference/ast.json'), ast, { spaces: 2 });
 
-  const methods = <IGherkinMethods> {
-    Scenario: featureBuilder.Scenario(),
-    ScenarioOutline: featureBuilder.ScenarioOutline(),
-    Background: featureBuilder.Background(),
-  };
-
   const featureTitle = extractFeatureTestTitle(ast.feature);
 
   describe(featureTitle, async () => {
-    // TODO: in the calculator test, ScenarioOutlines definitions are failing due to
-    // unmatched step defs as we cant parse <>
-    configure(methods);
+    const isConfigured = new Promise((resolve) => {
+      const methods = <IGherkinMethods> {
+        Scenario: featureBuilder.Scenario(),
+        ScenarioOutline: featureBuilder.ScenarioOutline(isConfigured),
+        Background: featureBuilder.Background(),
+      };
 
-    console.dir(featureBuilder.feature, { depth: 10, colors: true });
+      configure(methods);
 
-    const { Background, ScenarioOutlines, Scenarios } = featureBuilder.feature;
+      resolve();
+    });
 
-    Background;
-    ScenarioOutlines;
+    await isConfigured;
+
+    const { Scenarios } = featureBuilder.feature;
 
     Scenarios.forEach(describeScenario);
 
-    // TODO: outlines
+    // TODO: outlines should populate Scenarios or require joining with existing Scenarios
     // TODO: background
 
     executeFeature({ featureBuilder, ast });
