@@ -31,10 +31,10 @@ function configureMethods ({ configure, featureBuilder }: {
   featureBuilder: FeatureBuilder;
   configure: IConfigureFn
 }) {
-  let onConfiguredCallback: () => void;
+  let resolve: () => void;
 
   const onConfigured: IOnConfigured = (callback) => {
-    onConfiguredCallback = callback;
+    resolve = callback;
   };
 
   const methods = <IGherkinMethods> {
@@ -45,7 +45,7 @@ function configureMethods ({ configure, featureBuilder }: {
 
   configure(methods);
 
-  onConfiguredCallback!();
+  resolve!();
 }
 
 function describeFeature ({ featureBuilder, ast, configure }: {
