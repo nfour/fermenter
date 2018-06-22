@@ -13,7 +13,7 @@ Feature: using feature files in jest
   Scenario: A simple addition test
     Given I have the following numbers:
       | a | b |
-      | 3 | 22 |
+      | 3 | 4 |
     When I add the numbers
     And I do nothing
     Then I get

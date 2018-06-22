@@ -69,7 +69,7 @@ function describeFeature ({ featureBuilder, ast, configure }: {
 }
 
 function describeGherkinOperations (steps: IGherkinOperationStore, initialState = {}) {
-  let state: any = initialState;
+  let state = initialState;
 
   steps.forEach((step) => {
     // TODO: must also populate @tags etc. like feature title
@@ -77,7 +77,7 @@ function describeGherkinOperations (steps: IGherkinOperationStore, initialState 
     const title = formatTitle({ name: step.name });
 
     test(title, async () => {
-      const nextState = executeStep(step, state);
+      const nextState = await executeStep(step, state);
 
       state = nextState;
     }, 99999); // TODO: add timeout config opt
@@ -103,9 +103,9 @@ function describeScenario ({ background, scenario, initialState = {} }: {
     let state = initialState;
 
     if (background && background.Given) {
-      beforeAll(async () => {
-        background.Given.forEach((step) => {
-          const nextState = executeStep(step, state);
+      background.Given.forEach((step) => {
+        beforeAll(async () => {
+          const nextState = await executeStep(step, state);
 
           state = nextState;
         });
