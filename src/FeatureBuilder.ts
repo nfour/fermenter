@@ -35,8 +35,8 @@ import {
  */
 export class FeatureBuilder {
   feature = <IGherkinFeature> {
-    scenarios: new Map(),
-    ScenarioOutlines: new Map(),
+    scenarios: [] as any,
+    scenarioOutlines: [] as any,
   };
 
   constructor (ast: IGherkinAst) {
@@ -55,7 +55,7 @@ export class FeatureBuilder {
 
       const { scenario, steps } = ScenarioFluidBuilder({ match, gherkin });
 
-      this.feature.scenarios.set(match, scenario);
+      this.feature.scenarios = [...this.feature.scenarios, scenario];
 
       return steps;
     };
@@ -73,8 +73,8 @@ export class FeatureBuilder {
 
       const { scenarioOutline, scenarios, steps } = ScenarioOutlineFluidBuilder({ match, gherkin, whenConfigured });
 
-      this.feature.scenarios = new Map([...this.feature.scenarios, ...scenarios]);
-      this.feature.ScenarioOutlines.set(match, scenarioOutline);
+      this.feature.scenarios = [...this.feature.scenarios, ...scenarios];
+      this.feature.scenarioOutlines = [...this.feature.scenarioOutlines, scenarioOutline];
 
       return steps;
     };
@@ -220,9 +220,7 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, whenConfigured }: {
     });
   });
 
-  const scenarios = new Map(
-    scenarioBuilders.map(({ scenario }): [IMatch, typeof scenario] => [scenario.match, scenario]),
-  );
+  const scenarios = scenarioBuilders.map(({ scenario }) => scenario);
 
   /** This is used to make the step methods DRY */
   const scenarioBuilderSkeleton = ScenarioFluidBuilder({ match, gherkin, FluidFnFactory: LazyFluidFn });

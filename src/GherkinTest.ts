@@ -99,7 +99,9 @@ function describeScenario ({ background, scenario, initialState }: {
   initialState: any,
   background?: IGherkinBackground,
 }) {
-  describe(scenario.match.toString(), () => {
+  const title = formatTitle(scenario.gherkin);
+
+  describe(title, () => {
     let state = initialState;
 
     if (background && background.Given) {

@@ -213,7 +213,7 @@ export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
   gherkin: IGherkinAstScenarioOutline;
 
   // TODO: remove this once it's clear it's not needed as we are pushing these to the feature.scenarios
-  scenarios: Map<IMatch, IGherkinScenario>;
+  scenarios: IGherkinScenario[];
 }
 
 export interface IGherkinBackground {
@@ -228,6 +228,6 @@ export interface IGherkinFeature {
   name: IGherkinAstFeature['name'];
 
   background?: IGherkinBackground;
-  scenarios: Map<IMatch, IGherkinScenario>;
-  ScenarioOutlines: Map<IMatch, IGherkinScenarioOutline>;
+  scenarios: IGherkinScenario[];
+  scenarioOutlines: IGherkinScenarioOutline[];
 }
