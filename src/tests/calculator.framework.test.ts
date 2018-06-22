@@ -53,7 +53,6 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
     .When('I add the numbers', addNumbers)
     .And('I do nothing', (state) => state)
     .Then('I get', (state, text: string) => {
-      console.log({ state, text });
       expect(state.c).toBe(parseInt(text, 10));
 
       return state;
