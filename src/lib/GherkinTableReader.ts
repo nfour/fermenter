@@ -22,6 +22,8 @@ export function GherkinTableReader ({ rows: inputRows = [] }: {
   const getLeft = () => rowValues.map((cells) => cells[0]);
   const getTop = () => rowValues[0];
 
+  const headers = <IGherkinTableParam['headers']> (() => getTop());
+
   const dict = <IGherkinTableParam['dict']> (() => {
     const keys = headers();
 
@@ -93,8 +95,6 @@ export function GherkinTableReader ({ rows: inputRows = [] }: {
       }, {} as IDict<string>);
     });
   };
-
-  const headers = <IGherkinTableParam['headers']> (() => getTop());
 
   return { dict, headers, rows };
 }
