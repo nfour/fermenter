@@ -1,4 +1,4 @@
-import { IGherkinAstTableRow, IGherkinTableParam } from '../types';
+import { IDict, IGherkinAstTableRow, IGherkinTableParam } from '../types';
 
 /**
  * A gherkin feature file's table:
@@ -22,32 +22,33 @@ export function GherkinTableReader ({ rows: inputRows = [] }: {
   const getLeft = () => rowValues.map((cells) => cells[0]);
   const getTop = () => rowValues[0];
 
+  const headers = <IGherkinTableParam['headers']> (() => getTop());
+
   const dict = <IGherkinTableParam['dict']> (() => {
     const keys = headers();
 
     const contentRows = rowValues.slice(1);
 
-    const tuples = keys.map((key, index): [string, string[]] => {
-      return [
-        key,
-        contentRows.map((cells) => cells[index]),
-      ];
-    });
-
-    return new Map(tuples);
+    return keys.reduce((o, key, index) => {
+      return {
+        ...o,
+        [key]: contentRows.map((cells) => cells[index]),
+      };
+    }, {} as IDict<string[]>);
   });
 
   dict.left = () => {
     const keys = rowValues.map((cells) => cells[0]);
 
-    const mapTuples = rowValues.map((cells, index): [string, string[]] => {
+    return rowValues.reduce((o, cells, index) => {
       /** The cells, after the left-most */
       const contentCells = cells.slice(1);
 
-      return [keys[index], contentCells];
-    });
-
-    return new Map(mapTuples);
+      return {
+        ...o,
+        [keys[index]]: contentCells,
+      };
+    }, {});
   };
 
   dict.matrix = () => {
@@ -61,22 +62,24 @@ export function GherkinTableReader ({ rows: inputRows = [] }: {
       .slice(1) // Skip top
       .map((cells) => cells.slice(1)); // Skip left
 
-    const leftTuples = leftKeys.map((leftKey, leftIndex): [string, Map<string, string>] => {
-      const topTuples = topKeys.map((topKey, topIndex): [string, string] => {
+    return leftKeys.reduce((l, leftKey, leftIndex) => {
+      const topMap = topKeys.reduce((t, topKey, topIndex) => {
         const cells = contentRows[topIndex];
 
-        return [topKey, cells[leftIndex]];
-      });
+        return {
+          ...t,
+          [topKey]: cells[leftIndex],
+        };
+      }, {} as IDict<string>);
 
-      return [leftKey, new Map(topTuples)];
-    });
-
-    return new Map(leftTuples);
+      return {
+        ...l,
+        [leftKey]: topMap,
+      };
+    }, {} as IDict<IDict<string>>);
   };
 
-  const rows = <IGherkinTableParam['rows']> (() => {
-    return inputRows.map(({ cells }) => cells.map(({ value }) => value));
-  });
+  const rows = <IGherkinTableParam['rows']> (() => rowValues);
 
   rows.mapByTop = () => {
     const keys = getTop();
@@ -84,15 +87,14 @@ export function GherkinTableReader ({ rows: inputRows = [] }: {
     const contentRows = rowValues.slice(1);
 
     return contentRows.map((cells) => {
-      const tuples = keys.map((key, index): [string, string] => {
-        return [key, cells[index]];
-      });
-
-      return new Map(tuples);
+      return keys.reduce((o, key, index) => {
+        return {
+          ...o,
+          [key]: cells[index],
+        };
+      }, {} as IDict<string>);
     });
   };
-
-  const headers = <IGherkinTableParam['headers']> (() => getTop());
 
   return { dict, headers, rows };
 }

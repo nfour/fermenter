@@ -4,12 +4,10 @@ import {
   IGherkinAstScenario,
   IGherkinAstScenarioOutline,
   IScenarioFluid,
-  IScenarioOutlineFluid,
 } from '.';
 import {
   IGherkinAstBackground,
   IGherkinAstEntity,
-  IGherkinAstExamples,
   IGherkinAstFeature,
   IGherkinAstStep,
   IGherkinAstTableRow,
@@ -24,6 +22,7 @@ export type IGherkinCollectionItemIndex = IGherkinAstEntity & IGherkinAstStep;
 
 export type IGherkinParams = string | number | IGherkinAstTableRow;
 
+// TODO: add a generic to populate table interfaces for known props
 export interface IGherkinTableParam {
 
   /**
@@ -34,7 +33,7 @@ export interface IGherkinTableParam {
    * ```
    * @example
    *
-   * [ ...table.rows() ]
+   * table.rows()
    *
    * // returns
    *
@@ -63,11 +62,11 @@ export interface IGherkinTableParam {
      * // returns an array of Map's, mapped to the header as keys
      *
      * [
-     *   [ ['a', '1'], ['b', '2'] ],
-     *   [ ['a', '3'], ['b', '4'] ],
+     *   { a: '1', b: '2' },
+     *   { a: '3', b: '4' },
      * ]
      */
-    mapByTop (): Array<Map<string, string>>;
+    mapByTop (): Array<IDict<string>>;
   };
 
   /**
@@ -77,20 +76,21 @@ export interface IGherkinTableParam {
    * | 1 | 2 |
    * | 1 | 2 |
    * ```
+   *
    * @example
    *
-   * [ ...table.dict() ]
+   * table.dict()
    *
    * // returns a Map, mapped to the header as keys
    *
-   * [
-   *   [ 'a', ['1', '1'] ],
-   *   [ 'b', ['2', '2'] ],
-   * ]
+   * {
+   *   a: ['1', '1'],
+   *   b: ['2', '2'],
+   * }
    *
    */
   dict: {
-    (): Map<string, string[]>;
+    (): IDict<string[]>
 
     /**
      * With Gherkin:
@@ -98,19 +98,20 @@ export interface IGherkinTableParam {
      * | a | 1 | 3 |
      * | b | 2 | 4 |
      * ```
+     *
      * @example
      *
-     * [ ...table.dict.left() ]
+     * table.dict.left()
      *
      * // returns a Map, mapped to the left column as keys
      *
-     * [
-     *   [ 'a', ['1', '3'] ],
-     *   [ 'b', ['2', '4'] ],
-     * ]
+     * {
+     *   a: ['1', '3'],
+     *   b: ['2', '4'],
+     * }
      *
      */
-    left (): Map<string, string[]>;
+    left (): IDict<string[]>
 
     /**
      * With Gherkin:
@@ -119,19 +120,20 @@ export interface IGherkinTableParam {
      * | a | 1 | 3 |
      * | b | 2 | 4 |
      * ```
+     *
      * @example
      *
-     * [ ...table.dict.matrix() ]
+     * table.dict.matrix()
      *
      * // returns a Map, mapped to the left column as keys into a Map of head column keys
      *
-     * [
-     *   [ 'a', [[ 'x', '1' ], ['y', '3']] ],
-     *   [ 'b', [[ 'x', '2' ], ['y', '4']] ],
-     * ]
+     * {
+     *   a: { x: '1', y: '3' },
+     *   b: { x: '2', y: '4' },
+     * }
      *
      */
-    matrix (): Map<string, Map<string, string>>
+    matrix (): IDict<IDict<string>>,
   };
 
   /**
@@ -141,13 +143,15 @@ export interface IGherkinTableParam {
    * | 1 | 2 |
    * | 1 | 2 |
    * ```
+   *
    * @example
    *
-   * [ ...table.headers() ]
+   * table.headers()
    *
    * // returns
    *
    * ['a', 'b']
+   *
    */
   headers (): string[];
 }
@@ -157,11 +161,9 @@ export interface IGherkinFeatureMappings<Ge = any> {
   gherkin: Ge;
 }
 
-export interface IScenarioBuilder<
-  S extends IGherkinScenario | IGherkinScenarioOutline = IGherkinScenario
-> {
+export interface IScenarioBuilder {
   steps: IScenarioFluid;
-  scenario: S;
+  scenario: IGherkinScenario;
 }
 
 export interface IBackgroundBuilder {
@@ -174,20 +176,26 @@ export interface IBackgroundBuilder {
  * @example { Given, When, Then, Examples: { operations } }
  */
 export interface IScenarioOutlineBuilder {
-  steps: IScenarioOutlineFluid;
+  steps: IScenarioFluid;
   scenarioOutline: IGherkinScenarioOutline;
+  scenarios: IGherkinFeature['scenarios'];
 }
 
+export interface IDict<V> { [k: string]: V; }
 export type IGherkinParameter = string | number | IGherkinTableParam;
 
 export type IGherkinOperationStore<
   G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
-> = Map<IMatch, {
-  fn: IFluidFnCallback,
+> = Map<IMatch, IGherkinStep<G>>;
+
+export interface IGherkinStep<G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape> {
+  fn: IFluidFnCallback;
   name: string;
   gherkin: G;
-  params: IGherkinParameter[]
-}>;
+  params: IGherkinParameter[];
+}
+
+export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidFnCallback }>;
 
 export interface IGherkinScenarioBase {
   match: IMatch;
@@ -203,7 +211,9 @@ export interface IGherkinScenario extends IGherkinScenarioBase {
 
 export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
   gherkin: IGherkinAstScenarioOutline;
-  Examples: IGherkinOperationStore<IGherkinAstExamples>;
+
+  // TODO: remove this once it's clear it's not needed as we are pushing these to the feature.scenarios
+  scenarios: IGherkinScenario[];
 }
 
 export interface IGherkinBackground {
@@ -217,7 +227,7 @@ export interface IGherkinFeature {
   gherkin: IGherkinAstFeature;
   name: IGherkinAstFeature['name'];
 
-  Background?: IGherkinBackground;
-  Scenarios: Map<IMatch, IGherkinScenario>;
-  ScenarioOutlines: Map<IMatch, IGherkinScenarioOutline>;
+  background?: IGherkinBackground;
+  scenarios: IGherkinScenario[];
+  scenarioOutlines: IGherkinScenarioOutline[];
 }

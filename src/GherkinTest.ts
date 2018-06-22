@@ -1,73 +1,153 @@
-import { executeFeature } from './executeFeature';
-import { IGherkinParserConfig, parseFeature } from './parseFeature';
-import { IGherkinAstFeature, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
+import { writeFileSync } from 'fs';
+import { join } from 'path';
 
-export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
+import { FeatureBuilder } from './FeatureBuilder';
+import { IGherkinParserConfig, parseFeature } from './parseFeature';
+import {
+  IGherkinAst,
+  IGherkinAstEntity,
+  IGherkinBackground,
+  IGherkinMethods,
+  IGherkinOperationStore,
+  IGherkinScenario,
+  IGherkinStep,
+} from './types';
+
+export type IConfigureFn = (t: IGherkinMethods) => void;
+
+export function GherkinTest ({ feature }: IGherkinParserConfig, configure: IConfigureFn) {
+  // TODO: stop erroring here, instead `describe` first so we dont have test-less jest files
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
+
+  // FIXME: remove later
+  writeFileSync(join(__dirname, '../reference/ast.json'), JSON.stringify(ast, null, 2));
+
+  describeFeature({ ast, configure, featureBuilder });
+}
+
+export type IOnConfigured = (callback: () => void) => void;
+
+function configureMethods ({ configure, featureBuilder }: {
+  featureBuilder: FeatureBuilder;
+  configure: IConfigureFn
+}) {
+  let resolve: () => void;
+
+  const onConfigured: IOnConfigured = (callback) => {
+    resolve = callback;
+  };
 
   const methods = <IGherkinMethods> {
     Scenario: featureBuilder.Scenario(),
-    ScenarioOutline: featureBuilder.ScenarioOutline(),
+    ScenarioOutline: featureBuilder.ScenarioOutline(onConfigured),
     Background: featureBuilder.Background(),
   };
 
-  const featureTitle = extractFeatureTestTitle(ast.feature);
+  configure(methods);
 
-  describe(featureTitle, async () => {
-    configure(methods);
-
-    console.dir(featureBuilder.feature, { depth: 10, colors: true });
-
-    const { Background, ScenarioOutlines, Scenarios } = featureBuilder.feature;
-
-    Background;
-    ScenarioOutlines;
-
-    Scenarios.forEach(describeScenario);
-
-    // TODO: outlines
-    // TODO: background
-
-    executeFeature({ featureBuilder, ast });
-  });
+  resolve!();
 }
 
-function testGherkinOperations (operations: IGherkinOperationStore, initialState = {}) {
+function describeFeature ({ featureBuilder, ast, configure }: {
+  featureBuilder: FeatureBuilder;
+  ast: IGherkinAst;
+  configure: IConfigureFn;
+}) {
 
-  let state: any = initialState;
+  let error: undefined|Error;
+  const title = formatTitle(ast.feature);
 
-  // TODO: this needs to be wrapped in state machine
-  operations.forEach((operation) => {
+  describe(title, async () => {
+    try {
+      configureMethods({ configure, featureBuilder });
 
-    // TODO: must also populate @tags etc. like feature title
-    test(operation.name, async () => {
-      const returnedState = await operation.fn(state, ...operation.params);
+      const { scenarios, background } = featureBuilder.feature;
 
-      if (returnedState !== undefined) { state = returnedState; }
+      scenarios.forEach((scenario) => {
+        describeScenario({
+          scenario,
+          background,
+          initialState: undefined, // TODO: state meeee
+        });
+      });
+    } catch (e) {
+      error = e;
+    }
+  });
+
+  if (error) {
+    throw error;
+  }
+}
+
+function describeGherkinOperations (steps: IGherkinOperationStore, initialState: any) {
+  let state = initialState;
+
+  steps.forEach((step) => {
+    const title = formatTitle({ name: step.name });
+
+    test(title, async () => {
+      const nextState = await executeStep(step, state);
+
+      state = nextState;
     }, 99999); // TODO: add timeout config opt
   });
 }
 
-function describeScenario (scenario: IGherkinScenario) {
-  // TODO: wheres my background @?
+async function executeStep (step: IGherkinStep, initialState: any) {
+  const state = await step.fn(initialState, ...step.params);
 
-  describe(scenario.match.toString(), () => {
-    // TODO: define state here
-    testGherkinOperations(new Map([
+  if (state !== undefined) {
+    return state;
+  }
+
+  return initialState;
+}
+
+function describeScenario ({ background, scenario, initialState }: {
+  scenario: IGherkinScenario,
+  initialState: any,
+  background?: IGherkinBackground,
+}) {
+  const title = formatTitle(scenario.gherkin);
+
+  describe(title, () => {
+    let state = initialState;
+
+    if (background && background.Given) {
+      background.Given.forEach((step) => {
+        beforeAll(async () => {
+          const nextState = await executeStep(step, state);
+
+          state = nextState;
+        });
+      });
+    }
+
+    const scenarioSteps = new Map([
       ...scenario.Given || [],
       ...scenario.When || [],
       ...scenario.Then || [],
-    ]));
+    ]);
+
+    describeGherkinOperations(scenarioSteps, state);
   });
 }
 
-function extractFeatureTestTitle (feature: IGherkinAstFeature): string {
-  const tags = feature.tags
-    ? `${feature.tags.map(({ name }) => name).join(' ')}`
+function formatTitle ({
+  tags: inputTags, name, description = '',
+}: Pick<IGherkinAstEntity, 'description' | 'name' | 'tags'>) {
+  const leftPadLines = (str: string, pad = '  ') =>
+    str.split('\n').map((line) => `${pad}${line}`).join('\n');
+
+  const tags = inputTags
+    ? ` ${inputTags.map((tag) => tag.name).join(' ')}`
     : '';
 
   return [
-    `${feature.name} ${tags}`,
-    `${feature.description || ''}`,
-  ].join('\n');
+    `${name}${tags}`,
+    `${leftPadLines(description)}`,
+  ]
+    .filter(Boolean)
+    .join('\n').trimRight();
 }

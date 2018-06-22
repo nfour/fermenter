@@ -1,21 +1,14 @@
-import { fromPairs } from 'lodash';
 import { GherkinTest } from '../GherkinTest';
-import { IGherkinAstTableRow } from '../types';
+import { IGherkinTableParam } from '../types';
 
-export interface IState {
-  a: number;
-  b: number;
-  c: number;
-}
-
-const getNumbers = (state: Partial<IState> = {}, a: number, b: number) => {
+const getNumbers = (state: {} = {}, a: number, b: number) => {
   return {
     ...state,
     a, b,
   };
 };
 
-const addNumbers = (state: IState) => {
+const addNumbers = (state: { a: number, b: number }) => {
   const { a, b } = state;
 
   return {
@@ -24,7 +17,16 @@ const addNumbers = (state: IState) => {
   };
 };
 
-const multiplyNumbers = (state: IState) => {
+const subtractNumbers = (state: { a: number, b: number }) => {
+  const { a, b } = state;
+
+  return {
+    ...state,
+    c: a - b,
+  };
+};
+
+const multiplyNumbers = (state: { a: number, b: number }) => {
   const { a, b } = state;
 
   return {
@@ -33,7 +35,7 @@ const multiplyNumbers = (state: IState) => {
   };
 };
 
-const checkResult = ({ c }: IState, expected: number) => {
+const checkResult = ({ c }: { c: number }, expected: number) => {
   expect(c).toBe(expected);
 };
 
@@ -49,16 +51,18 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
     });
 
   Scenario('A simple addition test')
-    .Given('I have the following numbers:', (state, table: IGherkinAstTableRow[]) => {
-      const { a, b } = fromPairs(table.map((row) =>
-        row.cells.map((cell) => cell.value),
-      ));
-      return { ...state, a: parseInt(a, 10), b: parseInt(b, 10) };
+    .Given('I have the following numbers:', (state = {}, table: IGherkinTableParam) => {
+      const [{ a, b }] = table.rows.mapByTop();
+
+      return {
+        ...state,
+        a: parseInt(a, 10), b: parseInt(b, 10),
+      };
     })
     .When('I add the numbers', addNumbers)
+    .And('I do nothing', (state) => state)
     .Then('I get', (state, text: string) => {
-      expect(parseInt(text, 10)).toBe(state.c);
-      return state;
+      expect(state.c).toBe(parseInt(text, 10));
     });
 
   Scenario('A simple multiplication test')
@@ -68,6 +72,6 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
 
   ScenarioOutline('A simple subtraction test')
     .Given('I have numbers {int} and {int}', getNumbers)
-    .When('I subtract the numbers', addNumbers)
+    .When('I subtract the numbers', subtractNumbers)
     .Then('I get {int}', checkResult);
 });

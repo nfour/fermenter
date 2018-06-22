@@ -33,7 +33,7 @@ function parseGherkinForParameter (arg: IGherkinAstStep['argument'] | IGherkinAs
 
   if (arg.type === 'Examples') {
     const rows = [
-      ...arg.tableHeader || [],
+      arg.tableHeader,
       ...arg.tableBody || [],
     ];
 

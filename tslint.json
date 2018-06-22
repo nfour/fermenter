@@ -1,3 +1,6 @@
 {
-  "extends": ["tslint-config-temando"]
+  "extends": ["tslint-config-temando"],
+  "rules": {
+    "no-use-before-declare": false
+  }
 }

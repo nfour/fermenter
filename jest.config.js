@@ -10,7 +10,7 @@ module.exports = {
   coverageThreshold: {
     global: { statements: 90, lines: 99, functions: 90 }
   },
-  reporters: ['jest-tap-reporter'],
+  // reporters: ['jest-tap-reporter'],
   testPathIgnorePatterns: [
     '/build/',
     '/node_modules/'

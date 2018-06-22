@@ -2253,6 +2253,10 @@ lru-cache@^4.0.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
+lutils-typeof@~0.1.0:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/lutils-typeof/-/lutils-typeof-0.1.2.tgz#8ef7ee1a48404a2428188e31f5fb7d42400d2060"
+
 make-error@^1.1.1:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/make-error/-/make-error-1.3.4.tgz#19978ed575f9e9545d2ff8c13e33b5d18a67d535"
@@ -3327,6 +3331,18 @@ tr46@^1.0.1:
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-1.0.1.tgz#a8b13fd6bfd2489519674ccde55ba3693b706d09"
   dependencies:
     punycode "^2.1.0"
+
+trans-interpolator@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/trans-interpolator/-/trans-interpolator-1.1.2.tgz#1ec1ecdce2904801b4ba718bf1493fe2f9b3b2ff"
+  dependencies:
+    transposer "~0.3.5"
+
+transposer@~0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/transposer/-/transposer-0.3.5.tgz#ad9ab3a915418eb573db8bb89b389e9971853a7f"
+  dependencies:
+    lutils-typeof "~0.1.0"
 
 trim-right@^1.0.1:
   version "1.0.1"

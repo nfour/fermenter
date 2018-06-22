@@ -80,7 +80,8 @@ export interface IGherkinAstStep {
 
 export interface IGherkinAstExamples extends IGherkinAstEntity {
   type: 'Examples';
-  tableHeader: IGherkinAstTableRow[];
+  /** TODO: is this possibly undefined? */
+  tableHeader: IGherkinAstTableRow;
   tableBody: IGherkinAstTableRow[];
 }
 
