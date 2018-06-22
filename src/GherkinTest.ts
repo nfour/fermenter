@@ -54,7 +54,7 @@ function describeFeature ({ featureBuilder, ast, configure }: {
         describeScenario({
           scenario,
           background,
-          initialState: {}, // TODO: state meeee
+          initialState: undefined, // TODO: state meeee
         });
       });
 
@@ -68,7 +68,7 @@ function describeFeature ({ featureBuilder, ast, configure }: {
   }
 }
 
-function describeGherkinOperations (steps: IGherkinOperationStore, initialState = {}) {
+function describeGherkinOperations (steps: IGherkinOperationStore, initialState: any) {
   let state = initialState;
 
   steps.forEach((step) => {
@@ -94,10 +94,10 @@ async function executeStep (step: IGherkinStep, initialState: any) {
   return initialState;
 }
 
-function describeScenario ({ background, scenario, initialState = {} }: {
+function describeScenario ({ background, scenario, initialState }: {
   scenario: IGherkinScenario,
+  initialState: any,
   background?: IGherkinBackground,
-  initialState?: any,
 }) {
   describe(scenario.match.toString(), () => {
     let state = initialState;

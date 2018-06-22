@@ -54,8 +54,6 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
     .And('I do nothing', (state) => state)
     .Then('I get', (state, text: string) => {
       expect(state.c).toBe(parseInt(text, 10));
-
-      return state;
     });
 
   Scenario('A simple multiplication test')
