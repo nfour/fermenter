@@ -178,7 +178,7 @@ export interface IBackgroundBuilder {
 export interface IScenarioOutlineBuilder {
   steps: IScenarioFluid;
   scenarioOutline: IGherkinScenarioOutline;
-  scenarios: IGherkinFeature['Scenarios'];
+  scenarios: IGherkinFeature['scenarios'];
 }
 
 export interface IDict<V> { [k: string]: V; }
@@ -186,12 +186,14 @@ export type IGherkinParameter = string | number | IGherkinTableParam;
 
 export type IGherkinOperationStore<
   G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
-> = Map<IMatch, {
-  fn: IFluidFnCallback,
+> = Map<IMatch, IGherkinStep<G>>;
+
+export interface IGherkinStep<G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape> {
+  fn: IFluidFnCallback;
   name: string;
   gherkin: G;
-  params: IGherkinParameter[]
-}>;
+  params: IGherkinParameter[];
+}
 
 export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidFnCallback }>;
 
@@ -225,7 +227,7 @@ export interface IGherkinFeature {
   gherkin: IGherkinAstFeature;
   name: IGherkinAstFeature['name'];
 
-  Background?: IGherkinBackground;
-  Scenarios: Map<IMatch, IGherkinScenario>;
+  background?: IGherkinBackground;
+  scenarios: Map<IMatch, IGherkinScenario>;
   ScenarioOutlines: Map<IMatch, IGherkinScenarioOutline>;
 }

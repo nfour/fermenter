@@ -1,10 +1,18 @@
 import { writeJsonSync } from 'fs-extra';
 import { join } from 'path';
-import { executeFeature } from './executeFeature';
+
 import { FeatureBuilder } from './FeatureBuilder';
 import { deferredPromise } from './lib/utils';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
-import { IGherkinAst, IGherkinAstFeature, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
+import {
+  IGherkinAst,
+  IGherkinAstEntity,
+  IGherkinBackground,
+  IGherkinMethods,
+  IGherkinOperationStore,
+  IGherkinScenario,
+  IGherkinStep,
+} from './types';
 
 export type IConfigureFn = (t: IGherkinMethods) => void;
 
@@ -22,11 +30,11 @@ function describeFeature ({ featureBuilder, ast, configure }: {
   ast: IGherkinAst;
   configure: IConfigureFn;
 }) {
-  const featureTitle = extractFeatureTestTitle(ast.feature);
 
   let error: undefined|Error;
+  const title = formatTitle(ast.feature);
 
-  describe(featureTitle, async () => {
+  describe(title, async () => {
     try {
       const whenConfigured = deferredPromise();
 
@@ -40,14 +48,16 @@ function describeFeature ({ featureBuilder, ast, configure }: {
 
       whenConfigured.resolve();
 
-      const { Scenarios } = featureBuilder.feature;
+      const { scenarios, background } = featureBuilder.feature;
 
-      Scenarios.forEach(describeScenario);
+      scenarios.forEach((scenario) => {
+        describeScenario({
+          scenario,
+          background,
+          initialState: {}, // TODO: state meeee
+        });
+      });
 
-      // TODO: outlines should populate Scenarios or require joining with existing Scenarios
-      // TODO: background
-
-      executeFeature({ featureBuilder, ast });
     } catch (e) {
       error = e;
     }
@@ -58,40 +68,71 @@ function describeFeature ({ featureBuilder, ast, configure }: {
   }
 }
 
-function testGherkinOperations (operations: IGherkinOperationStore, initialState = {}) {
+function describeGherkinOperations (steps: IGherkinOperationStore, initialState = {}) {
   let state: any = initialState;
 
-  // TODO: this needs to be wrapped in state machine
-  operations.forEach((operation) => {
+  steps.forEach((step) => {
     // TODO: must also populate @tags etc. like feature title
-    test(operation.name, async () => {
-      const returnedState = await operation.fn(state, ...operation.params);
 
-      if (returnedState !== undefined) { state = returnedState; }
+    const title = formatTitle({ name: step.name });
+
+    test(title, async () => {
+      const nextState = executeStep(step, state);
+
+      state = nextState;
     }, 99999); // TODO: add timeout config opt
   });
 }
 
-function describeScenario (scenario: IGherkinScenario) {
-  // TODO: wheres my background @?
+async function executeStep (step: IGherkinStep, initialState: any) {
+  const state = await step.fn(initialState, ...step.params);
 
+  if (state !== undefined) {
+    return state;
+  }
+
+  return initialState;
+}
+
+function describeScenario ({ background, scenario, initialState = {} }: {
+  scenario: IGherkinScenario,
+  background?: IGherkinBackground,
+  initialState?: any,
+}) {
   describe(scenario.match.toString(), () => {
-    // TODO: define state here
-    testGherkinOperations(new Map([
+    let state = initialState;
+
+    if (background && background.Given) {
+      beforeAll(async () => {
+        background.Given.forEach((step) => {
+          const nextState = executeStep(step, state);
+
+          state = nextState;
+        });
+      });
+    }
+
+    const scenarioSteps = new Map([
       ...scenario.Given || [],
       ...scenario.When || [],
       ...scenario.Then || [],
-    ]));
+    ]);
+
+    describeGherkinOperations(scenarioSteps, state);
   });
 }
 
-function extractFeatureTestTitle (feature: IGherkinAstFeature): string {
-  const tags = feature.tags
-    ? `${feature.tags.map(({ name }) => name).join(' ')}`
+function formatTitle ({
+  tags: inputTags, name, description = '',
+}: Pick<IGherkinAstEntity, 'description' | 'name' | 'tags'>) {
+  const tags = inputTags
+    ? ` ${inputTags.map((tag) => tag.name).join(' ')}`
     : '';
 
   return [
-    `${feature.name} ${tags}`,
-    `${feature.description || ''}`,
-  ].join('\n');
+    `${name}${tags}`,
+    `  ${description}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
 }

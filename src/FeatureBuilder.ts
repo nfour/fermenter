@@ -3,7 +3,6 @@ import * as Interpolator from 'trans-interpolator';
 import { GherkinTableReader } from './lib/GherkinTableReader';
 import { IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib/matchInGherkinCollection';
 import { parseGherkinParameters } from './lib/parseGherkinParameters';
-import { mapToObject } from './lib/utils';
 import {
   IAndFluid,
   IBackgroundBuilder,
@@ -36,7 +35,7 @@ import {
  */
 export class FeatureBuilder {
   feature = <IGherkinFeature> {
-    Scenarios: new Map(),
+    scenarios: new Map(),
     ScenarioOutlines: new Map(),
   };
 
@@ -56,7 +55,7 @@ export class FeatureBuilder {
 
       const { scenario, steps } = ScenarioFluidBuilder({ match, gherkin });
 
-      this.feature.Scenarios.set(match, scenario);
+      this.feature.scenarios.set(match, scenario);
 
       return steps;
     };
@@ -74,7 +73,7 @@ export class FeatureBuilder {
 
       const { scenarioOutline, scenarios, steps } = ScenarioOutlineFluidBuilder({ match, gherkin, whenConfigured });
 
-      this.feature.Scenarios = new Map([...this.feature.Scenarios, ...scenarios]);
+      this.feature.scenarios = new Map([...this.feature.scenarios, ...scenarios]);
       this.feature.ScenarioOutlines.set(match, scenarioOutline);
 
       return steps;
@@ -93,7 +92,7 @@ export class FeatureBuilder {
 
       const { background, steps } = BackgroundFluidBuilder({ match, gherkin });
 
-      this.feature.Background = background;
+      this.feature.background = background;
 
       return steps;
     };
@@ -195,10 +194,9 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, whenConfigured }: {
 
   const examples = GherkinTableReader({
     rows: [exampleSrc.tableHeader, ...exampleSrc.tableBody || []],
-
   }).rows.mapByTop();
 
-  const scenarioBuilders = examples.map((example) => {
+  const scenarioBuilders = examples.map((example, index) => {
     const interp = new Interpolator(example, { open: '<', close: '>' });
 
     const scenarioSteps = outlineSteps.map((step) => {
@@ -208,17 +206,6 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, whenConfigured }: {
       };
     });
 
-    // console.dir({ data, scenarioSteps });
-
-    // const inputGherkin = {
-    //   ...gherkin as any,
-    //   keyword: 'Scenario',
-    //   type: 'Scenario',
-    //   steps: scenarioSteps,
-    // };
-
-    // console.dir({ inputGherkin }, { depth: 5, colors: true  });
-
     return ScenarioFluidBuilder({
       match,
       gherkin: {
@@ -227,7 +214,7 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, whenConfigured }: {
         description: gherkin.description,
         steps: scenarioSteps,
         location: gherkin.location,
-        name: gherkin.name,
+        name: `${gherkin.name} (${index})`,
         tags: gherkin.tags,
       },
     });
