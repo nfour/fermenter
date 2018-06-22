@@ -96,7 +96,7 @@
                         "line": 15,
                         "column": 13
                       },
-                      "value": "3"
+                      "value": "b"
                     }
                   ]
                 },
@@ -113,7 +113,7 @@
                         "line": 16,
                         "column": 9
                       },
-                      "value": "b"
+                      "value": "3"
                     },
                     {
                       "type": "TableCell",

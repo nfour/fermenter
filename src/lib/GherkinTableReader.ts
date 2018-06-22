@@ -32,7 +32,7 @@ export function GherkinTableReader ({ rows: inputRows = [] }: {
         ...o,
         [key]: contentRows.map((cells) => cells[index]),
       };
-    }, {});
+    }, {} as IDict<string[]>);
   });
 
   dict.left = () => {

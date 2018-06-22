@@ -12,8 +12,8 @@ Feature: using feature files in jest
   @addition
   Scenario: A simple addition test
     Given I have the following numbers:
-      | a | 3 |
-      | b | 4 |
+      | a | b |
+      | 3 | 4 |
     When I add the numbers
     And I do nothing
     Then I get

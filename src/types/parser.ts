@@ -22,7 +22,7 @@ export type IGherkinCollectionItemIndex = IGherkinAstEntity & IGherkinAstStep;
 
 export type IGherkinParams = string | number | IGherkinAstTableRow;
 
-// TODO: convert the Map to regular objects - it's better to support destructuring etc.
+// TODO: add a generic to populate table interfaces for known props
 export interface IGherkinTableParam {
 
   /**
@@ -90,7 +90,7 @@ export interface IGherkinTableParam {
    *
    */
   dict: {
-    (): IDict<string>
+    (): IDict<string[]>
 
     /**
      * With Gherkin:
@@ -111,7 +111,7 @@ export interface IGherkinTableParam {
      * }
      *
      */
-    left (): IDict<string>
+    left (): IDict<string[]>
 
     /**
      * With Gherkin:
