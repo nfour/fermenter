@@ -177,10 +177,14 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, whenConfigured }: {
     steps: outlineSteps,
   } = gherkin;
 
+  console.log({ exampleSrc });
+
   const examples = GherkinTableReader({
-    rows: [...exampleSrc.tableHeader, ...exampleSrc.tableBody],
+    rows: [exampleSrc.tableHeader, ...exampleSrc.tableBody || []],
 
   }).rows.mapByTop();
+
+  console.log(examples);
 
   const scenarioBuilders = examples.map((example) => {
     const { interpolate } = new Interpolator(
@@ -209,19 +213,21 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, whenConfigured }: {
     scenarioBuilders.map(({ scenario }): [IMatch, typeof scenario] => [scenario.match, scenario]),
   );
 
+  console.log({ scenarios });
   /** This is used to make the step methods DRY */
   const scenarioBuilderSkeleton = ScenarioFluidBuilder({ match, gherkin });
-
   const { steps } = scenarioBuilderSkeleton;
 
+  type IStepMethodNames = 'Given' | 'When' | 'Then';
+
   const scenarioOutline: IScenarioOutlineBuilder['scenarioOutline'] = {
-    ...scenarioBuilderSkeleton.scenario as Pick<IGherkinScenarioOutline, 'Given' | 'When' | 'Then'>,
+    ...scenarioBuilderSkeleton.scenario as Pick<IGherkinScenarioOutline, IStepMethodNames>,
     gherkin, match,
     scenarios,
     name: gherkin.name,
   };
 
-  const methods: Array<'Given' | 'When' | 'Then'> = ['Given', 'When', 'Then'];
+  const methods: IStepMethodNames[] = ['Given', 'When', 'Then'];
 
   /**
    * When configured: instrument our Scenarios with the ScenarioOutline step definitions

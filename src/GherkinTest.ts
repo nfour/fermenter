@@ -1,51 +1,68 @@
-import {  } from 'bluebird';
 import { writeJsonSync } from 'fs-extra';
 import { join } from 'path';
 import { executeFeature } from './executeFeature';
+import { FeatureBuilder } from './FeatureBuilder';
+import { deferredPromise } from './lib/utils';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
-import { IGherkinAstFeature, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
+import { IGherkinAst, IGherkinAstFeature, IGherkinMethods, IGherkinOperationStore, IGherkinScenario } from './types';
 
-export function GherkinTest ({ feature }: IGherkinParserConfig, configure: (t: IGherkinMethods) => void) {
+export type IConfigureFn = (t: IGherkinMethods) => void;
+
+export function GherkinTest ({ feature }: IGherkinParserConfig, configure: IConfigureFn) {
   // TODO: stop erroring here, instead `describe` first so we dont have test-less jest files
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
   writeJsonSync(join(__dirname, '../reference/ast.json'), ast, { spaces: 2 });
 
+  describeFeature({ ast, configure, featureBuilder });
+}
+
+function describeFeature ({ featureBuilder, ast, configure }: {
+  featureBuilder: FeatureBuilder;
+  ast: IGherkinAst;
+  configure: IConfigureFn;
+}) {
   const featureTitle = extractFeatureTestTitle(ast.feature);
 
+  let error: undefined|Error;
+
   describe(featureTitle, async () => {
-    const isConfigured = new Promise((resolve) => {
+    try {
+      const whenConfigured = deferredPromise();
+
       const methods = <IGherkinMethods> {
         Scenario: featureBuilder.Scenario(),
-        ScenarioOutline: featureBuilder.ScenarioOutline(isConfigured),
+        ScenarioOutline: featureBuilder.ScenarioOutline(whenConfigured),
         Background: featureBuilder.Background(),
       };
 
       configure(methods);
 
-      resolve();
-    });
+      whenConfigured.resolve();
 
-    await isConfigured;
+      const { Scenarios } = featureBuilder.feature;
 
-    const { Scenarios } = featureBuilder.feature;
+      Scenarios.forEach(describeScenario);
 
-    Scenarios.forEach(describeScenario);
+      // TODO: outlines should populate Scenarios or require joining with existing Scenarios
+      // TODO: background
 
-    // TODO: outlines should populate Scenarios or require joining with existing Scenarios
-    // TODO: background
-
-    executeFeature({ featureBuilder, ast });
+      executeFeature({ featureBuilder, ast });
+    } catch (e) {
+      error = e;
+    }
   });
+
+  if (error) {
+    throw error;
+  }
 }
 
 function testGherkinOperations (operations: IGherkinOperationStore, initialState = {}) {
-
   let state: any = initialState;
 
   // TODO: this needs to be wrapped in state machine
   operations.forEach((operation) => {
-
     // TODO: must also populate @tags etc. like feature title
     test(operation.name, async () => {
       const returnedState = await operation.fn(state, ...operation.params);
