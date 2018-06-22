@@ -14,6 +14,7 @@ import {
   IGherkinAstScenarioOutline,
   IGherkinCollectionItemIndex,
   IGherkinFeature,
+  IGherkinLazyOperationStore,
   IGherkinMethods,
   IGherkinOperationStore,
   IGherkinScenario,
@@ -121,9 +122,24 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
   };
 }
 
-function ScenarioFluidBuilder ({ match, gherkin }: {
+/**
+ * Lazy Fluid Function. Only stores the `match` and `fn`
+ */
+function LazyFluidFn <R> ({ fluid, store }: {
+  fluid: R,
+  store: IGherkinLazyOperationStore,
+}): IFluidFn<R> {
+  return (match, fn) => {
+    store.set(match, { fn });
+
+    return fluid;
+  };
+}
+
+function ScenarioFluidBuilder ({ match, gherkin, FluidFnFactory = FluidFn }: {
   match: IMatch,
   gherkin: IGherkinScenario['gherkin'] | IGherkinScenarioOutline['gherkin'],
+  FluidFnFactory?: typeof FluidFn | typeof LazyFluidFn;
 }): IScenarioBuilder {
   const { steps: collection } = gherkin;
 
@@ -136,21 +152,21 @@ function ScenarioFluidBuilder ({ match, gherkin }: {
   };
 
   const thenFluid = <IAndFluid> {};
-  const Then = FluidFn({
+  const Then = FluidFnFactory({
     fluid: thenFluid,
     store: scenario.Then!,
     collectionParams: { collection, matchProperty: 'text', type: 'Step' },
   });
 
   const whenFluid = <IWhenFluid> { Then };
-  const When = FluidFn({
+  const When = FluidFnFactory({
     fluid: whenFluid,
     store: scenario.When!,
     collectionParams: { collection, matchProperty: 'text', type: 'Step' },
   });
 
   const givenFluid = <IGivenFluid> { Then, When };
-  const Given = FluidFn({
+  const Given = FluidFnFactory({
     fluid: givenFluid,
     store: scenario.Given!,
     collectionParams: { collection, matchProperty: 'text', type: 'Step' },
@@ -177,34 +193,44 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, whenConfigured }: {
     steps: outlineSteps,
   } = gherkin;
 
-  console.log({ exampleSrc });
-
   const examples = GherkinTableReader({
     rows: [exampleSrc.tableHeader, ...exampleSrc.tableBody || []],
 
   }).rows.mapByTop();
 
-  console.log(examples);
-
   const scenarioBuilders = examples.map((example) => {
-    const { interpolate } = new Interpolator(
-      mapToObject(example),
-      { open: '<', close: '>' },
-    );
+    const data = mapToObject(example);
+
+    const interp = new Interpolator(data, { open: '<', close: '>' });
 
     const scenarioSteps = outlineSteps.map((step) => {
       return {
         ...step,
-        text: interpolate(step.text),
+        text: interp.interpolate(step.text),
       };
     });
+
+    // console.dir({ data, scenarioSteps });
+
+    // const inputGherkin = {
+    //   ...gherkin as any,
+    //   keyword: 'Scenario',
+    //   type: 'Scenario',
+    //   steps: scenarioSteps,
+    // };
+
+    // console.dir({ inputGherkin }, { depth: 5, colors: true  });
 
     return ScenarioFluidBuilder({
       match,
       gherkin: {
-        ...gherkin as any,
         type: 'Scenario',
+        keyword: 'Scenario',
+        description: gherkin.description,
         steps: scenarioSteps,
+        location: gherkin.location,
+        name: gherkin.name,
+        tags: gherkin.tags,
       },
     });
   });
@@ -213,9 +239,8 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, whenConfigured }: {
     scenarioBuilders.map(({ scenario }): [IMatch, typeof scenario] => [scenario.match, scenario]),
   );
 
-  console.log({ scenarios });
   /** This is used to make the step methods DRY */
-  const scenarioBuilderSkeleton = ScenarioFluidBuilder({ match, gherkin });
+  const scenarioBuilderSkeleton = ScenarioFluidBuilder({ match, gherkin, FluidFnFactory: LazyFluidFn });
   const { steps } = scenarioBuilderSkeleton;
 
   type IStepMethodNames = 'Given' | 'When' | 'Then';

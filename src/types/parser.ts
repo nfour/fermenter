@@ -186,6 +186,8 @@ export type IGherkinOperationStore<
   params: IGherkinParameter[]
 }>;
 
+export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidFnCallback }>;
+
 export interface IGherkinScenarioBase {
   match: IMatch;
   name: IGherkinAstScenario['name'];

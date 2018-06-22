@@ -31,7 +31,7 @@ Feature: using feature files in jest
   @substraction
   Scenario Outline: A simple subtraction test
     Given I have numbers <num1> and <num2>
-    When I substract the numbers
+    When I subtract the numbers
     Then I get <total>
 
     Examples:
