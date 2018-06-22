@@ -17,6 +17,15 @@ const addNumbers = (state: { a: number, b: number }) => {
   };
 };
 
+const subtractNumbers = (state: { a: number, b: number }) => {
+  const { a, b } = state;
+
+  return {
+    ...state,
+    c: a - b,
+  };
+};
+
 const multiplyNumbers = (state: { a: number, b: number }) => {
   const { a, b } = state;
 
@@ -63,6 +72,6 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
 
   ScenarioOutline('A simple subtraction test')
     .Given('I have numbers {int} and {int}', getNumbers)
-    .When('I subtract the numbers', addNumbers)
+    .When('I subtract the numbers', subtractNumbers)
     .Then('I get {int}', checkResult);
 });

@@ -25,6 +25,29 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: IConf
   describeFeature({ ast, configure, featureBuilder });
 }
 
+export type IOnConfigured = (callback: () => void) => void;
+
+function configureMethods ({ configure, featureBuilder }: {
+  featureBuilder: FeatureBuilder;
+  configure: IConfigureFn
+}) {
+  let onConfiguredCallback: () => void;
+
+  const onConfigured: IOnConfigured = (callback) => {
+    onConfiguredCallback = callback;
+  };
+
+  const methods = <IGherkinMethods> {
+    Scenario: featureBuilder.Scenario(),
+    ScenarioOutline: featureBuilder.ScenarioOutline(onConfigured),
+    Background: featureBuilder.Background(),
+  };
+
+  configure(methods);
+
+  onConfiguredCallback!();
+}
+
 function describeFeature ({ featureBuilder, ast, configure }: {
   featureBuilder: FeatureBuilder;
   ast: IGherkinAst;
@@ -36,17 +59,7 @@ function describeFeature ({ featureBuilder, ast, configure }: {
 
   describe(title, async () => {
     try {
-      const whenConfigured = deferredPromise();
-
-      const methods = <IGherkinMethods> {
-        Scenario: featureBuilder.Scenario(),
-        ScenarioOutline: featureBuilder.ScenarioOutline(whenConfigured),
-        Background: featureBuilder.Background(),
-      };
-
-      configure(methods);
-
-      whenConfigured.resolve();
+      configureMethods({ configure, featureBuilder });
 
       const { scenarios, background } = featureBuilder.feature;
 
@@ -57,7 +70,6 @@ function describeFeature ({ featureBuilder, ast, configure }: {
           initialState: undefined, // TODO: state meeee
         });
       });
-
     } catch (e) {
       error = e;
     }
@@ -72,8 +84,6 @@ function describeGherkinOperations (steps: IGherkinOperationStore, initialState:
   let state = initialState;
 
   steps.forEach((step) => {
-    // TODO: must also populate @tags etc. like feature title
-
     const title = formatTitle({ name: step.name });
 
     test(title, async () => {
@@ -127,7 +137,7 @@ function describeScenario ({ background, scenario, initialState }: {
 function formatTitle ({
   tags: inputTags, name, description = '',
 }: Pick<IGherkinAstEntity, 'description' | 'name' | 'tags'>) {
-  const padLines = (str: string, pad = '  ') =>
+  const leftPadLines = (str: string, pad = '  ') =>
     str.split('\n').map((line) => `${pad}${line}`).join('\n');
 
   const tags = inputTags
@@ -136,8 +146,8 @@ function formatTitle ({
 
   return [
     `${name}${tags}`,
-    `${padLines(description)}`,
+    `${leftPadLines(description)}`,
   ]
     .filter(Boolean)
-    .join('\n');
+    .join('\n').trimRight();
 }

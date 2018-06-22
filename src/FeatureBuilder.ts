@@ -1,5 +1,6 @@
 import * as Interpolator from 'trans-interpolator';
 
+import { IOnConfigured } from './GherkinTest';
 import { GherkinTableReader } from './lib/GherkinTableReader';
 import { IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib/matchInGherkinCollection';
 import { parseGherkinParameters } from './lib/parseGherkinParameters';
@@ -61,7 +62,7 @@ export class FeatureBuilder {
     };
   }
 
-  ScenarioOutline (whenConfigured: PromiseLike<any>): IGherkinMethods['ScenarioOutline'] {
+  ScenarioOutline (onConfigured: IOnConfigured): IGherkinMethods['ScenarioOutline'] {
     const { gherkin: { children: collection } } = this.feature;
 
     return (match) => {
@@ -71,7 +72,7 @@ export class FeatureBuilder {
         type: 'ScenarioOutline',
       });
 
-      const { scenarioOutline, scenarios, steps } = ScenarioOutlineFluidBuilder({ match, gherkin, whenConfigured });
+      const { scenarioOutline, scenarios, steps } = ScenarioOutlineFluidBuilder({ match, gherkin, onConfigured });
 
       this.feature.scenarios = [...this.feature.scenarios, ...scenarios];
       this.feature.scenarioOutlines = [...this.feature.scenarioOutlines, scenarioOutline];
@@ -182,10 +183,10 @@ function ScenarioFluidBuilder ({ match, gherkin, FluidFnFactory = FluidFn }: {
   };
 }
 
-function ScenarioOutlineFluidBuilder ({ match, gherkin, whenConfigured }: {
+function ScenarioOutlineFluidBuilder ({ match, gherkin, onConfigured }: {
   match: IMatch,
   gherkin: IGherkinScenarioOutline['gherkin'],
-  whenConfigured: PromiseLike<any>,
+  onConfigured: IOnConfigured,
 }): IScenarioOutlineBuilder {
   const {
     examples: [exampleSrc],
@@ -240,7 +241,9 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, whenConfigured }: {
   /**
    * When configured: instrument our Scenarios with the ScenarioOutline step definitions
    */
-  whenConfigured.then(() => {
+  onConfigured(() => {
+    console.log('preparing scenarios...');
+
     methods.forEach((name) => {
       const operations = scenarioOutline[name];
 
