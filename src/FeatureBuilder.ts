@@ -199,9 +199,7 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, whenConfigured }: {
   }).rows.mapByTop();
 
   const scenarioBuilders = examples.map((example) => {
-    const data = mapToObject(example);
-
-    const interp = new Interpolator(data, { open: '<', close: '>' });
+    const interp = new Interpolator(example, { open: '<', close: '>' });
 
     const scenarioSteps = outlineSteps.map((step) => {
       return {

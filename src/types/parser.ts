@@ -33,7 +33,7 @@ export interface IGherkinTableParam {
    * ```
    * @example
    *
-   * [ ...table.rows() ]
+   * table.rows()
    *
    * // returns
    *
@@ -62,11 +62,11 @@ export interface IGherkinTableParam {
      * // returns an array of Map's, mapped to the header as keys
      *
      * [
-     *   [ ['a', '1'], ['b', '2'] ],
-     *   [ ['a', '3'], ['b', '4'] ],
+     *   { a: '1', b: '2' },
+     *   { a: '3', b: '4' },
      * ]
      */
-    mapByTop (): Array<Map<string, string>>;
+    mapByTop (): Array<IDict<string>>;
   };
 
   /**
@@ -76,20 +76,21 @@ export interface IGherkinTableParam {
    * | 1 | 2 |
    * | 1 | 2 |
    * ```
+   *
    * @example
    *
-   * [ ...table.dict() ]
+   * table.dict()
    *
    * // returns a Map, mapped to the header as keys
    *
-   * [
-   *   [ 'a', ['1', '1'] ],
-   *   [ 'b', ['2', '2'] ],
-   * ]
+   * {
+   *   a: ['1', '1'],
+   *   b: ['2', '2'],
+   * }
    *
    */
   dict: {
-    (): Map<string, string[]>;
+    (): IDict<string>
 
     /**
      * With Gherkin:
@@ -97,19 +98,20 @@ export interface IGherkinTableParam {
      * | a | 1 | 3 |
      * | b | 2 | 4 |
      * ```
+     *
      * @example
      *
-     * [ ...table.dict.left() ]
+     * table.dict.left()
      *
      * // returns a Map, mapped to the left column as keys
      *
-     * [
-     *   [ 'a', ['1', '3'] ],
-     *   [ 'b', ['2', '4'] ],
-     * ]
+     * {
+     *   a: ['1', '3'],
+     *   b: ['2', '4'],
+     * }
      *
      */
-    left (): Map<string, string[]>;
+    left (): IDict<string>
 
     /**
      * With Gherkin:
@@ -118,19 +120,20 @@ export interface IGherkinTableParam {
      * | a | 1 | 3 |
      * | b | 2 | 4 |
      * ```
+     *
      * @example
      *
-     * [ ...table.dict.matrix() ]
+     * table.dict.matrix()
      *
      * // returns a Map, mapped to the left column as keys into a Map of head column keys
      *
-     * [
-     *   [ 'a', [[ 'x', '1' ], ['y', '3']] ],
-     *   [ 'b', [[ 'x', '2' ], ['y', '4']] ],
-     * ]
+     * {
+     *   a: { x: '1', y: '3' },
+     *   b: { x: '2', y: '4' },
+     * }
      *
      */
-    matrix (): Map<string, Map<string, string>>
+    matrix (): IDict<IDict<string>>,
   };
 
   /**
@@ -140,13 +143,15 @@ export interface IGherkinTableParam {
    * | 1 | 2 |
    * | 1 | 2 |
    * ```
+   *
    * @example
    *
-   * [ ...table.headers() ]
+   * table.headers()
    *
    * // returns
    *
    * ['a', 'b']
+   *
    */
   headers (): string[];
 }
@@ -176,6 +181,7 @@ export interface IScenarioOutlineBuilder {
   scenarios: IGherkinFeature['Scenarios'];
 }
 
+export interface IDict<V> { [k: string]: V; }
 export type IGherkinParameter = string | number | IGherkinTableParam;
 
 export type IGherkinOperationStore<
