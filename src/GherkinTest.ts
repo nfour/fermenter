@@ -127,13 +127,16 @@ function describeScenario ({ background, scenario, initialState }: {
 function formatTitle ({
   tags: inputTags, name, description = '',
 }: Pick<IGherkinAstEntity, 'description' | 'name' | 'tags'>) {
+  const padLines = (str: string, pad = '  ') =>
+    str.split('\n').map((line) => `${pad}${line}`).join('\n');
+
   const tags = inputTags
     ? ` ${inputTags.map((tag) => tag.name).join(' ')}`
     : '';
 
   return [
     `${name}${tags}`,
-    `  ${description}`,
+    `${padLines(description)}`,
   ]
     .filter(Boolean)
     .join('\n');
