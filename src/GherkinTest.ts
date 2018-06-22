@@ -1,8 +1,7 @@
-import { writeJsonSync } from 'fs-extra';
+import { writeFileSync } from 'fs';
 import { join } from 'path';
 
 import { FeatureBuilder } from './FeatureBuilder';
-import { deferredPromise } from './lib/utils';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
 import {
   IGherkinAst,
@@ -20,7 +19,8 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: IConf
   // TODO: stop erroring here, instead `describe` first so we dont have test-less jest files
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
-  writeJsonSync(join(__dirname, '../reference/ast.json'), ast, { spaces: 2 });
+  // FIXME: remove later
+  writeFileSync(join(__dirname, '../reference/ast.json'), JSON.stringify(ast, null, 2));
 
   describeFeature({ ast, configure, featureBuilder });
 }

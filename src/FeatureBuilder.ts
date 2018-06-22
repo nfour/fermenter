@@ -239,11 +239,10 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, onConfigured }: {
   const methods: IStepMethodNames[] = ['Given', 'When', 'Then'];
 
   /**
-   * When configured: instrument our Scenarios with the ScenarioOutline step definitions
+   * When configured:
+   *   - Invoke our Scenarios with the ScenarioOutline step definitions
    */
   onConfigured(() => {
-    console.log('preparing scenarios...');
-
     methods.forEach((name) => {
       const operations = scenarioOutline[name];
 
