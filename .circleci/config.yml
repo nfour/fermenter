@@ -28,11 +28,12 @@ jobs:
   deploy:
     <<: *defaults
 
-    requires: build
+    requires:
+      - build
 
     filters:
       tags:
-        only: /.+/
+        only: /^v.+/
 
     steps:
       - run: pwd
