@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/nfour/gherkin-framework.svg?style=svg)](https://circleci.com/gh/nfour/gherkin-framework)
+
 # Gherkin Framework `WIP`
 
 When it's done you'll be able to do something like this:
