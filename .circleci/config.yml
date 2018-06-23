@@ -21,8 +21,6 @@ jobs:
           paths: [node_modules]
           key: dependencies-{{ checksum "package.json" }}
 
-      - run: yarn preversion
-
   lintTest:
     <<: *defaults
 
