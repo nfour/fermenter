@@ -4,10 +4,12 @@
   "version": "0.0.1",
   "scripts": {
     "test": "jest",
-    "coverage": "jest --coverage",
+    "test:coverage": "jest --coverage",
     "build": "tsc",
-    "preversion": "yarn lint && yarn build && yarn test && changelog-verify CHANGELOG.md",
-    "version": "version-changelog CHANGELOG.md && git add CHANGELOG.md",
+    "changelog:verify": "changelog-verify CHANGELOG.md",
+    "changelog:version": "version-changelog CHANGELOG.md && git add CHANGELOG.md",
+    "preversion": "yarn lint && yarn build && yarn test:coverage && yarn changelog:verify",
+    "version": "yarn changelog:version",
     "postversion": "yarn build",
     "lint": "tslint --project tsconfig.json"
   },

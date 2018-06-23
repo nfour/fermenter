@@ -23,21 +23,37 @@ jobs:
 
       - run: yarn preversion
 
+  lintTest:
+    <<: *defaults
+
+    steps: [run: yarn lint]
+
+  unitTest:
+    <<: *defaults
+
+    steps: [run: yarn test:coverage]
+
+  changelogTest:
+    <<: *defaults
+
+    steps: [run: yarn changelog:verify]
+
   deploy:
     <<: *defaults
 
-    steps:
-      - run: yarn release
+    steps: [run: yarn release]
 
 workflows:
   version: 2
-  buildAndDeploy:
+  deploy:
     jobs:
       - build
+      - lintTest: { requires: [build] }
+      - unitTest: { requires: [build] }
+      - changelogTest: { requires: [build] }
       - deploy:
-          requires: [build]
+          requires: [build, lintTest, unitTest, changelogTest]
           filters:
-            tags:
-              only: /^v.+/
+            tags: { only: /^v\b.+/ }
 
 
