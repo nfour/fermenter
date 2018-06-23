@@ -25,7 +25,6 @@ jobs:
 
       - run: yarn preversion
 
-
   deploy:
     <<: *defaults
 
@@ -39,7 +38,10 @@ jobs:
 
 workflows:
   version: 2
-  buildAndDeploy:
+  build:
     jobs:
       - build
+  deploy:
+    jobs:
+      - deploy
 
