@@ -26,7 +26,7 @@ jobs:
   lintTest:
     <<: *defaults
 
-    steps: [{run: yarn lint}]
+    steps: [{run: "yarn lint"}]
 
   unitTest:
     <<: *defaults
@@ -37,12 +37,12 @@ jobs:
   changelogTest:
     <<: *defaults
 
-    steps: [{run: yarn changelog:verify}]
+    steps: [{run: "yarn changelog:verify"}]
 
   deploy:
     <<: *defaults
 
-    steps: [{run: yarn release}]
+    steps: [{run: "yarn release"}]
 
 
 workflows:
