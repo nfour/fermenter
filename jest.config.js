@@ -8,7 +8,7 @@ module.exports = {
   coverageDirectory: ".coverage",
   coverageReporters: ['text', 'text-summary'],
   coverageThreshold: {
-    global: { statements: 90, lines: 99, functions: 90 }
+    global: { statements: 90, lines: 90, functions: 90 }
   },
   // reporters: ['jest-tap-reporter'],
   testPathIgnorePatterns: [
