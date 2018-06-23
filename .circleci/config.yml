@@ -2,11 +2,11 @@ defaults: &defaults
   working_directory: ~/project
   docker: [ image: 'nfour/circleci-node:9' ]
 
-restoreCache: &restoreCache
+defaultSteps: &restoreCache
   restore_cache:
     keys:
-    - dependencies-{{ checksum "package.json" }}
-    - dependencies-
+    - deps-{{ checksum "package.json" }}
+    - deps-
 
 version: 2
 jobs:
@@ -17,32 +17,41 @@ jobs:
       - checkout
       - *restoreCache
       - run: yarn install
-
       - save_cache:
           paths: [node_modules]
-          key: dependencies-{{ checksum "package.json" }}
+          key: deps-{{ checksum "package.json" }}
 
   lintTest:
     <<: *defaults
 
     steps:
+      - checkout
       - *restoreCache
-      - run: "yarn lint"
+      - run: yarn lint
 
   unitTest:
     <<: *defaults
 
-    steps: [ run: "yarn test:coverage" ]
+    steps:
+      - checkout
+      - *restoreCache
+      - run: yarn test:coverage
 
   changelogTest:
     <<: *defaults
 
-    steps: [ run: "yarn changelog:verify" ]
+    steps:
+      - checkout
+      - *restoreCache
+      - run: yarn changelog:verify
 
   deploy:
     <<: *defaults
 
-    steps: [ run: "yarn release" ]
+    steps:
+      - checkout
+      - *restoreCache
+      - run: yarn release
 
 
 workflows:
