@@ -38,10 +38,8 @@ jobs:
 
 workflows:
   version: 2
-  build:
+  buildAndDeploy:
     jobs:
       - build
-  deploy:
-    jobs:
       - deploy
 
