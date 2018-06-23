@@ -18,6 +18,10 @@
     "type": "git",
     "url": "https://github.com/nfour/gherkin-framework"
   },
+  "keywords": [
+    "gherkin", "cucumber", "bdd", "functional",
+    "procedural", "test", "jest", "framework"
+  ],
   "author": "nfour",
   "license": "ISC",
   "contributors": [
