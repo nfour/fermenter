@@ -1,7 +1,6 @@
 defaults: &defaults
   working_directory: ~/project
-  docker:
-    - image: 'nfour/circleci-node:9'
+  docker: [image: 'nfour/circleci-node:9']
 
 version: 2
 jobs:
@@ -19,8 +18,7 @@ jobs:
       - run: yarn install
 
       - save_cache:
-          paths:
-            - node_modules
+          paths: [node_modules]
           key: dependencies-{{ checksum "package.json" }}
 
       - run: yarn preversion
@@ -28,15 +26,7 @@ jobs:
   deploy:
     <<: *defaults
 
-    requires:
-      - build
-
-    filters:
-      tags:
-        only: /^v.+/
-
     steps:
-      - run: pwd
       - run: yarn release
 
 workflows:
@@ -44,5 +34,10 @@ workflows:
   buildAndDeploy:
     jobs:
       - build
-      - deploy
+      - deploy:
+          requires: [build]
+          filters:
+            tags:
+              only: /^v.+/
+
 
