@@ -63,6 +63,7 @@ workflows:
       - unitTest: { requires: [build] }
       - changelogTest: { requires: [build] }
       - deploy:
+          type: approval
           requires: [build, lintTest, unitTest, changelogTest]
           filters:
             tags: { only: /^v\b.+/ }
