@@ -18,7 +18,7 @@ jobs:
       - *restoreCache
       - run: yarn install
       - save_cache:
-          paths: [node_modules]
+          paths: [node_modules, build]
           key: deps-{{ checksum "package.json" }}
 
   lintTest:
