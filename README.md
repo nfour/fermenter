@@ -3,6 +3,8 @@
 # Fermenter
 
 - [Fermenter](#fermenter)
+    - [About](#about)
+    - [Execution](#execution)
   - [Contributing](#contributing)
   - [Changelog](#changelog)
 
@@ -10,6 +12,8 @@ A gherkin based test runner which aims to be a **functional programming** altern
 
 > Currently in heavy development, in an alpha state
 > Near MVP completion
+
+### About
 
 It lets you write something like this:
 
@@ -43,12 +47,24 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
 
 The above will be run against the gherkin file: [calculator.feature](src/tests/features/calculator.feature)
 
-- It executes your feature file with `describe` and `test` provided (by default) by `jest`.
-- It will be possible or mandatory to provide the framework functions, so that `mocha` and other compatible test runners can be utilized.
-
-For updated reference, see:
+For reference, see:
 - [src/tests/calculator.framework.test.ts](src/tests/calculator.framework.test.ts)
 - [src/tests/features/calculator.feature](src/tests/features/calculator.feature)
+
+### Execution
+
+Like CucumberJS:
+- Uses same gherkin parser and expression parser
+
+Unlike CucumberJS:
+- **Scenarios** and **ScenarioOutlines** are executed with fresh `state` which is reduced through each step function
+- Step functions are executed without `this` context, and are intended to be pure.
+- Strong TypeScript support for step state constraints
+- Step definition names no longer have to be unique for every feature file.
+  - If you want to re-use a step, you simply pass it the same step function
+- Entering a file with a `GherkinTest` should show you exactly where all the logic is coming in from - zero magic.
+- It executes your feature file with `describe` and `test` etc. provided (by default) by `jest`.
+  - It will be mandatory to provide these framework functions, so that `mocha` and other compatible test runners can be used
 
 ## Contributing
 
