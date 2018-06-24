@@ -7,7 +7,7 @@ restoreCache: &restoreCache
     keys:
       - deps-{{ checksum "package.json" }}
       - deps-
-      - build
+      - build-{{ .Environment.CIRCLE_SHA1 }}
 
 version: 2
 jobs:
@@ -23,7 +23,7 @@ jobs:
           key: deps-{{ checksum "package.json" }}
       - save_cache:
           paths: [build]
-          key: build
+          key: build-{{ .Environment.CIRCLE_SHA1 }}
 
   lintTest:
     <<: *defaults
