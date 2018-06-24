@@ -4,6 +4,10 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Export things from the index
+- General tidy up
+- Tidy up readme
+
 ## [0.1.0][] - 2018-06-24
 
 - Init
