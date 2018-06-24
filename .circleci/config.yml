@@ -5,8 +5,9 @@ defaults: &defaults
 defaultSteps: &restoreCache
   restore_cache:
     keys:
-    - deps-{{ checksum "package.json" }}
-    - deps-
+      - deps-{{ checksum "package.json" }}
+      - deps-
+      - build
 
 version: 2
 jobs:
@@ -18,8 +19,11 @@ jobs:
       - *restoreCache
       - run: yarn install
       - save_cache:
-          paths: [node_modules, build]
+          paths: [node_modules]
           key: deps-{{ checksum "package.json" }}
+      - save_cache:
+          paths: [build]
+          key: build
 
   lintTest:
     <<: *defaults
