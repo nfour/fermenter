@@ -68,8 +68,8 @@ Unlike CucumberJS:
 
 ## Contributing
 
-> [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Changelog
 
-> [CHANGELOG.md](./CHANGELOG.md)
+- [CHANGELOG.md](./CHANGELOG.md)
