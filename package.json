@@ -2,7 +2,7 @@
   "name": "fermenter",
   "description": "A Gherkin Based test runner",
   "private": true,
-  "version": "0.2.1-alpha",
+  "version": "0.2.2-alpha",
   "scripts": {
     "test": "jest",
     "test:coverage": "jest --coverage",
