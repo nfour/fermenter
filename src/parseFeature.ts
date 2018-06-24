@@ -9,9 +9,20 @@ export interface IGherkinParserOutput {
   featureBuilder: FeatureBuilder;
 }
 
+export interface ITestRunnerApi {
+  describe: jest.Describe;
+  test: jest.It;
+
+  beforeEach: jest.It;
+  afterEach: jest.It;
+  beforeAll: jest.It;
+  afterAll: jest.It;
+}
+
 export interface IGherkinParserConfig {
   feature: string;
   stackIndex?: number;
+  runner?: ITestRunnerApi;
 }
 
 /** Parses a feature file from a relative filePath */
