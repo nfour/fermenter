@@ -14,7 +14,10 @@ export interface IGherkinParserConfig {
   stackIndex?: number;
 }
 
-export function parseFeature ({ feature, stackIndex = 2 }: IGherkinParserConfig): IGherkinParserOutput {
+/** Parses a feature file from a relative filePath */
+export function parseFeature ({ feature, stackIndex = 2 }: Pick<
+  IGherkinParserConfig, 'feature' | 'stackIndex'
+>): IGherkinParserOutput {
   const testFilePath = new Error().stack!
     .split('\n')[stackIndex]
     .match(/\(([^:]+):/ig)![0]
