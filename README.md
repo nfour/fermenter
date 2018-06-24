@@ -65,6 +65,7 @@ Unlike CucumberJS:
 - Entering a file with a `GherkinTest` should show you exactly where all the logic is coming in from - zero magic.
 - It executes your feature file with `describe` and `test` etc. provided (by default) by `jest`.
   - It will be mandatory to provide these framework functions, so that `mocha` and other compatible test runners can be used
+  - This means no global pollution and no framework dependencies holding you back
 
 ## Contributing
 
