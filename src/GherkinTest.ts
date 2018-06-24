@@ -1,6 +1,3 @@
-import { writeFileSync } from 'fs';
-import { join } from 'path';
-
 import { FeatureBuilder } from './FeatureBuilder';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
 import {
@@ -33,7 +30,7 @@ export function GherkinTest ({ feature }: IGherkinTestParams, configure: IConfig
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
   // FIXME: remove later
-  writeFileSync(join(__dirname, './tests/reference/ast.json'), JSON.stringify(ast, null, 2));
+  // writeFileSync(join(__dirname, './tests/reference/ast.json'), JSON.stringify(ast, null, 2));
 
   describeFeature({ ast, configure, featureBuilder });
 
