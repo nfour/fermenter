@@ -11,7 +11,7 @@ restoreCache: &restoreCache
 
 attachWorkspace: &attachWorkspace
   attach_workspace:
-    at: '/tmp/workspace'
+    at: '.'
 
 version: 2
 jobs:
@@ -27,7 +27,7 @@ jobs:
           key: deps-{{ checksum "package.json" }}
       - run: yarn build
       - persist_to_workspace:
-          root: '/tmp/workspace'
+          root: '.'
           paths: [build]
 
   lintTest:
