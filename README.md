@@ -35,6 +35,10 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
     .Given('I have numbers {int} and {int}', getNumbers)
     .When('I subtract the numbers', subtractNumbers)
     .Then('I get {int}', checkResult);
+
+  Hook('afterAll', () => {
+    console.log('done')
+  })
 });
 ```
 
