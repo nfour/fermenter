@@ -17,6 +17,9 @@ Currently an alpha MVP.
 It lets you write something like this:
 
 ```ts
+import { GherkinTest } from 'fermenter';
+import { getNumbers /* ... */ } from './steps';
+
 GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, Hook }) => {
   Background()
     .Given('I can calculate', () => {
