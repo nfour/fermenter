@@ -61,10 +61,21 @@ workflows:
   version: 2
   deploy:
     jobs:
-      - build: { <<: *tagFilters }
-      - lintTest: { <<: *tagFilters, requires: [build] }
-      - unitTest: { <<: *tagFilters, requires: [build] }
-      - changelogTest: { <<: *tagFilters, requires: [build] }
+      - build:
+          <<: *tagFilters
+
+      - lintTest:
+          <<: *tagFilters
+          requires: [build]
+
+      - unitTest:
+          <<: *tagFilters
+          requires: [build]
+
+      - changelogTest:
+          <<: *tagFilters
+          requires: [build]
+
       - deploy:
           requires: [build, lintTest, unitTest, changelogTest]
           filters:
