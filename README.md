@@ -1,11 +1,17 @@
 [![CircleCI](https://circleci.com/gh/nfour/fermenter.svg?style=svg)](https://circleci.com/gh/nfour/fermenter)
 
-# Gherkin Framework `WIP`
+# Fermenter
 
-When it's done you'll be able to do something like this:
+A gherkin based test runner which aims to be a **functional programming** alternative to `CucumberJS`
+
+> Currently in heavy development, in an alpha state
+> Near MVP completion
+
+It lets you write something like this:
+
 
 ```ts
-GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, Hook }) => {
+GherkinTest('./features/calculator.feature', ({ Scenario, Background, ScenarioOutline, Hook }) => {
   Background()
     .Given('I can calculate', () => {
       expect(Math).toBeTruthy();
@@ -28,6 +34,6 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
 });
 ```
 
-See:
+For updated reference, see:
 - [src/tests/calculator.framework.test.ts](src/tests/calculator.framework.test.ts)
 - [src/tests/features/calculator.feature](src/tests/features/calculator.feature)
