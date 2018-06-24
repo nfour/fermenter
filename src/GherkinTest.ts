@@ -15,7 +15,21 @@ import {
 
 export type IConfigureFn = (t: IGherkinMethods) => void;
 
-export function GherkinTest ({ feature }: IGherkinParserConfig, configure: IConfigureFn) {
+export interface ITestRunnerApi {
+  describe: jest.Describe;
+  test: jest.It;
+
+  beforeEach: jest.It;
+  afterEach: jest.It;
+  beforeAll: jest.It;
+  afterAll: jest.It;
+}
+
+export interface IGherkinTestParams extends IGherkinParserConfig {
+  runner?: ITestRunnerApi;
+}
+
+export function GherkinTest ({ feature }: IGherkinTestParams, configure: IConfigureFn) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
   // FIXME: remove later

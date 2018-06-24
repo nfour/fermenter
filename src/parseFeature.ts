@@ -9,26 +9,14 @@ export interface IGherkinParserOutput {
   featureBuilder: FeatureBuilder;
 }
 
-export interface ITestRunnerApi {
-  describe: jest.Describe;
-  test: jest.It;
-
-  beforeEach: jest.It;
-  afterEach: jest.It;
-  beforeAll: jest.It;
-  afterAll: jest.It;
-}
-
 export interface IGherkinParserConfig {
   feature: string;
   stackIndex?: number;
-  runner?: ITestRunnerApi;
 }
 
+// TODO: make this pure functional, abstract the error stack relative shit out
 /** Parses a feature file from a relative filePath */
-export function parseFeature ({ feature, stackIndex = 2 }: Pick<
-  IGherkinParserConfig, 'feature' | 'stackIndex'
->): IGherkinParserOutput {
+export function parseFeature ({ feature, stackIndex = 2 }: IGherkinParserConfig): IGherkinParserOutput {
   const testFilePath = new Error().stack!
     .split('\n')[stackIndex]
     .match(/\(([^:]+):/ig)![0]
