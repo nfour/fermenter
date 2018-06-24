@@ -14,7 +14,7 @@ Currently an alpha MVP.
 
 ### About
 
-It lets you write something like this:
+It lets you write tests like this:
 
 ```ts
 import { GherkinTest } from 'fermenter';
