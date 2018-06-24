@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.2.4-alpha][] - 2018-06-24
+
 - Package no longer private. Releasing.
 
 ## [0.2.3-alpha][] - 2018-06-24
@@ -29,7 +31,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v0.2.3-alpha...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v0.2.4-alpha...HEAD
+[0.2.4-alpha]: https://github.com/nfour/fermenter/compare/v0.2.3-alpha...v0.2.4-alpha
 [0.2.3-alpha]: https://github.com/nfour/fermenter/compare/v0.2.2-alpha...v0.2.3-alpha
 [0.2.2-alpha]: https://github.com/nfour/fermenter/compare/v0.2.1-alpha...v0.2.2-alpha
 [0.2.1-alpha]: https://github.com/nfour/fermenter/compare/v0.2.0-alpha...v0.2.1-alpha
