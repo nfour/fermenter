@@ -65,6 +65,6 @@ workflows:
       - deploy:
           requires: [build, lintTest, unitTest, changelogTest]
           filters:
-            tags: { only: /^v.+/ }
+            tags: { only: /^v.*/ }
             branches: { ignore: /.*/ }
 
