@@ -5,7 +5,7 @@
   "scripts": {
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "build": "tsc",
+    "build": "scripts/build.bash",
     "release": "cd build && npm publish",
     "changelog:verify": "changelog-verify CHANGELOG.md",
     "changelog:version": "version-changelog CHANGELOG.md && git add CHANGELOG.md",
