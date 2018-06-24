@@ -6,6 +6,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [0.2.1-alpha][] - 2018-06-24
 
+- Misc fixes
+
 ## [0.2.0-alpha][] - 2018-06-24
 
 - Export things from the index
