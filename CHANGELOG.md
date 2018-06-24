@@ -5,6 +5,7 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ## [Unreleased]
 
 - Stupid `yarn release` fix
+- Add a build script to publish with
 
 ## [0.2.4-alpha][] - 2018-06-24
 
