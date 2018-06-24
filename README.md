@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/fermenter.svg)](https://badge.fury.io/js/fermenter) [![CircleCI](https://circleci.com/gh/nfour/fermenter.svg?style=svg)](https://circleci.com/gh/nfour/fermenter)
+![CircleCI](https://img.shields.io/circleci/project/github/nfour/fermenter.svg?style=flat-square) ![npm](https://img.shields.io/npm/v/fermenter.svg?style=flat-square) ![npm](https://img.shields.io/npm/dt/fermenter.svg?style=flat-square) ![Github commits (since latest release)](https://img.shields.io/github/commits-since/nfour/fermented/latest.svg?style=flat-square)
 
 # Fermenter
 
