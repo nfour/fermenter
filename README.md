@@ -13,7 +13,6 @@ A gherkin based test runner which aims to be a **functional programming** altern
 
 It lets you write something like this:
 
-
 ```ts
 GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, Hook }) => {
   Background()
@@ -41,6 +40,8 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
   })
 });
 ```
+
+The above will be run against the gherkin file: [calculator.feature](src/tests/features/calculator.feature)
 
 - It executes your feature file with `describe` and `test` provided (by default) by `jest`.
 - It will be possible or mandatory to provide the framework functions, so that `mocha` and other compatible test runners can be utilized.
