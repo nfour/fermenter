@@ -2,7 +2,7 @@
   "name": "fermenter",
   "description": "A Gherkin Based test runner",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "scripts": {
     "test": "jest",
     "test:coverage": "jest --coverage",
@@ -20,8 +20,14 @@
     "url": "https://github.com/nfour/fermenter"
   },
   "keywords": [
-    "gherkin", "cucumber", "bdd", "functional",
-    "procedural", "test", "jest", "framework"
+    "gherkin",
+    "cucumber",
+    "bdd",
+    "functional",
+    "procedural",
+    "test",
+    "jest",
+    "framework"
   ],
   "author": "nfour",
   "license": "ISC",
