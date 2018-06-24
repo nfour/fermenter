@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/nfour/fermenter.svg?style=svg)](https://circleci.com/gh/nfour/fermenter)
+[![npm version](https://badge.fury.io/js/fermenter.svg)](https://badge.fury.io/js/fermenter) [![CircleCI](https://circleci.com/gh/nfour/fermenter.svg?style=svg)](https://circleci.com/gh/nfour/fermenter)
 
 # Fermenter
 
