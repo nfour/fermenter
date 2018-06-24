@@ -2,16 +2,15 @@
 
 # Fermenter
 
+A gherkin based test runner which aims to be a **functional programming** alternative to `CucumberJS`
+
+Currently an alpha MVP.
+
 - [Fermenter](#fermenter)
     - [About](#about)
     - [Execution](#execution)
   - [Contributing](#contributing)
   - [Changelog](#changelog)
-
-A gherkin based test runner which aims to be a **functional programming** alternative to `CucumberJS`
-
-> Currently in heavy development, in an alpha state
-> Near MVP completion
 
 ### About
 
