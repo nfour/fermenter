@@ -1,7 +1,6 @@
 {
   "name": "fermenter",
   "description": "A Gherkin Based test runner",
-  "private": true,
   "version": "0.2.3-alpha",
   "scripts": {
     "test": "jest",
