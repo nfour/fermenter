@@ -6,7 +6,7 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "build": "tsc",
-    "release": "cd build && yarn publish",
+    "release": "cd build && yarn publish --non-interactive",
     "changelog:verify": "changelog-verify CHANGELOG.md",
     "changelog:version": "version-changelog CHANGELOG.md && git add CHANGELOG.md",
     "preversion": "yarn lint && yarn build && yarn test:coverage && yarn changelog:verify",

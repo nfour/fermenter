@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Stupid `yarn release` fix
+
 ## [0.2.4-alpha][] - 2018-06-24
 
 - Package no longer private. Releasing.
