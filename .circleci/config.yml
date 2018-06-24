@@ -64,8 +64,10 @@ jobs:
       - checkout
       - *restoreCache
       - *attachWorkspace
-      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-      - run: ls -lsah && yarn release
+      - run:
+          command: |
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+            npm run release
 
 tagFilters: &tagFilters
   filters: { tags: { only: /.*/ } }
