@@ -1,5 +1,4 @@
-import { GherkinTest } from '../GherkinTest';
-import { IGherkinTableParam } from '../types';
+import { GherkinTest, IGherkinTableParam } from '../';
 
 const getNumbers = (state: {} = {}, a: number, b: number) => {
   return {
