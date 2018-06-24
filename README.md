@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/nfour/gherkin-framework.svg?style=svg)](https://circleci.com/gh/nfour/gherkin-framework)
+[![CircleCI](https://circleci.com/gh/nfour/fermenter.svg?style=svg)](https://circleci.com/gh/nfour/fermenter)
 
 # Gherkin Framework `WIP`
 

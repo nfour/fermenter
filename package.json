@@ -1,5 +1,6 @@
 {
-  "name": "gherkin-framework",
+  "name": "fermenter",
+  "description": "A Gherkin Based test runner",
   "private": true,
   "version": "0.0.1",
   "scripts": {
@@ -16,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nfour/gherkin-framework"
+    "url": "https://github.com/nfour/fermenter"
   },
   "keywords": [
     "gherkin", "cucumber", "bdd", "functional",
