@@ -2,6 +2,10 @@
 
 # Fermenter
 
+- [Fermenter](#fermenter)
+  - [Contributing](#contributing)
+  - [Changelog](#changelog)
+
 A gherkin based test runner which aims to be a **functional programming** alternative to `CucumberJS`
 
 > Currently in heavy development, in an alpha state
@@ -37,3 +41,11 @@ GherkinTest('./features/calculator.feature', ({ Scenario, Background, ScenarioOu
 For updated reference, see:
 - [src/tests/calculator.framework.test.ts](src/tests/calculator.framework.test.ts)
 - [src/tests/features/calculator.feature](src/tests/features/calculator.feature)
+
+## Contributing
+
+> [CONTRIBUTING.md](./CONTRIBUTING.md)
+
+## Changelog
+
+> [CHANGELOG.md](./CHANGELOG.md)

@@ -20,7 +20,7 @@ export function GherkinTest ({ feature }: IGherkinParserConfig, configure: IConf
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
   // FIXME: remove later
-  writeFileSync(join(__dirname, '../reference/ast.json'), JSON.stringify(ast, null, 2));
+  writeFileSync(join(__dirname, './tests/reference/ast.json'), JSON.stringify(ast, null, 2));
 
   describeFeature({ ast, configure, featureBuilder });
 }
