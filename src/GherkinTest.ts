@@ -16,13 +16,14 @@ import {
 export type IConfigureFn = (t: IGherkinMethods) => void;
 
 export function GherkinTest ({ feature }: IGherkinParserConfig, configure: IConfigureFn) {
-  // TODO: stop erroring here, instead `describe` first so we dont have test-less jest files
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
   // FIXME: remove later
   writeFileSync(join(__dirname, './tests/reference/ast.json'), JSON.stringify(ast, null, 2));
 
   describeFeature({ ast, configure, featureBuilder });
+
+  return { ast, feature };
 }
 
 export type IOnConfigured = (callback: () => void) => void;

@@ -15,7 +15,7 @@ It lets you write something like this:
 
 
 ```ts
-GherkinTest('./features/calculator.feature', ({ Scenario, Background, ScenarioOutline, Hook }) => {
+GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, Hook }) => {
   Background()
     .Given('I can calculate', () => {
       expect(Math).toBeTruthy();
