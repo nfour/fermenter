@@ -51,6 +51,7 @@ jobs:
     steps:
       - checkout
       - *restoreCache
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run: yarn release
 
 workflows:
