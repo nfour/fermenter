@@ -52,7 +52,7 @@ jobs:
       - checkout
       - *restoreCache
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-      - run: pwd && yarn release
+      - run: ls -lsah && yarn release
 
 tagFilters: &tagFilters
   filters: { tags: { only: /.*/ } }
