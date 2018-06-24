@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Package no longer private. Releasing.
+
 ## [0.2.3-alpha][] - 2018-06-24
 
 - CI Stuff
