@@ -54,14 +54,17 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run: yarn release
 
+tagFilters: &tagFilters
+  filters: { tags: { only: /.*/ } }
+
 workflows:
   version: 2
   deploy:
     jobs:
-      - build
-      - lintTest: { requires: [build] }
-      - unitTest: { requires: [build] }
-      - changelogTest: { requires: [build] }
+      - build: { <<: *tagFilters }
+      - lintTest: { <<: *tagFilters, requires: [build] }
+      - unitTest: { <<: *tagFilters, requires: [build] }
+      - changelogTest: { <<: *tagFilters, requires: [build] }
       - deploy:
           requires: [build, lintTest, unitTest, changelogTest]
           filters:
