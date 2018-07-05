@@ -230,4 +230,5 @@ export interface IGherkinFeature {
   background?: IGherkinBackground;
   scenarios: IGherkinScenario[];
   scenarioOutlines: IGherkinScenarioOutline[];
+  hooks: Map<string, Function>; // TODO: fill this out a bit better
 }

@@ -38,6 +38,7 @@ export class FeatureBuilder {
   feature = <IGherkinFeature> {
     scenarios: [] as any,
     scenarioOutlines: [] as any,
+    hooks: [] as any,
   };
 
   constructor (ast: IGherkinAst) {

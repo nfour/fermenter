@@ -53,6 +53,7 @@ function configureMethods ({ configure, featureBuilder }: {
     Scenario: featureBuilder.Scenario(),
     ScenarioOutline: featureBuilder.ScenarioOutline(onConfigured),
     Background: featureBuilder.Background(),
+    Hook: featureBuilder.Hook(),
   };
 
   configure(methods);
