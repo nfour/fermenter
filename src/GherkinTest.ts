@@ -29,9 +29,6 @@ export interface IGherkinTestParams extends IGherkinParserConfig {
 export function GherkinTest ({ feature }: IGherkinTestParams, configure: IConfigureFn) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
-  // FIXME: remove later
-  // writeFileSync(join(__dirname, './tests/reference/ast.json'), JSON.stringify(ast, null, 2));
-
   describeFeature({ ast, configure, featureBuilder });
 
   return { ast, feature };
@@ -53,7 +50,10 @@ function configureMethods ({ configure, featureBuilder }: {
     Scenario: featureBuilder.Scenario(),
     ScenarioOutline: featureBuilder.ScenarioOutline(onConfigured),
     Background: featureBuilder.Background(),
-    Hook: featureBuilder.Hook(),
+    BeforeEach: featureBuilder.BeforeEach(),
+    BeforeAll: featureBuilder.BeforeAll(),
+    AfterEach: featureBuilder.AfterEach(),
+    AfterAll: featureBuilder.AfterAll(),
   };
 
   configure(methods);
@@ -74,12 +74,17 @@ function describeFeature ({ featureBuilder, ast, configure }: {
     try {
       configureMethods({ configure, featureBuilder });
 
-      const { scenarios, background } = featureBuilder.feature;
+      const { feature } = featureBuilder;
 
-      scenarios.forEach((scenario) => {
+      feature.afterAll.forEach((fn) => { afterAll(fn); });
+      feature.beforeEach.forEach((fn) => { beforeEach(fn); });
+      feature.afterEach.forEach((fn) => { afterEach(fn); });
+      feature.beforeAll.forEach((fn) => { beforeAll(fn); });
+
+      feature.scenarios.forEach((scenario) => {
         describeScenario({
           scenario,
-          background,
+          background: feature.background,
           initialState: undefined, // TODO: state meeee
         });
       });

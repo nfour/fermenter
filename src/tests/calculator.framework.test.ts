@@ -38,12 +38,10 @@ const checkResult = ({ c }: { c: number }, expected: number) => {
   expect(c).toBe(expected);
 };
 
-/**
- * TODO: provide a concept for the framework Composition Root for injecting base-state in
- * eg. sdk, browser (for ui testing) and other environment related things that
- * would cross the test-file barrier
- */
-GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline }) => {
+GherkinTest({ feature: './features/calculator.feature' }, ({
+  Scenario, Background, ScenarioOutline,
+  AfterAll, BeforeAll, AfterEach, BeforeEach,
+}) => {
   Background('Calculator')
     .Given('I can calculate', () => {
       expect(Math).toBeTruthy();
@@ -73,4 +71,9 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
     .Given('I have numbers {int} and {int}', getNumbers)
     .When('I subtract the numbers', subtractNumbers)
     .Then('I get {int}', checkResult);
+
+  AfterAll(() => { console.log('---AfterAll'); });
+  BeforeAll(() => { console.log('---BeforeAll'); });
+  BeforeEach(() => { console.log('BeforeEach'); });
+  AfterEach(() => { console.log('AfterEach'); });
 });

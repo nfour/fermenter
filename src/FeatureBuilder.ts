@@ -13,7 +13,7 @@ import {
   IGherkinAstScenario,
   IGherkinAstScenarioOutline,
   IGherkinCollectionItemIndex,
-  IGherkinFeature,
+  IGherkinFeatureTest,
   IGherkinLazyOperationStore,
   IGherkinMethods,
   IGherkinOperationStore,
@@ -35,10 +35,13 @@ import {
  * causing the gherkin AST to be parsed and mapped up to the invoking function.
  */
 export class FeatureBuilder {
-  feature = <IGherkinFeature> {
+  feature = <IGherkinFeatureTest> {
     scenarios: [] as any,
     scenarioOutlines: [] as any,
-    hooks: [] as any,
+    afterAll: [] as any,
+    beforeAll: [] as any,
+    afterEach: [] as any,
+    beforeEach: [] as any,
   };
 
   constructor (ast: IGherkinAst) {
@@ -97,6 +100,30 @@ export class FeatureBuilder {
       this.feature.background = background;
 
       return steps;
+    };
+  }
+
+  AfterAll (): IGherkinMethods['AfterAll'] {
+    return (fn) => {
+      this.feature.afterAll = [...this.feature.afterAll, fn];
+    };
+  }
+
+  BeforeAll (): IGherkinMethods['BeforeAll'] {
+    return (fn) => {
+      this.feature.beforeAll = [...this.feature.beforeAll, fn];
+    };
+  }
+
+  AfterEach (): IGherkinMethods['AfterEach'] {
+    return (fn) => {
+      this.feature.afterEach = [...this.feature.afterEach, fn];
+    };
+  }
+
+  BeforeEach (): IGherkinMethods['BeforeEach'] {
+    return (fn) => {
+      this.feature.beforeEach = [...this.feature.beforeEach, fn];
     };
   }
 }

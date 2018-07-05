@@ -3,6 +3,7 @@ import {
   IFluidFnCallback,
   IGherkinAstScenario,
   IGherkinAstScenarioOutline,
+  IGherkinHooks,
   IScenarioFluid,
 } from '.';
 import {
@@ -12,6 +13,7 @@ import {
   IGherkinAstStep,
   IGherkinAstTableRow,
 } from './ast';
+import { IHookFn } from './fluid';
 
 // tslint:disable-next-line
 
@@ -178,7 +180,7 @@ export interface IBackgroundBuilder {
 export interface IScenarioOutlineBuilder {
   steps: IScenarioFluid;
   scenarioOutline: IGherkinScenarioOutline;
-  scenarios: IGherkinFeature['scenarios'];
+  scenarios: IGherkinFeatureTest['scenarios'];
 }
 
 export interface IDict<V> { [k: string]: V; }
@@ -223,12 +225,16 @@ export interface IGherkinBackground {
   Given: IGherkinOperationStore<IGherkinAstStep>;
 }
 
-export interface IGherkinFeature {
+export interface IGherkinFeatureTest {
   gherkin: IGherkinAstFeature;
   name: IGherkinAstFeature['name'];
 
   background?: IGherkinBackground;
   scenarios: IGherkinScenario[];
   scenarioOutlines: IGherkinScenarioOutline[];
-  hooks: Map<string, Function>; // TODO: fill this out a bit better
+
+  afterAll: IHookFn[];
+  beforeAll: IHookFn[];
+  afterEach: IHookFn[];
+  beforeEach: IHookFn[];
 }
