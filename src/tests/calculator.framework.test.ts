@@ -86,9 +86,8 @@ GherkinTest({ feature: './features/calculator.feature' }, ({
 it('runs a GherkinTest', () => {
   const expectedAfterAllCalls = 1;
 
-  while (afterAllFn.mock.calls.length !== expectedAfterAllCalls) {
-    break;
-  }
+  // Wait for the tests to be run
+  while (afterAllFn.mock.calls.length < expectedAfterAllCalls) { /**/ }
 
   expect(afterAllFn).toHaveBeenCalledTimes(expectedAfterAllCalls);
   expect(beforeAllFn).toHaveBeenCalledTimes(1);
