@@ -13,15 +13,18 @@ import {
 
 export type IConfigureFn = (t: IGherkinMethods) => void;
 
+export type IDescribe = (title: string, fn: () => any) => void;
+export type ITest = (name: string, fn: () => Promise<any>|any, timeout?: number) => void;
+
 // TODO: drop explicit jest references
 export interface ITestRunnerApi {
-  describe: jest.Describe;
-  test: jest.It;
+  describe: IDescribe;
+  test: ITest;
 
-  beforeEach: jest.It;
-  afterEach: jest.It;
-  beforeAll: jest.It;
-  afterAll: jest.It;
+  beforeEach: ITest;
+  afterEach: ITest;
+  beforeAll: ITest;
+  afterAll: ITest;
 }
 
 export interface IGherkinTestParams extends IGherkinParserConfig {
