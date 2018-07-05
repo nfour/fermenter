@@ -38,42 +38,50 @@ const checkResult = ({ c }: { c: number }, expected: number) => {
   expect(c).toBe(expected);
 };
 
-GherkinTest({ feature: './features/calculator.feature' }, ({
-  Scenario, Background, ScenarioOutline,
-  AfterAll, BeforeAll, AfterEach, BeforeEach,
-}) => {
-  Background('Calculator')
-    .Given('I can calculate', () => {
-      expect(Math).toBeTruthy();
-    });
+it('runs a GherkinTest', () => {
 
-  Scenario('A simple addition test')
-    .Given('I have the following numbers:', (state = {}, table: IGherkinTableParam) => {
-      const [{ a, b }] = table.rows.mapByTop();
+  GherkinTest({ feature: './features/calculator.feature' }, ({
+    Scenario, Background, ScenarioOutline,
+    AfterAll, BeforeAll, AfterEach, BeforeEach,
+  }) => {
+    Background('Calculator')
+      .Given('I can calculate', () => {
+        expect(Math).toBeTruthy();
+      });
 
-      return {
-        ...state,
-        a: parseInt(a, 10), b: parseInt(b, 10),
-      };
-    })
-    .When('I add the numbers', addNumbers)
-    .And('I do nothing', (state) => state)
-    .Then('I get', (state, text: string) => {
-      expect(state.c).toBe(parseInt(text, 10));
-    });
+    Scenario('A simple addition test')
+      .Given('I have the following numbers:', (state = {}, table: IGherkinTableParam) => {
+        const [{ a, b }] = table.rows.mapByTop();
 
-  Scenario('A simple multiplication test')
-    .Given(/^I have numbers (\d+) and (\d+)$/, getNumbers)
-    .When('I multiply the numbers', multiplyNumbers)
-    .Then('I get {int}', checkResult);
+        return {
+          ...state,
+          a: parseInt(a, 10), b: parseInt(b, 10),
+        };
+      })
+      .When('I add the numbers', addNumbers)
+      .And('I do nothing', (state) => state)
+      .Then('I get', (state, text: string) => {
+        expect(state.c).toBe(parseInt(text, 10));
+      });
 
-  ScenarioOutline('A simple subtraction test')
-    .Given('I have numbers {int} and {int}', getNumbers)
-    .When('I subtract the numbers', subtractNumbers)
-    .Then('I get {int}', checkResult);
+    Scenario('A simple multiplication test')
+      .Given(/^I have numbers (\d+) and (\d+)$/, getNumbers)
+      .When('I multiply the numbers', multiplyNumbers)
+      .Then('I get {int}', checkResult);
 
-  AfterAll(() => { console.log('---AfterAll'); });
-  BeforeAll(() => { console.log('---BeforeAll'); });
-  BeforeEach(() => { console.log('BeforeEach'); });
-  AfterEach(() => { console.log('AfterEach'); });
+    ScenarioOutline('A simple subtraction test')
+      .Given('I have numbers {int} and {int}', getNumbers)
+      .When('I subtract the numbers', subtractNumbers)
+      .Then('I get {int}', checkResult);
+
+    const afterAllFn = jest.fn();
+    const beforeAllFn = jest.fn();
+    const beforeEachFn = jest.fn();
+    const afterEachFn = jest.fn();
+
+    AfterAll(afterAllFn);
+    BeforeAll(beforeAllFn);
+    BeforeEach(beforeEachFn);
+    AfterEach(afterEachFn);
+  });
 });

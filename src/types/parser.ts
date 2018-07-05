@@ -1,18 +1,5 @@
-import {
-  IBackgroundFluid,
-  IFluidFnCallback,
-  IGherkinAstScenario,
-  IGherkinAstScenarioOutline,
-  IGherkinHooks,
-  IScenarioFluid,
-} from '.';
-import {
-  IGherkinAstBackground,
-  IGherkinAstEntity,
-  IGherkinAstFeature,
-  IGherkinAstStep,
-  IGherkinAstTableRow,
-} from './ast';
+import { IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline, IScenarioFluid } from '.';
+import { IGherkinAstBackground, IGherkinAstEntity, IGherkinAstFeature, IGherkinAstStep, IGherkinAstTableRow } from './ast';
 import { IHookFn } from './fluid';
 
 // tslint:disable-next-line

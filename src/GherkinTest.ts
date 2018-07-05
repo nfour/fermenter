@@ -13,6 +13,7 @@ import {
 
 export type IConfigureFn = (t: IGherkinMethods) => void;
 
+// TODO: drop explicit jest references
 export interface ITestRunnerApi {
   describe: jest.Describe;
   test: jest.It;
@@ -27,6 +28,9 @@ export interface IGherkinTestParams extends IGherkinParserConfig {
   runner?: ITestRunnerApi;
 }
 
+/**
+ * Create a gherkin test based on a feature file
+ */
 export function GherkinTest ({ feature }: IGherkinTestParams, configure: IConfigureFn) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
@@ -37,6 +41,7 @@ export function GherkinTest ({ feature }: IGherkinTestParams, configure: IConfig
 
 export type IOnConfigured = (callback: () => void) => void;
 
+/** Ensures correct synchronous execution of the configuration stage */
 function configureMethods ({ configure, featureBuilder }: {
   featureBuilder: FeatureBuilder;
   configure: IConfigureFn
@@ -62,6 +67,7 @@ function configureMethods ({ configure, featureBuilder }: {
   resolve!();
 }
 
+/** Intruments the gherkin feature test in the test framework */
 function describeFeature ({ featureBuilder, ast, configure }: {
   featureBuilder: FeatureBuilder;
   ast: IGherkinAst;
@@ -101,11 +107,10 @@ function describeFeature ({ featureBuilder, ast, configure }: {
     }
   });
 
-  if (error) {
-    throw error;
-  }
+  if (error) { throw error; }
 }
 
+/** Instruments step functions in the test framework */
 function describeGherkinOperations (steps: IGherkinOperationStore, initialState: any) {
   let state = initialState;
 
@@ -120,6 +125,7 @@ function describeGherkinOperations (steps: IGherkinOperationStore, initialState:
   });
 }
 
+/** Executes a step function and ensures state passing */
 async function executeStep (step: IGherkinStep, initialState: any) {
   const state = await step.fn(initialState, ...step.params);
 
@@ -130,6 +136,7 @@ async function executeStep (step: IGherkinStep, initialState: any) {
   return initialState;
 }
 
+/** Instruments the tests for a scenario in the test framework */
 function describeScenario ({
   initialState, background, scenario,
   beforeEachHooks, afterEachHooks,
@@ -168,6 +175,7 @@ function describeScenario ({
   });
 }
 
+/** Formats a test title based on tags, name and description */
 function formatTitle ({
   tags: inputTags, name, description = '',
 }: Pick<IGherkinAstEntity, 'description' | 'name' | 'tags'>) {

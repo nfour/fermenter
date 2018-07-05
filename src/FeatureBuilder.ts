@@ -128,6 +128,10 @@ export class FeatureBuilder {
   }
 }
 
+/**
+ * A function is which returns a chainable interface
+ * and instruments step definitions into a store when executed
+ */
 function FluidFn <R> ({ fluid, collectionParams, store }: {
   fluid: R,
   store: IGherkinOperationStore,
