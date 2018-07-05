@@ -4,6 +4,7 @@ import {
   IGherkinAst,
   IGherkinAstEntity,
   IGherkinBackground,
+  IGherkinFeatureTest,
   IGherkinMethods,
   IGherkinOperationStore,
   IGherkinScenario,
@@ -74,18 +75,25 @@ function describeFeature ({ featureBuilder, ast, configure }: {
     try {
       configureMethods({ configure, featureBuilder });
 
-      const { feature } = featureBuilder;
+      const {
+        background,
+        scenarios,
+        beforeAll: beforeAllHooks,
+        afterAll: afterAllHooks,
+        afterEach: afterEachHooks,
+        beforeEach: beforeEachHooks,
+      } = featureBuilder.feature;
 
-      feature.afterAll.forEach((fn) => { afterAll(fn); });
-      feature.beforeEach.forEach((fn) => { beforeEach(fn); });
-      feature.afterEach.forEach((fn) => { afterEach(fn); });
-      feature.beforeAll.forEach((fn) => { beforeAll(fn); });
+      afterAllHooks.forEach((fn) => { afterAll(fn); });
+      beforeAllHooks.forEach((fn) => { beforeAll(fn); });
 
-      feature.scenarios.forEach((scenario) => {
+      scenarios.forEach((scenario) => {
         describeScenario({
           scenario,
-          background: feature.background,
-          initialState: undefined, // TODO: state meeee
+          background,
+          initialState: undefined,
+          afterEachHooks, beforeEachHooks,
+
         });
       });
     } catch (e) {
@@ -122,15 +130,23 @@ async function executeStep (step: IGherkinStep, initialState: any) {
   return initialState;
 }
 
-function describeScenario ({ background, scenario, initialState }: {
+function describeScenario ({
+  initialState, background, scenario,
+  beforeEachHooks, afterEachHooks,
+}: {
   scenario: IGherkinScenario,
   initialState: any,
   background?: IGherkinBackground,
+  beforeEachHooks: IGherkinFeatureTest['beforeEach']
+  afterEachHooks: IGherkinFeatureTest['afterEach'],
 }) {
   const title = formatTitle(scenario.gherkin);
 
   describe(title, () => {
     let state = initialState;
+
+    beforeEachHooks.forEach((fn) => beforeAll(fn));
+    afterEachHooks.forEach((fn) => afterAll(fn));
 
     if (background && background.Given) {
       background.Given.forEach((step) => {
