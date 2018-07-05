@@ -37,6 +37,7 @@ export interface IGherkinTestParams extends IGherkinParserConfig {
 export function GherkinTest ({ feature }: IGherkinTestParams, configure: IConfigureFn) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
+  // TODO: inject all the framework methods here
   describeFeature({ ast, configure, featureBuilder });
 
   return { ast, feature };
