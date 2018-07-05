@@ -93,5 +93,4 @@ it('runs a GherkinTest', () => {
   expect(beforeAllFn).toHaveBeenCalledTimes(1);
   expect(beforeEachFn).toHaveBeenCalledTimes(4);
   expect(afterEachFn).toHaveBeenCalledTimes(4);
-
 }, 10000);
