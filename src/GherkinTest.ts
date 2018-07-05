@@ -4,6 +4,7 @@ import {
   IGherkinAst,
   IGherkinAstEntity,
   IGherkinBackground,
+  IGherkinFeatureTest,
   IGherkinMethods,
   IGherkinOperationStore,
   IGherkinScenario,
@@ -12,6 +13,7 @@ import {
 
 export type IConfigureFn = (t: IGherkinMethods) => void;
 
+// TODO: drop explicit jest references
 export interface ITestRunnerApi {
   describe: jest.Describe;
   test: jest.It;
@@ -26,11 +28,11 @@ export interface IGherkinTestParams extends IGherkinParserConfig {
   runner?: ITestRunnerApi;
 }
 
+/**
+ * Create a gherkin test based on a feature file
+ */
 export function GherkinTest ({ feature }: IGherkinTestParams, configure: IConfigureFn) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
-
-  // FIXME: remove later
-  // writeFileSync(join(__dirname, './tests/reference/ast.json'), JSON.stringify(ast, null, 2));
 
   describeFeature({ ast, configure, featureBuilder });
 
@@ -39,6 +41,7 @@ export function GherkinTest ({ feature }: IGherkinTestParams, configure: IConfig
 
 export type IOnConfigured = (callback: () => void) => void;
 
+/** Ensures correct synchronous execution of the configuration stage */
 function configureMethods ({ configure, featureBuilder }: {
   featureBuilder: FeatureBuilder;
   configure: IConfigureFn
@@ -53,6 +56,10 @@ function configureMethods ({ configure, featureBuilder }: {
     Scenario: featureBuilder.Scenario(),
     ScenarioOutline: featureBuilder.ScenarioOutline(onConfigured),
     Background: featureBuilder.Background(),
+    BeforeEach: featureBuilder.BeforeEach(),
+    BeforeAll: featureBuilder.BeforeAll(),
+    AfterEach: featureBuilder.AfterEach(),
+    AfterAll: featureBuilder.AfterAll(),
   };
 
   configure(methods);
@@ -60,6 +67,7 @@ function configureMethods ({ configure, featureBuilder }: {
   resolve!();
 }
 
+/** Intruments the gherkin feature test in the test framework */
 function describeFeature ({ featureBuilder, ast, configure }: {
   featureBuilder: FeatureBuilder;
   ast: IGherkinAst;
@@ -73,13 +81,25 @@ function describeFeature ({ featureBuilder, ast, configure }: {
     try {
       configureMethods({ configure, featureBuilder });
 
-      const { scenarios, background } = featureBuilder.feature;
+      const {
+        background,
+        scenarios,
+        beforeAll: beforeAllHooks,
+        afterAll: afterAllHooks,
+        afterEach: afterEachHooks,
+        beforeEach: beforeEachHooks,
+      } = featureBuilder.feature;
+
+      afterAllHooks.forEach((fn) => { afterAll(fn); });
+      beforeAllHooks.forEach((fn) => { beforeAll(fn); });
 
       scenarios.forEach((scenario) => {
         describeScenario({
           scenario,
           background,
-          initialState: undefined, // TODO: state meeee
+          initialState: undefined,
+          afterEachHooks, beforeEachHooks,
+
         });
       });
     } catch (e) {
@@ -87,11 +107,10 @@ function describeFeature ({ featureBuilder, ast, configure }: {
     }
   });
 
-  if (error) {
-    throw error;
-  }
+  if (error) { throw error; }
 }
 
+/** Instruments step functions in the test framework */
 function describeGherkinOperations (steps: IGherkinOperationStore, initialState: any) {
   let state = initialState;
 
@@ -106,6 +125,7 @@ function describeGherkinOperations (steps: IGherkinOperationStore, initialState:
   });
 }
 
+/** Executes a step function and ensures state passing */
 async function executeStep (step: IGherkinStep, initialState: any) {
   const state = await step.fn(initialState, ...step.params);
 
@@ -116,15 +136,24 @@ async function executeStep (step: IGherkinStep, initialState: any) {
   return initialState;
 }
 
-function describeScenario ({ background, scenario, initialState }: {
+/** Instruments the tests for a scenario in the test framework */
+function describeScenario ({
+  initialState, background, scenario,
+  beforeEachHooks, afterEachHooks,
+}: {
   scenario: IGherkinScenario,
   initialState: any,
   background?: IGherkinBackground,
+  beforeEachHooks: IGherkinFeatureTest['beforeEach']
+  afterEachHooks: IGherkinFeatureTest['afterEach'],
 }) {
   const title = formatTitle(scenario.gherkin);
 
   describe(title, () => {
     let state = initialState;
+
+    beforeEachHooks.forEach((fn) => beforeAll(fn));
+    afterEachHooks.forEach((fn) => afterAll(fn));
 
     if (background && background.Given) {
       background.Given.forEach((step) => {
@@ -146,6 +175,7 @@ function describeScenario ({ background, scenario, initialState }: {
   });
 }
 
+/** Formats a test title based on tags, name and description */
 function formatTitle ({
   tags: inputTags, name, description = '',
 }: Pick<IGherkinAstEntity, 'description' | 'name' | 'tags'>) {

@@ -38,12 +38,15 @@ const checkResult = ({ c }: { c: number }, expected: number) => {
   expect(c).toBe(expected);
 };
 
-/**
- * TODO: provide a concept for the framework Composition Root for injecting base-state in
- * eg. sdk, browser (for ui testing) and other environment related things that
- * would cross the test-file barrier
- */
-GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline }) => {
+const afterAllFn = jest.fn();
+const beforeAllFn = jest.fn();
+const beforeEachFn = jest.fn();
+const afterEachFn = jest.fn();
+
+GherkinTest({ feature: './features/calculator.feature' }, ({
+  Scenario, Background, ScenarioOutline,
+  AfterAll, BeforeAll, AfterEach, BeforeEach,
+}) => {
   Background('Calculator')
     .Given('I can calculate', () => {
       expect(Math).toBeTruthy();
@@ -73,4 +76,21 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
     .Given('I have numbers {int} and {int}', getNumbers)
     .When('I subtract the numbers', subtractNumbers)
     .Then('I get {int}', checkResult);
+
+  AfterAll(afterAllFn);
+  BeforeAll(beforeAllFn);
+  BeforeEach(beforeEachFn);
+  AfterEach(afterEachFn);
 });
+
+it('runs a GherkinTest', () => {
+  const expectedAfterAllCalls = 1;
+
+  // Wait for the tests to be run
+  while (afterAllFn.mock.calls.length < expectedAfterAllCalls) { /**/ }
+
+  expect(afterAllFn).toHaveBeenCalledTimes(expectedAfterAllCalls);
+  expect(beforeAllFn).toHaveBeenCalledTimes(1);
+  expect(beforeEachFn).toHaveBeenCalledTimes(4);
+  expect(afterEachFn).toHaveBeenCalledTimes(4);
+}, 10000);

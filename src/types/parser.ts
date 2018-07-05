@@ -1,17 +1,6 @@
-import {
-  IBackgroundFluid,
-  IFluidFnCallback,
-  IGherkinAstScenario,
-  IGherkinAstScenarioOutline,
-  IScenarioFluid,
-} from '.';
-import {
-  IGherkinAstBackground,
-  IGherkinAstEntity,
-  IGherkinAstFeature,
-  IGherkinAstStep,
-  IGherkinAstTableRow,
-} from './ast';
+import { IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline, IScenarioFluid } from '.';
+import { IGherkinAstBackground, IGherkinAstEntity, IGherkinAstFeature, IGherkinAstStep, IGherkinAstTableRow } from './ast';
+import { IHookFn } from './fluid';
 
 // tslint:disable-next-line
 
@@ -178,7 +167,7 @@ export interface IBackgroundBuilder {
 export interface IScenarioOutlineBuilder {
   steps: IScenarioFluid;
   scenarioOutline: IGherkinScenarioOutline;
-  scenarios: IGherkinFeature['scenarios'];
+  scenarios: IGherkinFeatureTest['scenarios'];
 }
 
 export interface IDict<V> { [k: string]: V; }
@@ -223,11 +212,16 @@ export interface IGherkinBackground {
   Given: IGherkinOperationStore<IGherkinAstStep>;
 }
 
-export interface IGherkinFeature {
+export interface IGherkinFeatureTest {
   gherkin: IGherkinAstFeature;
   name: IGherkinAstFeature['name'];
 
   background?: IGherkinBackground;
   scenarios: IGherkinScenario[];
   scenarioOutlines: IGherkinScenarioOutline[];
+
+  afterAll: IHookFn[];
+  beforeAll: IHookFn[];
+  afterEach: IHookFn[];
+  beforeEach: IHookFn[];
 }

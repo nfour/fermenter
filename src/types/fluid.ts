@@ -1,6 +1,6 @@
 import { IMatch } from '.';
 
-export interface IGherkinMethods {
+export interface IGherkinMethods extends IGherkinHooks {
   Scenario: (match: IMatch) => IScenarioFluid;
   ScenarioOutline: (match: IMatch) => IScenarioFluid;
 
@@ -13,8 +13,23 @@ export interface IGherkinMethods {
    * - You can only have one set of Background steps per feature. If you need different Background steps for different scenarios, you'll need to split them into different feature files.
    */
   Background: (match?: IMatch) => IBackgroundFluid;
-  Hook?: {}; // FIXME:
 }
+
+export interface IGherkinHooks {
+  /** Executed after all scenarios */
+  AfterAll: IHookFn;
+
+  /** Executed after each scenario */
+  AfterEach: IHookFn;
+
+  /** Executed before all scenarios */
+  BeforeAll: IHookFn;
+
+  /** Executed before each scenario */
+  BeforeEach: IHookFn;
+}
+
+export type IHookFn = (callback: () => Promise<any>|any) => void;
 
 export interface IAndFluid {
   And: IFluidFn<IAndFluid>;
