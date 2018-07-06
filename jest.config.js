@@ -2,6 +2,7 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
   },
+  verbose: true,
   setupTestFrameworkScriptFile: './scripts/jestFix.js',
   testRegex: '\.(test|spec)\\.ts$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
@@ -10,7 +11,6 @@ module.exports = {
   coverageThreshold: {
     global: { statements: 90, lines: 90, functions: 90 }
   },
-  // reporters: ['jest-tap-reporter'],
   testPathIgnorePatterns: [
     '/build/',
     '/node_modules/'
