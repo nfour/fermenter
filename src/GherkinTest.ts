@@ -179,7 +179,7 @@ function describeScenario ({
       ...scenario.Then || [],
     ]);
 
-    describeGherkinOperations({ steps: scenarioSteps, initialState: r, methods });
+    describeGherkinOperations({ steps: scenarioSteps, initialState: state, methods });
   });
 }
 
