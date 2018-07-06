@@ -20,7 +20,7 @@ It lets you write tests like this:
 import { GherkinTest } from 'fermenter';
 import { getNumbers /* ... */ } from './steps';
 
-GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, Hook }) => {
+GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, AfterAll }) => {
   Background()
     .Given('I can calculate', () => {
       expect(Math).toBeTruthy();
@@ -41,7 +41,7 @@ GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Backgroun
     .When('I subtract the numbers', subtractNumbers)
     .Then('I get {int}', checkResult);
 
-  Hook('afterAll', () => {
+  AfterAll(() => {
     console.log('done')
   })
 });
