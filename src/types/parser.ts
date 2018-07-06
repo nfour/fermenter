@@ -1,6 +1,6 @@
 import { IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline, IScenarioFluid } from '.';
 import { IGherkinAstBackground, IGherkinAstEntity, IGherkinAstFeature, IGherkinAstStep, IGherkinAstTableRow } from './ast';
-import { IHookFn } from './fluid';
+import { IHookCallback } from './fluid';
 
 // tslint:disable-next-line
 
@@ -220,8 +220,8 @@ export interface IGherkinFeatureTest {
   scenarios: IGherkinScenario[];
   scenarioOutlines: IGherkinScenarioOutline[];
 
-  afterAll: IHookFn[];
-  beforeAll: IHookFn[];
-  afterEach: IHookFn[];
-  beforeEach: IHookFn[];
+  afterAll: IHookCallback[];
+  beforeAll: IHookCallback[];
+  afterEach: IHookCallback[];
+  beforeEach: IHookCallback[];
 }

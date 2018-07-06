@@ -1,30 +1,12 @@
 import * as Interpolator from 'trans-interpolator';
-
 import { IOnConfigured } from './GherkinTest';
 import { GherkinTableReader } from './lib/GherkinTableReader';
 import { IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib/matchInGherkinCollection';
 import { parseGherkinParameters } from './lib/parseGherkinParameters';
 import {
-  IAndFluid,
-  IBackgroundBuilder,
-  IFluidFn,
-  IGherkinAst,
-  IGherkinAstBackground,
-  IGherkinAstScenario,
-  IGherkinAstScenarioOutline,
-  IGherkinCollectionItemIndex,
-  IGherkinFeatureTest,
-  IGherkinLazyOperationStore,
-  IGherkinMethods,
-  IGherkinOperationStore,
-  IGherkinScenario,
-  IGherkinScenarioOutline,
-  IGivenFluid,
-  IMatch,
-  IScenarioBuilder,
-  IScenarioOutlineBuilder,
-  IWhenFluid,
-  Omit,
+  IAndFluid, IBackgroundBuilder, IFluidFn, IGherkinAst, IGherkinAstBackground, IGherkinAstScenario, IGherkinAstScenarioOutline,
+  IGherkinCollectionItemIndex, IGherkinFeatureTest, IGherkinLazyOperationStore, IGherkinMethods, IGherkinOperationStore,
+  IGherkinScenario,IGherkinScenarioOutline, IGivenFluid, IMatch, IScenarioBuilder, IScenarioOutlineBuilder, IWhenFluid, Omit,
 } from './types';
 
 /**

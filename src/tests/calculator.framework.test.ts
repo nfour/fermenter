@@ -43,7 +43,7 @@ const beforeAllFn = jest.fn();
 const beforeEachFn = jest.fn();
 const afterEachFn = jest.fn();
 
-GherkinTest({ feature: './features/calculator.feature' }, ({
+GherkinTest({ feature: './features/calculator.feature', methods: { afterAll, beforeAll, describe, test } }, ({
   Scenario, Background, ScenarioOutline,
   AfterAll, BeforeAll, AfterEach, BeforeEach,
 }) => {

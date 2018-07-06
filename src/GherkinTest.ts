@@ -1,4 +1,5 @@
 import { FeatureBuilder } from './FeatureBuilder';
+import { getJestMethods } from './lib/getJestMethods';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
 import {
   IGherkinAst,
@@ -9,6 +10,7 @@ import {
   IGherkinOperationStore,
   IGherkinScenario,
   IGherkinStep,
+  IHookFn,
 } from './types';
 
 export type IConfigureFn = (t: IGherkinMethods) => void;
@@ -16,29 +18,24 @@ export type IConfigureFn = (t: IGherkinMethods) => void;
 export type IDescribe = (title: string, fn: () => any) => void;
 export type ITest = (name: string, fn: () => Promise<any>|any, timeout?: number) => void;
 
-// TODO: drop explicit jest references
-export interface ITestRunnerApi {
+export interface ITestMethods {
   describe: IDescribe;
   test: ITest;
-
-  beforeEach: ITest;
-  afterEach: ITest;
-  beforeAll: ITest;
-  afterAll: ITest;
+  beforeAll: IHookFn;
+  afterAll: IHookFn;
 }
 
 export interface IGherkinTestParams extends IGherkinParserConfig {
-  runner?: ITestRunnerApi;
+  methods?: ITestMethods;
 }
 
 /**
  * Create a gherkin test based on a feature file
  */
-export function GherkinTest ({ feature }: IGherkinTestParams, configure: IConfigureFn) {
+export function GherkinTest ({ feature, methods = getJestMethods() }: IGherkinTestParams, configure: IConfigureFn) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
-  // TODO: inject all the framework methods here
-  describeFeature({ ast, configure, featureBuilder });
+  describeFeature({ ast, configure, featureBuilder, methods });
 
   return { ast, feature };
 }
@@ -72,16 +69,17 @@ function configureMethods ({ configure, featureBuilder }: {
 }
 
 /** Intruments the gherkin feature test in the test framework */
-function describeFeature ({ featureBuilder, ast, configure }: {
+function describeFeature ({ featureBuilder, ast, configure, methods }: {
   featureBuilder: FeatureBuilder;
   ast: IGherkinAst;
   configure: IConfigureFn;
+  methods: ITestMethods;
 }) {
 
   let error: undefined|Error;
   const title = formatTitle(ast.feature);
 
-  describe(title, async () => {
+  methods.describe(title, async () => {
     try {
       configureMethods({ configure, featureBuilder });
 
@@ -94,8 +92,8 @@ function describeFeature ({ featureBuilder, ast, configure }: {
         beforeEach: beforeEachHooks,
       } = featureBuilder.feature;
 
-      afterAllHooks.forEach((fn) => { afterAll(fn); });
-      beforeAllHooks.forEach((fn) => { beforeAll(fn); });
+      afterAllHooks.forEach((fn) => { methods.afterAll(fn); });
+      beforeAllHooks.forEach((fn) => { methods.beforeAll(fn); });
 
       scenarios.forEach((scenario) => {
         describeScenario({
@@ -103,7 +101,7 @@ function describeFeature ({ featureBuilder, ast, configure }: {
           background,
           initialState: undefined,
           afterEachHooks, beforeEachHooks,
-
+          methods,
         });
       });
     } catch (e) {
@@ -115,13 +113,17 @@ function describeFeature ({ featureBuilder, ast, configure }: {
 }
 
 /** Instruments step functions in the test framework */
-function describeGherkinOperations (steps: IGherkinOperationStore, initialState: any) {
+function describeGherkinOperations ({ initialState, steps, methods }: {
+  steps: IGherkinOperationStore,
+  initialState: any;
+  methods: ITestMethods;
+}) {
   let state = initialState;
 
   steps.forEach((step) => {
     const title = formatTitle({ name: step.name });
 
-    test(title, async () => {
+    methods.test(title, async () => {
       const nextState = await executeStep(step, state);
 
       state = nextState;
@@ -144,24 +146,26 @@ async function executeStep (step: IGherkinStep, initialState: any) {
 function describeScenario ({
   initialState, background, scenario,
   beforeEachHooks, afterEachHooks,
+  methods,
 }: {
   scenario: IGherkinScenario,
   initialState: any,
   background?: IGherkinBackground,
   beforeEachHooks: IGherkinFeatureTest['beforeEach']
   afterEachHooks: IGherkinFeatureTest['afterEach'],
+  methods: ITestMethods;
 }) {
   const title = formatTitle(scenario.gherkin);
 
-  describe(title, () => {
+  methods.describe(title, () => {
     let state = initialState;
 
-    beforeEachHooks.forEach((fn) => beforeAll(fn));
-    afterEachHooks.forEach((fn) => afterAll(fn));
+    beforeEachHooks.forEach((fn) => methods.beforeAll(fn));
+    afterEachHooks.forEach((fn) => methods.afterAll(fn));
 
     if (background && background.Given) {
       background.Given.forEach((step) => {
-        beforeAll(async () => {
+        methods.beforeAll(async () => {
           const nextState = await executeStep(step, state);
 
           state = nextState;
@@ -175,7 +179,7 @@ function describeScenario ({
       ...scenario.Then || [],
     ]);
 
-    describeGherkinOperations(scenarioSteps, state);
+    describeGherkinOperations({ steps: scenarioSteps, initialState: r, methods });
   });
 }
 

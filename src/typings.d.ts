@@ -1,9 +1,7 @@
 // tslint:disable:max-classes-per-file
 
-declare module 'gherkin' {
-  const v: any;
-  export = v;
-}
+declare module 'gherkin';
+declare module 'jest-circus';
 
 declare module 'cucumber-expressions' {
   type IMatch = RegExp|string;
