@@ -1,5 +1,5 @@
 import { FeatureBuilder } from './FeatureBuilder';
-import { getJestMethods } from './lib/getJestMethods';
+import { getGlobalTestMethods } from './lib/getGlobalTestMethods';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
 import {
   IGherkinAst,
@@ -32,7 +32,7 @@ export interface IGherkinTestParams extends IGherkinParserConfig {
 /**
  * Create a gherkin test based on a feature file
  */
-export function GherkinTest ({ feature, methods = getJestMethods() }: IGherkinTestParams, configure: IConfigureFn) {
+export function GherkinTest ({ feature, methods = getGlobalTestMethods() }: IGherkinTestParams, configure: IConfigureFn) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
   describeFeature({ ast, configure, featureBuilder, methods });
