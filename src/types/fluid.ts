@@ -29,7 +29,8 @@ export interface IGherkinHooks {
   BeforeEach: IHookFn;
 }
 
-export type IHookFn = (callback: () => Promise<any>|any) => void;
+export type IHookFn = (callback: IHookCallback) => any;
+export type IHookCallback = () => any;
 
 export interface IAndFluid {
   And: IFluidFn<IAndFluid>;
