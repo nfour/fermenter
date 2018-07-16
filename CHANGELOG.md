@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.6.0][] - 2018-07-16
+
 ## [0.6.0-beta][] - 2018-07-16
 
 - Support polymorphic input to `Feature`
@@ -53,7 +55,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v0.6.0-beta...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/nfour/fermenter/compare/v0.6.0-beta...v0.6.0
 [0.6.0-beta]: https://github.com/nfour/fermenter/compare/v0.5.0-beta...v0.6.0-beta
 [0.5.0-beta]: https://github.com/nfour/fermenter/compare/v0.4.1-beta...v0.5.0-beta
 [0.4.1-beta]: https://github.com/nfour/fermenter/compare/v0.4.0-beta...v0.4.1-beta
