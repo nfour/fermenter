@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Add export `Feature` as alias to `GherkinTest`
+
 ## [0.4.1-beta][] - 2018-07-16
 
 - Release cleanup

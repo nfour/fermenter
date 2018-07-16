@@ -29,10 +29,7 @@ export interface IGherkinTestParams extends IGherkinParserConfig {
   methods?: ITestMethods;
 }
 
-/**
- * Create a gherkin test based on a feature file
- */
-export function GherkinTest ({ feature, methods = getGlobalTestMethods() }: IGherkinTestParams, configure: IConfigureFn) {
+export function Feature ({ feature, methods = getGlobalTestMethods() }: IGherkinTestParams, configure: IConfigureFn) {
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
   describeFeature({ ast, configure, featureBuilder, methods });
@@ -40,7 +37,10 @@ export function GherkinTest ({ feature, methods = getGlobalTestMethods() }: IGhe
   return { ast, feature };
 }
 
-export const Feature = GherkinTest;
+/**
+ * Create a gherkin test based on a feature file
+ */
+export const GherkinTest = Feature;
 
 export type IOnConfigured = (callback: () => void) => void;
 

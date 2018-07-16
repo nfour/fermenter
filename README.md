@@ -17,10 +17,10 @@ Currently an alpha MVP.
 It lets you write tests like this:
 
 ```ts
-import { GherkinTest } from 'fermenter';
+import { Feature } from 'fermenter';
 import { getNumbers /* ... */ } from './steps';
 
-GherkinTest({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, AfterAll }) => {
+Feature({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, AfterAll }) => {
   Background()
     .Given('I can calculate', () => {
       expect(Math).toBeTruthy();
