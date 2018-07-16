@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Support polymorphic input to `Feature`
+
 ## [0.5.0-beta][] - 2018-07-16
 
 - Add export `Feature` as alias to `GherkinTest`
