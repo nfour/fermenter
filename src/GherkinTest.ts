@@ -29,12 +29,16 @@ export interface IGherkinTestParams extends IGherkinParserConfig {
   methods?: ITestMethods;
 }
 
-export function Feature ({ feature, methods = getGlobalTestMethods() }: IGherkinTestParams, configure: IConfigureFn) {
+export function Feature (config: IGherkinTestParams | IGherkinTestParams['feature'], configure: IConfigureFn) {
+  const { feature, methods = getGlobalTestMethods() } = typeof 'string' === config
+    ? { feature: config }
+    : config as IGherkinTestParams;
+
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
   describeFeature({ ast, configure, featureBuilder, methods });
 
-  return { ast, feature };
+  return { ast, featureBuilder };
 }
 
 /**
