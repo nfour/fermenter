@@ -40,6 +40,8 @@ export function GherkinTest ({ feature, methods = getGlobalTestMethods() }: IGhe
   return { ast, feature };
 }
 
+export const Feature = GherkinTest;
+
 export type IOnConfigured = (callback: () => void) => void;
 
 /** Ensures correct synchronous execution of the configuration stage */
