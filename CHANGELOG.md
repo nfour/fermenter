@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.4.0-beta][] - 2018-07-16
+
 ## [0.3.0-alpha][] - 2018-06-25
 
 - Stupid `yarn release` fix
@@ -37,7 +39,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v0.3.0-alpha...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v0.4.0-beta...HEAD
+[0.4.0-beta]: https://github.com/nfour/fermenter/compare/v0.3.0-alpha...v0.4.0-beta
 [0.3.0-alpha]: https://github.com/nfour/fermenter/compare/v0.2.4-alpha...v0.3.0-alpha
 [0.2.4-alpha]: https://github.com/nfour/fermenter/compare/v0.2.3-alpha...v0.2.4-alpha
 [0.2.3-alpha]: https://github.com/nfour/fermenter/compare/v0.2.2-alpha...v0.2.3-alpha
