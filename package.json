@@ -1,12 +1,12 @@
 {
   "name": "fermenter",
   "description": "A Gherkin Based test runner",
-  "version": "0.6.0",
+  "version": "0.6.0-beta",
   "scripts": {
     "test": "jest",
     "test:coverage": "jest --coverage",
     "build": "scripts/build.bash",
-    "release": "np --contents=build",
+    "release": "cd build && npm publish",
     "changelog:verify": "changelog-verify CHANGELOG.md",
     "changelog:version": "version-changelog CHANGELOG.md && git add CHANGELOG.md",
     "preversion": "yarn lint && yarn build && yarn test:coverage && yarn changelog:verify",
@@ -54,7 +54,6 @@
     "@types/node": "^10.3.4",
     "@types/uuid": "^3.4.3",
     "fs-extra": "^6.0.1",
-    "np": "^3.0.4",
     "ts-jest": "^22.4.6",
     "ts-node": "6.1.1",
     "tslint": "^5.10.0",
