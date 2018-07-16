@@ -4,7 +4,11 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Release cleanup
+
 ## [0.4.0-beta][] - 2018-07-16
+
+- Add in hooks
 
 ## [0.3.0-alpha][] - 2018-06-25
 
