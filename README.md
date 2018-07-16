@@ -20,7 +20,7 @@ It lets you write tests like this:
 import { Feature } from 'fermenter';
 import { getNumbers /* ... */ } from './steps';
 
-Feature({ feature: './features/calculator.feature' }, ({ Scenario, Background, ScenarioOutline, AfterAll }) => {
+Feature('./features/calculator.feature', ({ Scenario, Background, ScenarioOutline, AfterAll }) => {
   Background()
     .Given('I can calculate', () => {
       expect(Math).toBeTruthy();

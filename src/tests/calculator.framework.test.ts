@@ -1,4 +1,4 @@
-import { GherkinTest, IGherkinTableParam } from '..';
+import { Feature, IGherkinTableParam } from '..';
 
 const getNumbers = (state: {} = {}, a: number, b: number) => {
   return {
@@ -43,7 +43,7 @@ const beforeAllFn = jest.fn();
 const beforeEachFn = jest.fn();
 const afterEachFn = jest.fn();
 
-GherkinTest({ feature: './features/calculator.feature', methods: { afterAll, beforeAll, describe, test } }, ({
+Feature({ feature: './features/calculator.feature', methods: { afterAll, beforeAll, describe, test } }, ({
   Scenario, Background, ScenarioOutline,
   AfterAll, BeforeAll, AfterEach, BeforeEach,
 }) => {
@@ -83,7 +83,7 @@ GherkinTest({ feature: './features/calculator.feature', methods: { afterAll, bef
   AfterEach(afterEachFn);
 });
 
-it('runs a GherkinTest', () => {
+it('runs a Feature', () => {
   const expectedAfterAllCalls = 1;
 
   // Wait for the tests to be run
