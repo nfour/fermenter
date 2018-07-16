@@ -6,6 +6,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [0.6.0][] - 2018-07-16
 
+- Publishing tweaks
+
 ## [0.6.0-beta][] - 2018-07-16
 
 - Support polymorphic input to `Feature`
