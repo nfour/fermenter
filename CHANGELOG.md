@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Fix for ScenarioOutlines being required always due to use of configuration resolver
+
 ## [0.6.1-beta][] - 2018-07-19
 
 - Fix a type check allowing for single string param Feature's
