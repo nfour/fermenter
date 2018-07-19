@@ -43,6 +43,10 @@ const beforeAllFn = jest.fn();
 const beforeEachFn = jest.fn();
 const afterEachFn = jest.fn();
 
+Feature('./features/calculator.feature', () => {
+  expect(1).toBe(1);
+});
+
 Feature({ feature: './features/calculator.feature', methods: { afterAll, beforeAll, describe, test } }, ({
   Scenario, Background, ScenarioOutline,
   AfterAll, BeforeAll, AfterEach, BeforeEach,

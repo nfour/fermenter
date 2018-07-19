@@ -53,7 +53,7 @@ function configureMethods ({ configure, featureBuilder }: {
   featureBuilder: FeatureBuilder;
   configure: IConfigureFn
 }) {
-  let resolve: () => void;
+  let resolve: undefined | (() => void);
 
   const onConfigured: IOnConfigured = (callback) => {
     resolve = callback;
@@ -71,7 +71,7 @@ function configureMethods ({ configure, featureBuilder }: {
 
   configure(methods);
 
-  resolve!();
+  if (resolve) { resolve(); }
 }
 
 /** Intruments the gherkin feature test in the test framework */
