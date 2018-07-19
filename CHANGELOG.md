@@ -4,6 +4,7 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Fix a type check allowing for single string param Feature's
 
 ## [0.6.0-beta][] - 2018-07-16
 
