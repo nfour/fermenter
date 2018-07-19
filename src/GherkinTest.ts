@@ -30,7 +30,7 @@ export interface IGherkinTestParams extends IGherkinParserConfig {
 }
 
 export function Feature (config: IGherkinTestParams | IGherkinTestParams['feature'], configure: IConfigureFn) {
-  const { feature, methods = getGlobalTestMethods() } = typeof 'string' === config
+  const { feature, methods = getGlobalTestMethods() } = typeof config === 'string'
     ? { feature: config }
     : config as IGherkinTestParams;
 
