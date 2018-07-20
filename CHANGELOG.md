@@ -4,6 +4,9 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Add in `{ timeout?: number }` as an optional parameter to all step functions
+- Add `Feature({ defaultTimeout?: number })` config option
+
 ## [0.6.2-beta][] - 2018-07-19
 
 - Fix for ScenarioOutlines being required always due to use of configuration resolver
