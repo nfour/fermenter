@@ -6,7 +6,8 @@ import { parseGherkinParameters } from './lib/parseGherkinParameters';
 import {
   IAndFluid, IBackgroundBuilder, IFluidFn, IGherkinAst, IGherkinAstBackground, IGherkinAstScenario, IGherkinAstScenarioOutline,
   IGherkinCollectionItemIndex, IGherkinFeatureTest, IGherkinLazyOperationStore, IGherkinMethods, IGherkinOperationStore,
-  IGherkinScenario,IGherkinScenarioOutline, IGivenFluid, IMatch, IScenarioBuilder, IScenarioOutlineBuilder, IWhenFluid, Omit,
+  IGherkinScenario,IGherkinScenarioOutline, IGherkinStepOptions, IGivenFluid, IMatch, IScenarioBuilder, IScenarioOutlineBuilder,
+  IWhenFluid, Omit,
 } from './types';
 
 /**
@@ -86,26 +87,26 @@ export class FeatureBuilder {
   }
 
   AfterAll (): IGherkinMethods['AfterAll'] {
-    return (fn) => {
-      this.feature.afterAll = [...this.feature.afterAll, fn];
+    return (fn, options = {}) => {
+      this.feature.afterAll = [...this.feature.afterAll, { fn, ...options }];
     };
   }
 
   BeforeAll (): IGherkinMethods['BeforeAll'] {
-    return (fn) => {
-      this.feature.beforeAll = [...this.feature.beforeAll, fn];
+    return (fn, options = {}) => {
+      this.feature.beforeAll = [...this.feature.beforeAll, { fn, ...options }];
     };
   }
 
   AfterEach (): IGherkinMethods['AfterEach'] {
-    return (fn) => {
-      this.feature.afterEach = [...this.feature.afterEach, fn];
+    return (fn, options = {}) => {
+      this.feature.afterEach = [...this.feature.afterEach, { fn, ...options }];
     };
   }
 
   BeforeEach (): IGherkinMethods['BeforeEach'] {
-    return (fn) => {
-      this.feature.beforeEach = [...this.feature.beforeEach, fn];
+    return (fn, options = {}) => {
+      this.feature.beforeEach = [...this.feature.beforeEach, { fn, ...options }];
     };
   }
 }
@@ -119,7 +120,7 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
   store: IGherkinOperationStore,
   collectionParams: Omit<IGherkinMatchCollectionParams, 'match'>,
 }): IFluidFn<R> {
-  return (match, fn) => {
+  return (match, fn, options: IGherkinStepOptions = {}) => {
     const gherkin: IGherkinCollectionItemIndex = matchInGherkinCollection({
       match,
       ...collectionParams,
@@ -130,6 +131,7 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
       gherkin,
       name: gherkin[collectionParams.matchProperty],
       params: parseGherkinParameters(gherkin, match),
+      ...options,
     });
 
     return fluid;
@@ -143,8 +145,8 @@ function LazyFluidFn <R> ({ fluid, store }: {
   fluid: R,
   store: IGherkinLazyOperationStore,
 }): IFluidFn<R> {
-  return (match, fn) => {
-    store.set(match, { fn });
+  return (match, fn, options: IGherkinStepOptions = {}) => {
+    store.set(match, { fn, ...options });
 
     return fluid;
   };

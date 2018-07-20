@@ -177,14 +177,20 @@ export type IGherkinOperationStore<
   G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
 > = Map<IMatch, IGherkinStep<G>>;
 
-export interface IGherkinStep<G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape> {
+export interface IGherkinStepOptions {
+  timeout?: number;
+}
+
+export interface IGherkinStep<
+  G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
+> extends IGherkinStepOptions {
   fn: IFluidFnCallback;
   name: string;
   gherkin: G;
   params: IGherkinParameter[];
 }
 
-export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidFnCallback }>;
+export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidFnCallback } & IGherkinStepOptions>;
 
 export interface IGherkinScenarioBase {
   match: IMatch;
@@ -212,6 +218,10 @@ export interface IGherkinBackground {
   Given: IGherkinOperationStore<IGherkinAstStep>;
 }
 
+export interface IHookStep extends IGherkinStepOptions {
+  fn: IHookCallback;
+}
+
 export interface IGherkinFeatureTest {
   gherkin: IGherkinAstFeature;
   name: IGherkinAstFeature['name'];
@@ -220,8 +230,8 @@ export interface IGherkinFeatureTest {
   scenarios: IGherkinScenario[];
   scenarioOutlines: IGherkinScenarioOutline[];
 
-  afterAll: IHookCallback[];
-  beforeAll: IHookCallback[];
-  afterEach: IHookCallback[];
-  beforeEach: IHookCallback[];
+  afterAll: IHookStep[];
+  beforeAll: IHookStep[];
+  afterEach: IHookStep[];
+  beforeEach: IHookStep[];
 }

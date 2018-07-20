@@ -27,16 +27,19 @@ export interface ITestMethods {
 
 export interface IGherkinTestParams extends IGherkinParserConfig {
   methods?: ITestMethods;
+  defaultTimeout?: number;
 }
 
 export function Feature (config: IGherkinTestParams | IGherkinTestParams['feature'], configure: IConfigureFn) {
-  const { feature, methods = getGlobalTestMethods() } = typeof config === 'string'
-    ? { feature: config }
-    : config as IGherkinTestParams;
+  const { feature, methods = getGlobalTestMethods(), defaultTimeout } = <IGherkinTestParams> (
+    typeof config === 'string'
+      ? { feature: config }
+      : config
+  );
 
   const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
 
-  describeFeature({ ast, configure, featureBuilder, methods });
+  describeFeature({ ast, configure, featureBuilder, methods, defaultTimeout });
 
   return { ast, featureBuilder };
 }
@@ -75,11 +78,12 @@ function configureMethods ({ configure, featureBuilder }: {
 }
 
 /** Intruments the gherkin feature test in the test framework */
-function describeFeature ({ featureBuilder, ast, configure, methods }: {
+function describeFeature ({ featureBuilder, ast, configure, methods, defaultTimeout }: {
   featureBuilder: FeatureBuilder;
   ast: IGherkinAst;
   configure: IConfigureFn;
   methods: ITestMethods;
+  defaultTimeout?: number;
 }) {
 
   let error: undefined|Error;
@@ -98,8 +102,8 @@ function describeFeature ({ featureBuilder, ast, configure, methods }: {
         beforeEach: beforeEachHooks,
       } = featureBuilder.feature;
 
-      afterAllHooks.forEach((fn) => { methods.afterAll(fn); });
-      beforeAllHooks.forEach((fn) => { methods.beforeAll(fn); });
+      afterAllHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.afterAll(fn, timeout); });
+      beforeAllHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.beforeAll(fn, timeout); });
 
       scenarios.forEach((scenario) => {
         describeScenario({
@@ -108,6 +112,7 @@ function describeFeature ({ featureBuilder, ast, configure, methods }: {
           initialState: undefined,
           afterEachHooks, beforeEachHooks,
           methods,
+          defaultTimeout,
         });
       });
     } catch (e) {
@@ -119,21 +124,23 @@ function describeFeature ({ featureBuilder, ast, configure, methods }: {
 }
 
 /** Instruments step functions in the test framework */
-function describeGherkinOperations ({ initialState, steps, methods }: {
+function describeGherkinOperations ({ initialState, steps, methods, defaultTimeout }: {
   steps: IGherkinOperationStore,
   initialState: any;
   methods: ITestMethods;
+  defaultTimeout?: number;
 }) {
   let state = initialState;
 
   steps.forEach((step) => {
     const title = formatTitle({ name: step.name });
+    const timeout = step.timeout || defaultTimeout;
 
     methods.test(title, async () => {
       const nextState = await executeStep(step, state);
 
       state = nextState;
-    }, 99999); // TODO: add timeout config opt
+    }, timeout); // TODO: add timeout config opt
   });
 }
 
@@ -152,7 +159,7 @@ async function executeStep (step: IGherkinStep, initialState: any) {
 function describeScenario ({
   initialState, background, scenario,
   beforeEachHooks, afterEachHooks,
-  methods,
+  methods, defaultTimeout,
 }: {
   scenario: IGherkinScenario,
   initialState: any,
@@ -160,22 +167,25 @@ function describeScenario ({
   beforeEachHooks: IGherkinFeatureTest['beforeEach']
   afterEachHooks: IGherkinFeatureTest['afterEach'],
   methods: ITestMethods;
+  defaultTimeout?: number;
 }) {
   const title = formatTitle(scenario.gherkin);
 
   methods.describe(title, () => {
     let state = initialState;
 
-    beforeEachHooks.forEach((fn) => methods.beforeAll(fn));
-    afterEachHooks.forEach((fn) => methods.afterAll(fn));
+    afterEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.afterAll(fn, timeout); });
+    beforeEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.beforeAll(fn, timeout); });
 
     if (background && background.Given) {
       background.Given.forEach((step) => {
+        const timeout = step.timeout || defaultTimeout;
+
         methods.beforeAll(async () => {
           const nextState = await executeStep(step, state);
 
           state = nextState;
-        });
+        }, timeout);
       });
     }
 

@@ -1,4 +1,5 @@
 import { IMatch } from '.';
+import { IGherkinStepOptions } from './parser';
 
 export interface IGherkinMethods extends IGherkinHooks {
   Scenario: (match: IMatch) => IScenarioFluid;
@@ -17,19 +18,21 @@ export interface IGherkinMethods extends IGherkinHooks {
 
 export interface IGherkinHooks {
   /** Executed after all scenarios */
-  AfterAll: IHookFn;
+  AfterAll: IGherkinHook;
 
   /** Executed after each scenario */
-  AfterEach: IHookFn;
+  AfterEach: IGherkinHook;
 
   /** Executed before all scenarios */
-  BeforeAll: IHookFn;
+  BeforeAll: IGherkinHook;
 
   /** Executed before each scenario */
-  BeforeEach: IHookFn;
+  BeforeEach: IGherkinHook;
 }
 
-export type IHookFn = (callback: IHookCallback) => any;
+export type IGherkinHook = (callback: IHookCallback, options?: IGherkinStepOptions) => any;
+
+export type IHookFn = (callback: IHookCallback, timeout?: number) => any;
 export type IHookCallback = () => any;
 
 export interface IAndFluid {
