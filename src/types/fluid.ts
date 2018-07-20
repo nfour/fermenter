@@ -63,5 +63,5 @@ export interface IWhenFluid {
   And: IFluidFn<IWhenFluid>;
 }
 
-export type IFluidFn<Fluid> = (key: RegExp|string, fn?: IFluidFnCallback) => Fluid;
+export type IFluidFn<Fluid> = (key: RegExp|string, fn: IFluidFnCallback) => Fluid;
 export type IFluidFnCallback<State = any> = (state: State, ...params: any[]) => State;

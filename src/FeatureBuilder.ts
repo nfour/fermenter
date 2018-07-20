@@ -1,4 +1,3 @@
-import { identity } from 'lodash';
 import * as Interpolator from 'trans-interpolator';
 import { IOnConfigured } from './GherkinTest';
 import { GherkinTableReader } from './lib/GherkinTableReader';
@@ -120,7 +119,7 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
   store: IGherkinOperationStore,
   collectionParams: Omit<IGherkinMatchCollectionParams, 'match'>,
 }): IFluidFn<R> {
-  return (match, fn = identity) => {
+  return (match, fn) => {
     const gherkin: IGherkinCollectionItemIndex = matchInGherkinCollection({
       match,
       ...collectionParams,
@@ -144,7 +143,7 @@ function LazyFluidFn <R> ({ fluid, store }: {
   fluid: R,
   store: IGherkinLazyOperationStore,
 }): IFluidFn<R> {
-  return (match, fn = identity) => {
+  return (match, fn) => {
     store.set(match, { fn });
 
     return fluid;
