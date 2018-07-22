@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [0.7.0-beta][] - 2018-07-22
+
 - Add in `{ timeout?: number }` as an optional parameter to all step functions
 - Add `Feature({ defaultTimeout?: number })` config option
 
@@ -64,7 +66,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v0.6.2-beta...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v0.7.0-beta...HEAD
+[0.7.0-beta]: https://github.com/nfour/fermenter/compare/v0.6.2-beta...v0.7.0-beta
 [0.6.2-beta]: https://github.com/nfour/fermenter/compare/v0.6.1-beta...v0.6.2-beta
 [0.6.1-beta]: https://github.com/nfour/fermenter/compare/v0.6.0...v0.6.1-beta
 [0.6.0]: https://github.com/nfour/fermenter/compare/v0.6.0-beta...v0.6.0
