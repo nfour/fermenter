@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Fix Background state issues
+
 ## [0.7.1-beta][] - 2018-07-23
 
 - Fix issue from last feature
