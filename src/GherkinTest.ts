@@ -1,9 +1,11 @@
+import { map } from 'lodash';
 import { FeatureBuilder } from './FeatureBuilder';
 import { getGlobalTestMethods } from './lib/getGlobalTestMethods';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
 import {
   IGherkinAst,
   IGherkinAstEntity,
+  IGherkinAstStep,
   IGherkinBackground,
   IGherkinFeatureTest,
   IGherkinMethods,
@@ -11,6 +13,7 @@ import {
   IGherkinScenario,
   IGherkinStep,
   IHookFn,
+  IMatch,
 } from './types';
 
 export type IConfigureFn = (t: IGherkinMethods) => void;
@@ -107,12 +110,10 @@ function describeFeature ({ featureBuilder, ast, configure, methods, defaultTime
 
       scenarios.forEach((scenario) => {
         describeScenario({
-          scenario,
-          background,
-          initialState: undefined,
+          background, scenario,
           afterEachHooks, beforeEachHooks,
-          methods,
-          defaultTimeout,
+          methods, defaultTimeout,
+          initialState: undefined,
         });
       });
     } catch (e) {
@@ -124,23 +125,21 @@ function describeFeature ({ featureBuilder, ast, configure, methods, defaultTime
 }
 
 /** Instruments step functions in the test framework */
-function describeGherkinOperations ({ initialState, steps, methods, defaultTimeout }: {
+function describeGherkinOperations ({ state, steps, methods, defaultTimeout }: {
   steps: IGherkinOperationStore,
-  initialState: any;
+  state: PromiseLike<any>;
   methods: ITestMethods;
   defaultTimeout?: number;
 }) {
-  let state = initialState;
+  let reducedState = state;
 
   steps.forEach((step) => {
     const title = formatTitle({ name: step.name });
     const timeout = step.timeout || defaultTimeout;
 
     methods.test(title, async () => {
-      const nextState = await executeStep(step, state);
-
-      state = nextState;
-    }, timeout); // TODO: add timeout config opt
+      reducedState = await executeStep(step, reducedState);
+    }, timeout);
   });
 }
 
@@ -172,31 +171,31 @@ function describeScenario ({
   const title = formatTitle(scenario.gherkin);
 
   methods.describe(title, () => {
-    let state = initialState;
-
     afterEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.afterAll(fn, timeout); });
     beforeEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.beforeAll(fn, timeout); });
 
-    if (background && background.Given) {
-      background.Given.forEach((step) => {
-        const timeout = step.timeout || defaultTimeout;
-
-        methods.beforeAll(async () => {
-          const nextState = await executeStep(step, state);
-
-          state = nextState;
-        }, timeout);
-      });
-    }
-
     const scenarioSteps = new Map([
+      ...background && background.Given
+        ? augmentBackgroundStepNames(background.Given)
+        : [],
       ...scenario.Given || [],
       ...scenario.When || [],
       ...scenario.Then || [],
     ]);
 
-    describeGherkinOperations({ steps: scenarioSteps, initialState: state, methods });
+    describeGherkinOperations({ steps: scenarioSteps, state: initialState, methods });
   });
+}
+
+function augmentBackgroundStepNames (steps: Map<IMatch, IGherkinStep<IGherkinAstStep>>) {
+  return new Map(
+    map([...steps], ([match, step]) => {
+      return [match, {
+        ...step,
+        name: `(Background) ${step.name}`,
+      }] as [IMatch, IGherkinStep<IGherkinAstStep>];
+    }),
+  );
 }
 
 /** Formats a test title based on tags, name and description */

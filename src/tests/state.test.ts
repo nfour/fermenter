@@ -4,7 +4,8 @@ Feature('./features/state.feature', ({ Scenario, Background }) => {
   const expectedState = { a: 1 };
 
   Background()
-    .Given('I have some state', () => expectedState);
+    .Given('I have some state', () => expectedState)
+    .And('I pass it to another step', (state) => state);
 
   Scenario('I can inherit state from background')
     .Then('the state matches', (state) => {
