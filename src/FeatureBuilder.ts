@@ -34,6 +34,7 @@ export class FeatureBuilder {
   Scenario (): IGherkinMethods['Scenario'] {
     const { gherkin: { children: collection } } = this.feature;
 
+    // TODO: this is where state should be injected, including a scenario setup fn
     return (match) => {
       const gherkin = matchInGherkinCollection<IGherkinAstScenario>({
         collection, match,
