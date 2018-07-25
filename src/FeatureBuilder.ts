@@ -4,10 +4,10 @@ import { GherkinTableReader } from './lib/GherkinTableReader';
 import { IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib/matchInGherkinCollection';
 import { parseGherkinParameters } from './lib/parseGherkinParameters';
 import {
-  IAndFluid, IBackgroundBuilder, IFluidFn, IGherkinAst, IGherkinAstBackground, IGherkinAstScenario, IGherkinAstScenarioOutline,
-  IGherkinCollectionItemIndex, IGherkinFeatureTest, IGherkinLazyOperationStore, IGherkinMethods, IGherkinOperationStore,
-  IGherkinScenario,IGherkinScenarioOutline, IGherkinStepOptions, IGivenFluid, IMatch, IScenarioBuilder, IScenarioOutlineBuilder,
-  IWhenFluid, Omit,
+  IAndFluid, IBackgroundBuilder, IBackgroundFluid, IFluidFn, IGherkinAst, IGherkinAstBackground, IGherkinAstScenario,
+  IGherkinAstScenarioOutline, IGherkinCollectionItemIndex, IGherkinFeatureTest, IGherkinLazyOperationStore, IGherkinMethods,
+  IGherkinOperationStore,IGherkinScenario, IGherkinScenarioOutline, IGherkinStepOptions, IGivenFluid, IMatch, IScenarioBuilder,
+  IScenarioFluid, IScenarioOutlineBuilder, IWhenFluid, Omit,
 } from './types';
 
 /**
@@ -34,6 +34,7 @@ export class FeatureBuilder {
   Scenario (): IGherkinMethods['Scenario'] {
     const { gherkin: { children: collection } } = this.feature;
 
+    // TODO: this is where state should be injected, including a scenario setup fn
     return (match) => {
       const gherkin = matchInGherkinCollection<IGherkinAstScenario>({
         collection, match,
@@ -120,7 +121,7 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
   store: IGherkinOperationStore,
   collectionParams: Omit<IGherkinMatchCollectionParams, 'match'>,
 }): IFluidFn<R> {
-  return (match, fn, options: IGherkinStepOptions = {}) => {
+  return (match, fn, options = {}) => {
     const gherkin: IGherkinCollectionItemIndex = matchInGherkinCollection({
       match,
       ...collectionParams,
@@ -167,22 +168,22 @@ function ScenarioFluidBuilder ({ match, gherkin, FluidFnFactory = FluidFn }: {
     When: new Map(),
   };
 
-  const thenFluid = <IAndFluid> {};
-  const Then = FluidFnFactory({
+  const thenFluid = <IAndFluid<any>> {};
+  const Then = <IScenarioFluid['Then']> FluidFnFactory({
     fluid: thenFluid,
     store: scenario.Then!,
     collectionParams: { collection, matchProperty: 'text', type: 'Step' },
   });
 
-  const whenFluid = <IWhenFluid> { Then };
-  const When = FluidFnFactory({
+  const whenFluid = <IWhenFluid<any>> { Then };
+  const When = <IScenarioFluid['When']> FluidFnFactory({
     fluid: whenFluid,
     store: scenario.When!,
     collectionParams: { collection, matchProperty: 'text', type: 'Step' },
   });
 
-  const givenFluid = <IGivenFluid> { Then, When };
-  const Given = FluidFnFactory({
+  const givenFluid = <IGivenFluid<any>> { Then, When };
+  const Given = <IScenarioFluid['Given']> FluidFnFactory({
     fluid: givenFluid,
     store: scenario.Given!,
     collectionParams: { collection, matchProperty: 'text', type: 'Step' },
@@ -266,7 +267,7 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, onConfigured }: {
 
       operations.forEach(({ fn }, operationMatch) => {
         scenarioBuilders.forEach(({ steps: stepMethods }) => {
-          const method = stepMethods[name];
+          const method = <IFluidFn<any>> stepMethods[name];
 
           method(operationMatch, fn);
         });
@@ -289,8 +290,8 @@ function BackgroundFluidBuilder ({ match, gherkin }: {
     Given: new Map(),
   };
 
-  const givenFluid = <IGivenFluid> {};
-  const Given = FluidFn({
+  const givenFluid = <IAndFluid<any>> {};
+  const Given = <IBackgroundFluid['Given']> FluidFn({
     fluid: givenFluid,
     store: background.Given,
     collectionParams: { collection, matchProperty: 'text', type: 'Step' },
