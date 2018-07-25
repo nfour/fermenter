@@ -1,4 +1,4 @@
-import { IBackgroundFluid, IFluidFnCallback, IGherkinAstScenario, IGherkinAstScenarioOutline, IScenarioFluid } from '.';
+import { IBackgroundFluid, IFluidCb, IGherkinAstScenario, IGherkinAstScenarioOutline, IScenarioFluid } from '.';
 import { IGherkinAstBackground, IGherkinAstEntity, IGherkinAstFeature, IGherkinAstStep, IGherkinAstTableRow } from './ast';
 import { IHookCallback } from './fluid';
 
@@ -184,13 +184,13 @@ export interface IGherkinStepOptions {
 export interface IGherkinStep<
   G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
 > extends IGherkinStepOptions {
-  fn: IFluidFnCallback;
+  fn: IFluidCb;
   name: string;
   gherkin: G;
   params: IGherkinParameter[];
 }
 
-export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidFnCallback } & IGherkinStepOptions>;
+export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidCb } & IGherkinStepOptions>;
 
 export interface IGherkinScenarioBase {
   match: IMatch;
