@@ -6,6 +6,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [0.9.0-beta][] - 2018-07-26
 
+- Enabled types to be constrained and auto-inferred between steps
+
 ## [0.8.0-beta][] - 2018-07-23
 
 - Fix Background state issues
