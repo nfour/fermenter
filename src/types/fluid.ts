@@ -1,9 +1,15 @@
-import { AsyncReturnType, IMatch } from '.';
+import { AsyncReturnType, IMatch } from './';
 import { IGherkinStepOptions } from './parser';
 
 export interface IGherkinMethods extends IGherkinHooks {
-  Scenario <S = any> (match: IMatch): IScenarioFluid<S>;
-  ScenarioOutline <S = any> (match: IMatch): IScenarioFluid<S>;
+  Scenario: (<S = any> (match: IMatch) => IScenarioFluid<S>) & {
+    skip <S = any> (match: IMatch): IScenarioFluid<S>;
+    pending <S = any> (match: IMatch): IScenarioFluid<S>;
+  };
+  ScenarioOutline: (<S = any> (match: IMatch) => IScenarioFluid<S>) & {
+    skip <S = any> (match: IMatch): IScenarioFluid<S>;
+    pending <S = any> (match: IMatch): IScenarioFluid<S>;
+  };
 
   /**
    * Occasionally you'll find yourself repeating the same Given steps in all of the scenarios in a feature.
@@ -13,7 +19,10 @@ export interface IGherkinMethods extends IGherkinHooks {
    * - A Background is run before each scenario, but after any Before hooks. In your feature file, put the Background before the first Scenario.
    * - You can only have one set of Background steps per feature. If you need different Background steps for different scenarios, you'll need to split them into different feature files.
    */
-  Background <S = any> (match?: IMatch): IBackgroundFluid<S>;
+  Background: (<S = any> (match?: IMatch) => IBackgroundFluid<S>) & {
+    skip <S = any> (match: IMatch): IBackgroundFluid<S>;
+    pending <S = any> (match: IMatch): IBackgroundFluid<S>;
+  };
 }
 
 export interface IGherkinHooks {
