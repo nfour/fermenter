@@ -1,25 +1,24 @@
 import { map } from 'lodash';
+
 import { FeatureBuilder } from './FeatureBuilder';
 import { getGlobalTestMethods } from './lib/getGlobalTestMethods';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
 import {
-  IGherkinAst,
-  IGherkinAstEntity,
-  IGherkinAstStep,
-  IGherkinBackground,
-  IGherkinFeatureTest,
-  IGherkinMethods,
-  IGherkinOperationStore,
-  IGherkinScenario,
-  IGherkinStep,
-  IHookFn,
-  IMatch,
+  IGherkinAst, IGherkinAstEntity, IGherkinAstStep, IGherkinBackground, IGherkinFeatureTest, IGherkinMethods,
+  IGherkinOperationStore, IGherkinScenario, IGherkinStep, IHookFn, IMatch,
 } from './types';
 
 export type IConfigureFn = (t: IGherkinMethods) => void;
 
-export type IDescribe = (title: string, fn: () => any) => void;
-export type ITest = (name: string, fn: () => Promise<any>|any, timeout?: number) => void;
+export interface IDescribe {
+  (name: string, fn: () => Promise<any>|any): void;
+  skip: IDescribe;
+}
+
+export interface ITest {
+  (name: string, fn: () => Promise<any>|any, timeout?: number): void;
+  skip: ITest;
+}
 
 export interface ITestMethods {
   describe: IDescribe;
@@ -33,6 +32,9 @@ export interface IGherkinTestParams extends IGherkinParserConfig {
   defaultTimeout?: number;
 }
 
+/**
+ * Create a gherkin test based on a feature file
+ */
 export function Feature (config: IGherkinTestParams | IGherkinTestParams['feature'], configure: IConfigureFn) {
   const { feature, methods = getGlobalTestMethods(), defaultTimeout } = <IGherkinTestParams> (
     typeof config === 'string'
@@ -47,9 +49,6 @@ export function Feature (config: IGherkinTestParams | IGherkinTestParams['featur
   return { ast, featureBuilder };
 }
 
-/**
- * Create a gherkin test based on a feature file
- */
 export const GherkinTest = Feature;
 
 export type IOnConfigured = (callback: () => void) => void;
@@ -125,7 +124,9 @@ function describeFeature ({ featureBuilder, ast, configure, methods, defaultTime
 }
 
 /** Instruments step functions in the test framework */
-function describeGherkinOperations ({ state, steps, methods, defaultTimeout }: {
+function describeGherkinOperations ({
+  state, steps, methods, defaultTimeout,
+}: {
   steps: IGherkinOperationStore,
   state: PromiseLike<any>;
   methods: ITestMethods;
@@ -137,9 +138,13 @@ function describeGherkinOperations ({ state, steps, methods, defaultTimeout }: {
     const title = formatTitle({ name: step.name });
     const timeout = step.timeout || defaultTimeout;
 
-    methods.test(title, async () => {
+    const execute = async () => {
       reducedState = await executeStep(step, reducedState);
-    }, timeout);
+
+      return reducedState;
+    };
+
+    methods.test(title, execute, timeout);
   });
 }
 
@@ -170,7 +175,15 @@ function describeScenario ({
 }) {
   const title = formatTitle(scenario.gherkin);
 
-  methods.describe(title, () => {
+  const { skip, pending } = scenario;
+
+  const describeMethod = skip || pending
+    ? methods.describe.skip
+    : methods.describe;
+
+  const describeTitle = pending ? `Pending: ${title}` : title;
+
+  describeMethod(describeTitle, () => {
     afterEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.afterAll(fn, timeout); });
     beforeEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.beforeAll(fn, timeout); });
 
