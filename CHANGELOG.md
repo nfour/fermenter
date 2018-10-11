@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.0.0][] - 2018-10-11
+
 - Upgrade dependencies
 - Add static methods `skip` to `Scenario`, `Background` and `ScenarioOutline`
   - eg. `Scenario.skip('My scenario').Then( ...`
@@ -87,7 +89,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v0.9.1-beta...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/nfour/fermenter/compare/v0.9.1-beta...v1.0.0
 [0.9.1-beta]: https://github.com/nfour/fermenter/compare/v0.9.0-beta...v0.9.1-beta
 [0.9.0-beta]: https://github.com/nfour/fermenter/compare/v0.8.0-beta...v0.9.0-beta
 [0.8.0-beta]: https://github.com/nfour/fermenter/compare/v0.7.1-beta...v0.8.0-beta
