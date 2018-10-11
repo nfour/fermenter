@@ -4,6 +4,11 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Upgrade dependencies
+- Add static methods `pending` and `skip` to `Scenario`, `Background` and `ScenarioOutline`
+  - eg. `Scenario.skip('My scenario').Then( ...`
+  - Works just like in jest & mocha
+
 ## [0.9.1-beta][] - 2018-07-26
 
 - Fixes for previous type constraints
