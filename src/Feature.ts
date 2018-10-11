@@ -175,15 +175,13 @@ function describeScenario ({
 }) {
   const title = formatTitle(scenario.gherkin);
 
-  const { skip, pending } = scenario;
+  const { skip } = scenario;
 
-  const describeMethod = skip || pending
+  const describeMethod = skip
     ? methods.describe.skip
     : methods.describe;
 
-  const describeTitle = pending ? `Pending: ${title}` : title;
-
-  describeMethod(describeTitle, () => {
+  describeMethod(title, () => {
     afterEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.afterAll(fn, timeout); });
     beforeEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.beforeAll(fn, timeout); });
 

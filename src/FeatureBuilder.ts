@@ -65,14 +65,6 @@ export class FeatureBuilder {
       return steps;
     };
 
-    fn.pending = (match) => {
-      const { definition, steps } = build(match);
-
-      set({ ...definition, pending: true });
-
-      return steps;
-    };
-
     return fn;
   }
 
@@ -115,15 +107,6 @@ export class FeatureBuilder {
       return steps;
     };
 
-    fn.pending = (match) => {
-      const { scenarioOutline, scenarios, steps } = build(match);
-
-      setScenarios(scenarios.map((scenario) => ({ ...scenario, pending: true })));
-      setOutline(scenarioOutline);
-
-      return steps;
-    };
-
     return fn;
   }
 
@@ -156,14 +139,6 @@ export class FeatureBuilder {
       const { definition, steps } = build(match);
 
       set({ ...definition, skip: true });
-
-      return steps;
-    };
-
-    fn.pending = (match) => {
-      const { definition, steps } = build(match);
-
-      set({ ...definition, pending: true });
 
       return steps;
     };
@@ -336,7 +311,6 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, onConfigured }: {
     scenarios,
     name: gherkin.name,
     skip: false,
-    pending: false,
   };
 
   const methods: IStepMethodNames[] = ['Given', 'When', 'Then'];
@@ -375,7 +349,6 @@ function BackgroundFluidBuilder ({ match, gherkin }: {
     name: gherkin.name,
     Given: new Map(),
     skip: false,
-    pending: false,
   };
 
   const givenFluid = <IAndFluid<any>> {};
