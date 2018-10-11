@@ -1,13 +1,14 @@
 import * as Interpolator from 'trans-interpolator';
+
 import { IOnConfigured } from './GherkinTest';
 import { GherkinTableReader } from './lib/GherkinTableReader';
 import { IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib/matchInGherkinCollection';
 import { parseGherkinParameters } from './lib/parseGherkinParameters';
 import {
   IAndFluid, IBackgroundBuilder, IBackgroundFluid, IFluidFn, IGherkinAst, IGherkinAstBackground, IGherkinAstScenario,
-  IGherkinAstScenarioOutline, IGherkinCollectionItemIndex, IGherkinFeatureTest, IGherkinLazyOperationStore, IGherkinMethods,
-  IGherkinOperationStore,IGherkinScenario, IGherkinScenarioOutline, IGherkinStepOptions, IGivenFluid, IMatch, IScenarioBuilder,
-  IScenarioFluid, IScenarioOutlineBuilder, IWhenFluid, Omit,
+  IGherkinAstScenarioOutline, IGherkinCollectionItemIndex, IGherkinFeatureTest, IGherkinLazyOperationStore,
+  IGherkinMethods, IGherkinOperationStore, IGherkinScenario, IGherkinScenarioOutline, IGherkinStepOptions, IGivenFluid,
+  IMatch, IScenarioBuilder, IScenarioFluid, IScenarioOutlineBuilder, IWhenFluid, Omit,
 } from './types';
 
 /**
@@ -156,7 +157,7 @@ function LazyFluidFn <R> ({ fluid, store }: {
 function ScenarioFluidBuilder ({ match, gherkin, FluidFnFactory = FluidFn }: {
   match: IMatch,
   gherkin: IGherkinScenario['gherkin'] | IGherkinScenarioOutline['gherkin'],
-  FluidFnFactory?: typeof FluidFn | typeof LazyFluidFn;
+  FluidFnFactory?: typeof FluidFn;
 }): IScenarioBuilder {
   const { steps: collection } = gherkin;
 
