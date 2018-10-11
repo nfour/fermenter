@@ -1,7 +1,7 @@
 import { Feature } from '../';
 
 Feature('./features/skippingAndPending.feature', ({ Scenario }) => {
-  Scenario('I can pass a regualr test')
+  Scenario('I can pass a regular test')
     .When('it passes in the test framework', () => 1);
 
   Scenario.pending('I can skip a test so it does not execute')
