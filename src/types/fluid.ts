@@ -4,11 +4,9 @@ import { IGherkinStepOptions } from './parser';
 export interface IGherkinMethods extends IGherkinHooks {
   Scenario: (<S = any> (match: IMatch) => IScenarioFluid<S>) & {
     skip <S = any> (match: IMatch): IScenarioFluid<S>;
-    pending <S = any> (match: IMatch): IScenarioFluid<S>;
   };
   ScenarioOutline: (<S = any> (match: IMatch) => IScenarioFluid<S>) & {
     skip <S = any> (match: IMatch): IScenarioFluid<S>;
-    pending <S = any> (match: IMatch): IScenarioFluid<S>;
   };
 
   /**
@@ -21,7 +19,6 @@ export interface IGherkinMethods extends IGherkinHooks {
    */
   Background: (<S = any> (match?: IMatch) => IBackgroundFluid<S>) & {
     skip <S = any> (match: IMatch): IBackgroundFluid<S>;
-    pending <S = any> (match: IMatch): IBackgroundFluid<S>;
   };
 }
 

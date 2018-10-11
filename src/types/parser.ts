@@ -196,7 +196,6 @@ export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidCb } & IGherkin
 
 export interface IGherkinTestSupportFlags {
   skip: boolean;
-  pending: boolean;
 }
 
 export interface IGherkinScenarioBase extends IGherkinTestSupportFlags {

@@ -5,7 +5,7 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ## [Unreleased]
 
 - Upgrade dependencies
-- Add static methods `pending` and `skip` to `Scenario`, `Background` and `ScenarioOutline`
+- Add static methods `skip` to `Scenario`, `Background` and `ScenarioOutline`
   - eg. `Scenario.skip('My scenario').Then( ...`
   - Works just like in jest & mocha
 
