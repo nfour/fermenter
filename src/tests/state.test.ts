@@ -1,4 +1,4 @@
-import { Feature } from '..';
+import { Feature } from '../';
 
 Feature('./features/state.feature', ({ Scenario, Background }) => {
   const expectedState = { a: 1 };

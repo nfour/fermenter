@@ -1,2 +1,2 @@
-export * from './GherkinTest';
+export * from './Feature';
 export * from './types';

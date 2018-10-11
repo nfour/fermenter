@@ -1,5 +1,7 @@
-import { IBackgroundFluid, IFluidCb, IGherkinAstScenario, IGherkinAstScenarioOutline, IScenarioFluid } from '.';
-import { IGherkinAstBackground, IGherkinAstEntity, IGherkinAstFeature, IGherkinAstStep, IGherkinAstTableRow } from './ast';
+import { IBackgroundFluid, IFluidCb, IGherkinAstScenario, IGherkinAstScenarioOutline, IScenarioFluid } from './';
+import {
+  IGherkinAstBackground, IGherkinAstEntity, IGherkinAstFeature, IGherkinAstStep, IGherkinAstTableRow,
+} from './ast';
 import { IHookCallback } from './fluid';
 
 // tslint:disable-next-line
@@ -152,12 +154,12 @@ export interface IGherkinFeatureMappings<Ge = any> {
 
 export interface IScenarioBuilder {
   steps: IScenarioFluid;
-  scenario: IGherkinScenario;
+  definition: IGherkinScenario;
 }
 
 export interface IBackgroundBuilder {
   steps: IBackgroundFluid;
-  background: IGherkinBackground;
+  definition: IGherkinBackground;
 }
 
 /**
@@ -192,7 +194,12 @@ export interface IGherkinStep<
 
 export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidCb } & IGherkinStepOptions>;
 
-export interface IGherkinScenarioBase {
+export interface IGherkinTestSupportFlags {
+  skip: boolean;
+  pending: boolean;
+}
+
+export interface IGherkinScenarioBase extends IGherkinTestSupportFlags {
   match: IMatch;
   name: IGherkinAstScenario['name'];
   Given?: IGherkinOperationStore<IGherkinAstStep>;
@@ -211,7 +218,7 @@ export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
   scenarios: IGherkinScenario[];
 }
 
-export interface IGherkinBackground {
+export interface IGherkinBackground extends IGherkinTestSupportFlags {
   match: IMatch;
   name: IGherkinAstBackground['name'];
   gherkin: IGherkinAstBackground;
