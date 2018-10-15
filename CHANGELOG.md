@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.0.1][] - 2018-10-16
+
 ## [1.0.0][] - 2018-10-11
 
 - Upgrade dependencies
@@ -89,7 +91,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/nfour/fermenter/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/nfour/fermenter/compare/v0.9.1-beta...v1.0.0
 [0.9.1-beta]: https://github.com/nfour/fermenter/compare/v0.9.0-beta...v0.9.1-beta
 [0.9.0-beta]: https://github.com/nfour/fermenter/compare/v0.8.0-beta...v0.9.0-beta
