@@ -18,7 +18,7 @@ export interface IGherkinMethods extends IGherkinHooks {
    * - You can only have one set of Background steps per feature. If you need different Background steps for different scenarios, you'll need to split them into different feature files.
    */
   Background: (<S = any> (match?: IMatch) => IBackgroundFluid<S>) & {
-    skip <S = any> (match: IMatch): IBackgroundFluid<S>;
+    skip <S = any> (match?: IMatch): IBackgroundFluid<S>;
   };
 }
 
