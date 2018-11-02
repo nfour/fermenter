@@ -13,11 +13,13 @@ export type IConfigureFn = (t: IGherkinMethods) => void;
 export interface IDescribe {
   (name: string, fn: () => Promise<any>|any): void;
   skip: IDescribe;
+  only: ITest;
 }
 
 export interface ITest {
   (name: string, fn: () => Promise<any>|any, timeout?: number): void;
   skip: ITest;
+  only: ITest;
 }
 
 export interface ITestMethods {
