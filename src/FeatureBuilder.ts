@@ -6,9 +6,9 @@ import { IGherkinMatchCollectionParams, matchInGherkinCollection } from './lib/m
 import { parseGherkinParameters } from './lib/parseGherkinParameters';
 import {
   IAndFluid, IBackgroundBuilder, IBackgroundFluid, IFluidFn, IGherkinAst, IGherkinAstBackground, IGherkinAstScenario,
-  IGherkinAstScenarioOutline, IGherkinBackground, IGherkinCollectionItemIndex, IGherkinFeatureTest,
-  IGherkinLazyOperationStore, IGherkinMethods, IGherkinOperationStore, IGherkinScenario, IGherkinScenarioOutline,
-  IGherkinStepOptions, IGivenFluid, IMatch, IScenarioBuilder, IScenarioFluid, IScenarioOutlineBuilder, IWhenFluid, Omit,
+  IGherkinAstScenarioOutline, IGherkinCollectionItemIndex, IGherkinFeatureTest, IGherkinLazyOperationStore,
+  IGherkinMethods, IGherkinOperationStore, IGherkinScenario, IGherkinScenarioOutline, IGherkinStepOptions, IGivenFluid,
+  IMatch, IScenarioBuilder, IScenarioFluid, IScenarioOutlineBuilder, IWhenFluid, Omit,
 } from './types';
 
 /**
