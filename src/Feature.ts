@@ -5,7 +5,7 @@ import { getGlobalTestMethods } from './lib/getGlobalTestMethods';
 import { IGherkinParserConfig, parseFeature } from './parseFeature';
 import {
   IGherkinAst, IGherkinAstEntity, IGherkinAstStep, IGherkinBackground, IGherkinFeatureTest, IGherkinMethods,
-  IGherkinOperationStore, IGherkinScenario, IGherkinStep, IHookFn, IMatch,
+  IGherkinOperationStore, IGherkinScenario, IGherkinStep, IGherkinTestSupportFlags, IHookFn, IMatch,
 } from './types';
 
 export type IConfigureFn = (t: IGherkinMethods) => void;
@@ -176,12 +176,7 @@ function describeScenario ({
   defaultTimeout?: number;
 }) {
   const title = formatTitle(scenario.gherkin);
-
-  const { skip } = scenario;
-
-  const describeMethod = skip
-    ? methods.describe.skip
-    : methods.describe;
+  const describeMethod = narrowTestMethod(methods.describe, scenario);
 
   describeMethod(title, () => {
     afterEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.afterAll(fn, timeout); });
@@ -198,6 +193,13 @@ function describeScenario ({
 
     describeGherkinOperations({ steps: scenarioSteps, state: initialState, methods });
   });
+}
+
+function narrowTestMethod (method: ITest, { skip, only }: IGherkinTestSupportFlags) {
+  if (only) { return method.only; }
+  if (skip) { return method.skip; }
+
+  return method;
 }
 
 function augmentBackgroundStepNames (steps: Map<IMatch, IGherkinStep<IGherkinAstStep>>) {
