@@ -45,25 +45,19 @@ export class FeatureBuilder {
       return ScenarioFluidBuilder({ match, gherkin });
     };
 
-    const set = (definition: IGherkinScenario) => {
-      this.feature.scenarios = [...this.feature.scenarios, definition];
+    const EntryPoint = (overrides: Partial<IGherkinScenario> = {}) => {
+      return (match: IMatch) => {
+        const { definition, steps } = build(match);
+
+        this.feature.scenarios = [...this.feature.scenarios, { ...definition, ...overrides }];
+
+        return steps;
+      };
     };
 
-    const fn = <IGherkinMethods['Scenario']> ((match) => {
-      const { definition, steps } = build(match);
-
-      set(definition);
-
-      return steps;
-    });
-
-    fn.skip = (match) => {
-      const { definition, steps } = build(match);
-
-      set({ ...definition, skip: true });
-
-      return steps;
-    };
+    const fn = <IGherkinMethods['Scenario']> EntryPoint();
+    fn.skip = EntryPoint({ skip: true });
+    fn.only = EntryPoint({ only: true });
 
     return fn;
   }
@@ -89,23 +83,22 @@ export class FeatureBuilder {
       this.feature.scenarioOutlines = [...this.feature.scenarioOutlines, scenarioOutline];
     };
 
-    const fn = <IGherkinMethods['ScenarioOutline']> ((match) => {
-      const { scenarioOutline, scenarios, steps } = build(match);
+    /** The fluid interface made generic for multiple entry points */
+    const EntryPoint = (overrides: Partial<IGherkinScenario> = {}) => {
+      return (match: IMatch) => {
+        const { scenarioOutline, scenarios, steps } = build(match);
 
-      setScenarios(scenarios);
-      setOutline(scenarioOutline);
+        setScenarios(scenarios.map((scenario) => ({ ...scenario, ...overrides })));
+        setScenarios(scenarios);
+        setOutline(scenarioOutline);
 
-      return steps;
-    });
-
-    fn.skip = (match) => {
-      const { scenarioOutline, scenarios, steps } = build(match);
-
-      setScenarios(scenarios.map((scenario) => ({ ...scenario, skip: true })));
-      setOutline(scenarioOutline);
-
-      return steps;
+        return steps;
+      };
     };
+
+    const fn = <IGherkinMethods['ScenarioOutline']> EntryPoint();
+    fn.skip = EntryPoint({ skip: true });
+    fn.only = EntryPoint({ only: true });
 
     return fn;
   }
@@ -123,25 +116,20 @@ export class FeatureBuilder {
       return BackgroundFluidBuilder({ match, gherkin });
     };
 
-    const set = (definition: IGherkinBackground) => {
-      this.feature.background = definition;
+    const EntryPoint = (overrides: Partial<IGherkinBackground> = {}) => {
+      return (match: IMatch) => {
+        const { definition, steps } = build(match);
+
+        this.feature.background = { ...definition, ...overrides };
+
+        return steps;
+      };
     };
 
-    const fn = <IGherkinMethods['Background']> ((match) => {
-      const { definition, steps } = build(match);
+    const fn = <IGherkinMethods['Background']> EntryPoint();
 
-      set(definition);
-
-      return steps;
-    });
-
-    fn.skip = (match) => {
-      const { definition, steps } = build(match);
-
-      set({ ...definition, skip: true });
-
-      return steps;
-    };
+    fn.skip = EntryPoint({ skip: true });
+    fn.only = EntryPoint({ only: true });
 
     return fn;
   }
@@ -311,6 +299,7 @@ function ScenarioOutlineFluidBuilder ({ match, gherkin, onConfigured }: {
     scenarios,
     name: gherkin.name,
     skip: false,
+    only: false,
   };
 
   const methods: IStepMethodNames[] = ['Given', 'When', 'Then'];
@@ -349,6 +338,7 @@ function BackgroundFluidBuilder ({ match, gherkin }: {
     name: gherkin.name,
     Given: new Map(),
     skip: false,
+    only: false,
   };
 
   const givenFluid = <IAndFluid<any>> {};

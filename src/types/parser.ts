@@ -13,6 +13,102 @@ export type IGherkinCollectionItemIndex = IGherkinAstEntity & IGherkinAstStep;
 
 export type IGherkinParams = string | number | IGherkinAstTableRow;
 
+export interface IGherkinFeatureMappings<Ge = any> {
+  match: IMatch;
+  gherkin: Ge;
+}
+
+export interface IScenarioBuilder {
+  steps: IScenarioFluid;
+  definition: IGherkinScenario;
+}
+
+export interface IBackgroundBuilder {
+  steps: IBackgroundFluid;
+  definition: IGherkinBackground;
+}
+
+/**
+ * Produces a subset ScenarioOutline that looks like this:
+ * @example { Given, When, Then, Examples: { operations } }
+ */
+export interface IScenarioOutlineBuilder {
+  steps: IScenarioFluid;
+  scenarioOutline: IGherkinScenarioOutline;
+  scenarios: IGherkinFeatureTest['scenarios'];
+}
+
+export interface IDict<V> { [k: string]: V; }
+export type IGherkinParameter = string | number | IGherkinTableParam;
+
+export type IGherkinOperationStore<
+  G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
+> = Map<IMatch, IGherkinStep<G>>;
+
+export interface IGherkinStepOptions {
+  timeout?: number;
+}
+
+export interface IGherkinStep<
+  G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
+> extends IGherkinStepOptions {
+  fn: IFluidCb;
+  name: string;
+  gherkin: G;
+  params: IGherkinParameter[];
+}
+
+export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidCb } & IGherkinStepOptions>;
+
+export interface IGherkinTestSupportFlags {
+  skip: boolean;
+  only: boolean;
+}
+
+export interface IGherkinScenarioBase extends IGherkinTestSupportFlags {
+  match: IMatch;
+  name: IGherkinAstScenario['name'];
+  Given?: IGherkinOperationStore<IGherkinAstStep>;
+  When?: IGherkinOperationStore<IGherkinAstStep>;
+  Then?: IGherkinOperationStore<IGherkinAstStep>;
+}
+
+export interface IGherkinScenario extends IGherkinScenarioBase {
+  gherkin: IGherkinAstScenario;
+}
+
+export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
+  gherkin: IGherkinAstScenarioOutline;
+
+  // TODO: remove this once it's clear it's not needed as we are pushing these to the feature.scenarios
+  scenarios: IGherkinScenario[];
+}
+
+export interface IGherkinBackground extends IGherkinTestSupportFlags {
+  match: IMatch;
+  name: IGherkinAstBackground['name'];
+  gherkin: IGherkinAstBackground;
+  Given: IGherkinOperationStore<IGherkinAstStep>;
+}
+
+export interface IHookStep extends IGherkinStepOptions {
+  fn: IHookCallback;
+}
+
+export interface IGherkinFeatureTest {
+  gherkin: IGherkinAstFeature;
+  name: IGherkinAstFeature['name'];
+
+  background?: IGherkinBackground;
+  scenarios: IGherkinScenario[];
+  scenarioOutlines: IGherkinScenarioOutline[];
+
+  afterAll: IHookStep[];
+  beforeAll: IHookStep[];
+  afterEach: IHookStep[];
+  beforeEach: IHookStep[];
+}
+
 // TODO: add a generic to populate table interfaces for known props
 export interface IGherkinTableParam {
 
@@ -145,99 +241,4 @@ export interface IGherkinTableParam {
    *
    */
   headers (): string[];
-}
-
-export interface IGherkinFeatureMappings<Ge = any> {
-  match: IMatch;
-  gherkin: Ge;
-}
-
-export interface IScenarioBuilder {
-  steps: IScenarioFluid;
-  definition: IGherkinScenario;
-}
-
-export interface IBackgroundBuilder {
-  steps: IBackgroundFluid;
-  definition: IGherkinBackground;
-}
-
-/**
- * Produces a subset ScenarioOutline that looks like this:
- * @example { Given, When, Then, Examples: { operations } }
- */
-export interface IScenarioOutlineBuilder {
-  steps: IScenarioFluid;
-  scenarioOutline: IGherkinScenarioOutline;
-  scenarios: IGherkinFeatureTest['scenarios'];
-}
-
-export interface IDict<V> { [k: string]: V; }
-export type IGherkinParameter = string | number | IGherkinTableParam;
-
-export type IGherkinOperationStore<
-  G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
-> = Map<IMatch, IGherkinStep<G>>;
-
-export interface IGherkinStepOptions {
-  timeout?: number;
-}
-
-export interface IGherkinStep<
-  G extends IGherkinCollectionItemShape = IGherkinCollectionItemShape
-> extends IGherkinStepOptions {
-  fn: IFluidCb;
-  name: string;
-  gherkin: G;
-  params: IGherkinParameter[];
-}
-
-export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidCb } & IGherkinStepOptions>;
-
-export interface IGherkinTestSupportFlags {
-  skip: boolean;
-}
-
-export interface IGherkinScenarioBase extends IGherkinTestSupportFlags {
-  match: IMatch;
-  name: IGherkinAstScenario['name'];
-  Given?: IGherkinOperationStore<IGherkinAstStep>;
-  When?: IGherkinOperationStore<IGherkinAstStep>;
-  Then?: IGherkinOperationStore<IGherkinAstStep>;
-}
-
-export interface IGherkinScenario extends IGherkinScenarioBase {
-  gherkin: IGherkinAstScenario;
-}
-
-export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
-  gherkin: IGherkinAstScenarioOutline;
-
-  // TODO: remove this once it's clear it's not needed as we are pushing these to the feature.scenarios
-  scenarios: IGherkinScenario[];
-}
-
-export interface IGherkinBackground extends IGherkinTestSupportFlags {
-  match: IMatch;
-  name: IGherkinAstBackground['name'];
-  gherkin: IGherkinAstBackground;
-  Given: IGherkinOperationStore<IGherkinAstStep>;
-}
-
-export interface IHookStep extends IGherkinStepOptions {
-  fn: IHookCallback;
-}
-
-export interface IGherkinFeatureTest {
-  gherkin: IGherkinAstFeature;
-  name: IGherkinAstFeature['name'];
-
-  background?: IGherkinBackground;
-  scenarios: IGherkinScenario[];
-  scenarioOutlines: IGherkinScenarioOutline[];
-
-  afterAll: IHookStep[];
-  beforeAll: IHookStep[];
-  afterEach: IHookStep[];
-  beforeEach: IHookStep[];
 }
