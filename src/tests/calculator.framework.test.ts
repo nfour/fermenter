@@ -95,6 +95,6 @@ it('runs a Feature', () => {
 
   expect(afterAllFn).toHaveBeenCalledTimes(expectedAfterAllCalls);
   expect(beforeAllFn).toHaveBeenCalledTimes(1);
-  expect(beforeEachFn).toHaveBeenCalledTimes(4);
-  expect(afterEachFn).toHaveBeenCalledTimes(4);
+  expect(beforeEachFn).toHaveBeenCalledTimes(6);
+  expect(afterEachFn).toHaveBeenCalledTimes(6);
 }, 10000);
