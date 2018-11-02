@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.1.0][] - 2018-11-02
+
 ### Added
 
 - Can now `Scenario.only(`, in order to only run that scenario.
@@ -101,7 +103,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/nfour/fermenter/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/nfour/fermenter/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/nfour/fermenter/compare/v0.9.1-beta...v1.0.0
 [0.9.1-beta]: https://github.com/nfour/fermenter/compare/v0.9.0-beta...v0.9.1-beta
