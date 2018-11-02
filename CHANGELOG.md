@@ -4,7 +4,17 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Added
+
+- Can now `Scenario.only(`, in order to only run that scenario.
+
+### Removed
+
+- `Background.skip` removed as it is not viable, as backgrounds skipped based on scenarios
+
 ## [1.0.1][] - 2018-10-16
+
+- Misc changes
 
 ## [1.0.0][] - 2018-10-11
 
