@@ -176,11 +176,14 @@ function describeScenario ({
   defaultTimeout?: number;
 }) {
   const title = formatTitle(scenario.gherkin);
-  const describeMethod = narrowTestMethod(methods.describe, scenario);
+  const { skip, only } = scenario;
+  const describeMethod = narrowTestMethod(methods.describe, { skip, only });
 
   describeMethod(title, () => {
-    afterEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.afterAll(fn, timeout); });
-    beforeEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.beforeAll(fn, timeout); });
+    if (!skip) {
+      afterEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.afterAll(fn, timeout); });
+      beforeEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.beforeAll(fn, timeout); });
+    }
 
     const scenarioSteps = new Map([
       ...background && background.Given
