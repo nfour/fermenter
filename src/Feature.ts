@@ -2,7 +2,7 @@ import { map } from 'lodash';
 
 import { FeatureBuilder } from './FeatureBuilder';
 import { getGlobalTestMethods } from './lib/getGlobalTestMethods';
-import { IGherkinParserConfig, parseFeature } from './parseFeature';
+import { IGherkinParserConfig, parseFeature } from './lib/parseFeature';
 import {
   IGherkinAst, IGherkinAstEntity, IGherkinAstStep, IGherkinBackground, IGherkinFeatureTest, IGherkinMethods,
   IGherkinOperationStore, IGherkinScenario, IGherkinStep, IGherkinTestSupportFlags, IHookFn, IMatch,

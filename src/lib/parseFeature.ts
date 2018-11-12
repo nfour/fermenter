@@ -1,7 +1,9 @@
 import * as Gherkin from 'gherkin';
-import { FeatureBuilder } from './FeatureBuilder';
-import { readInputFile } from './lib/readInputFile';
-import { IGherkinAst } from './types';
+import * as isValidPath from 'is-valid-path';
+
+import { FeatureBuilder } from '../FeatureBuilder';
+import { IGherkinAst } from '../types';
+import { readInputFile } from './readInputFile';
 
 export interface IGherkinParserOutput {
   ast: IGherkinAst;
@@ -22,7 +24,10 @@ export function parseFeature ({ feature, stackIndex = 2 }: IGherkinParserConfig)
     .match(/\(([^:]+):/ig)![0]
     .replace(/^\(|:$/g, '');
 
-  const text = readInputFile({ filePath: feature, testFilePath });
+  const text = isValidPath(feature)
+    ? readInputFile({ filePath: feature, testFilePath })
+    : feature;
+
   const parser = new Gherkin.Parser();
   const ast: IGherkinAst = parser.parse(text);
 

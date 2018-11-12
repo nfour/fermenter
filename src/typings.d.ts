@@ -2,6 +2,7 @@
 
 declare module 'gherkin';
 declare module 'jest-circus';
+declare module 'is-valid-path';
 
 declare module 'cucumber-expressions' {
   type IMatch = RegExp|string;

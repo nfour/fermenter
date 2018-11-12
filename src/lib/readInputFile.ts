@@ -1,7 +1,7 @@
-import { readFileSync } from 'fs';
-import { dirname, isAbsolute, resolve } from 'path';
-
 export function readInputFile ({ filePath, testFilePath }: { filePath: string, testFilePath?: string }) {
+  const { dirname, isAbsolute, resolve } = require('path');
+  const { readFileSync } = require('fs');
+
   if (isAbsolute(filePath)) {
     return readFileSync(filePath, 'utf8');
   } else {
