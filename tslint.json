@@ -1,6 +1,7 @@
 {
   "extends": ["tslint-config-temando"],
   "rules": {
-    "no-use-before-declare": false
+    "no-use-before-declare": false,
+    "no-implicit-dependencies": [true, "dev"]
   }
 }
