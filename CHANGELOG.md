@@ -4,6 +4,15 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Scenario steps now support `.skip` and the omission of the step fn:
+  - `Scenario('foo').Then.skip('wew', myFn)` Skipped
+  - `Scenario('foo').Then.skip('wew')` Skipped
+  - `Scenario('foo').Then('wew')` Skipped
+  - `Scenario('foo').Then('wew', myFn)` Not skipped!
+
+- Scenario steps which error will no longer execute following steps
+  - They will appear as a pass in Jest, but they were merely skipped
+
 ## [1.2.0][] - 2018-11-12
 
 - Added browser support
