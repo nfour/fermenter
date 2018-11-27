@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should execute the test as expected 1`] = `
+"FAIL src/tests/execution/executionGherkinTest.ts
+  Test Execution
+    Failing steps exit a scenario gracefully
+      ✓ Given: A step which passes
+      ✕ When: This step fails
+      ✓ Then: This step's function should not execute
+
+  ● Test Execution › Failing steps exit a scenario gracefully › When: This step fails
+
+    Should error
+
+       5 |     .Given('A step which passes', () => 1)
+       6 |     .When('This step fails', () => {
+    >  7 |       throw new Error('Should error');
+         |             ^
+       8 |     })
+       9 |     .Then(\`This step's function should not execute\`, () => {
+      10 |       throw new Error('Shouldnt error');
+
+      at Object.Scenario.Given.When [as fn] (src/tests/execution/executionGherkinTest.ts:7:13)
+      at src/Feature.ts:128:28
+      at src/Feature.ts:7:71
+      at Object.<anonymous>.__awaiter (src/Feature.ts:3:12)
+      at executeStep (src/Feature.ts:75:12)
+      at src/Feature.ts:205:32
+      at src/Feature.ts:7:71
+      at Object.<anonymous>.__awaiter (src/Feature.ts:3:12)
+      at Object.testFn (src/Feature.ts:200:33)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 2 passed, 3 total"
+`;
