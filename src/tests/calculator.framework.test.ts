@@ -1,4 +1,4 @@
-import { Feature, IGherkinTableParam } from '..';
+import { Feature, IGherkinTableParam } from '../';
 
 const getNumbers = (state: {} = {}, a: number, b: number) => {
   return {
@@ -71,7 +71,7 @@ Feature({ feature: './features/calculator.feature', methods: { afterAll, beforeA
       expect(state.c).toBe(parseInt(text, 10));
     });
 
-  Scenario('A simple multiplication test')
+  Scenario.skip('A simple multiplication test')
     .Given(/^I have numbers (\d+) and (\d+)$/, getNumbers)
     .When('I multiply the numbers', multiplyNumbers)
     .Then('I get {int}', checkResult);
@@ -95,6 +95,6 @@ it('runs a Feature', () => {
 
   expect(afterAllFn).toHaveBeenCalledTimes(expectedAfterAllCalls);
   expect(beforeAllFn).toHaveBeenCalledTimes(1);
-  expect(beforeEachFn).toHaveBeenCalledTimes(4);
-  expect(afterEachFn).toHaveBeenCalledTimes(4);
+  expect(beforeEachFn).toHaveBeenCalledTimes(3);
+  expect(afterEachFn).toHaveBeenCalledTimes(3);
 }, 10000);

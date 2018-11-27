@@ -31,7 +31,8 @@ Feature('./features/calculator.feature', ({ Scenario, Background, ScenarioOutlin
     .When('I add the numbers', addNumbers)
     .Then('I get {int}', checkResult);
 
-  Scenario('A simple multiplication test')
+  // This scenario and its steps will be skipped
+  Scenario.skip('A simple multiplication test')
     .Given('I have numbers {int} and {int}', getNumbers)
     .When('I multiply the numbers', multiplyNumbers)
     .Then('I get {int}', checkResult);

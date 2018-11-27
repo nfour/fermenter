@@ -1,4 +1,4 @@
-import { ITestMethods } from '../GherkinTest';
+import { ITestMethods } from '../Feature';
 
 // These will be globals because of the runtime
 export function getGlobalTestMethods (): ITestMethods {

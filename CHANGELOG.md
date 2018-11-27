@@ -4,6 +4,31 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.2.0][] - 2018-11-12
+
+- Added browser support
+
+## [1.1.0][] - 2018-11-02
+
+### Added
+
+- Can now `Scenario.only(`, in order to only run that scenario.
+
+### Removed
+
+- `Background.skip` removed as it is not viable, as backgrounds skipped based on scenarios
+
+## [1.0.1][] - 2018-10-16
+
+- Misc changes
+
+## [1.0.0][] - 2018-10-11
+
+- Upgrade dependencies
+- Add static methods `skip` to `Scenario`, `Background` and `ScenarioOutline`
+  - eg. `Scenario.skip('My scenario').Then( ...`
+  - Works just like in jest & mocha
+
 ## [0.9.1-beta][] - 2018-07-26
 
 - Fixes for previous type constraints
@@ -82,7 +107,11 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v0.9.1-beta...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/nfour/fermenter/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/nfour/fermenter/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/nfour/fermenter/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/nfour/fermenter/compare/v0.9.1-beta...v1.0.0
 [0.9.1-beta]: https://github.com/nfour/fermenter/compare/v0.9.0-beta...v0.9.1-beta
 [0.9.0-beta]: https://github.com/nfour/fermenter/compare/v0.8.0-beta...v0.9.0-beta
 [0.8.0-beta]: https://github.com/nfour/fermenter/compare/v0.7.1-beta...v0.8.0-beta
