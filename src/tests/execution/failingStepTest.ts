@@ -1,6 +1,6 @@
 import { Feature } from '../..';
 
-Feature('./execution.feature', ({ Scenario, AfterAll }) => {
+Feature('./execution.feature', ({ Scenario }) => {
   Scenario('Failing steps exit a scenario gracefully')
     .Given('A step which passes', () => 1)
     .When('This step fails', () => {

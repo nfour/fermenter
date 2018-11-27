@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should execute the test as expected 1`] = `
-"FAIL src/tests/execution/executionGherkinTest.ts
+exports[`Fermenter execution matching snapshots failingStepTest 1`] = `
+"FAIL src/tests/execution/failingStepTest.ts
   Test Execution
     Failing steps exit a scenario gracefully
       ✓ Given: A step which passes
@@ -20,7 +20,7 @@ exports[`should execute the test as expected 1`] = `
        9 |     .Then(\`This step's function should not execute\`, () => {
       10 |       throw new Error('Shouldnt error');
 
-      at Object.Scenario.Given.When [as fn] (src/tests/execution/executionGherkinTest.ts:7:13)
+      at Object.Scenario.Given.When [as fn] (src/tests/execution/failingStepTest.ts:7:13)
       at src/Feature.ts:128:28
       at src/Feature.ts:7:71
       at Object.<anonymous>.__awaiter (src/Feature.ts:3:12)
@@ -30,6 +30,5 @@ exports[`should execute the test as expected 1`] = `
       at Object.<anonymous>.__awaiter (src/Feature.ts:3:12)
       at Object.testFn (src/Feature.ts:200:33)
 
-Test Suites: 1 failed, 1 total
-Tests:       1 failed, 2 passed, 3 total"
+"
 `;

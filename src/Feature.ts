@@ -212,8 +212,9 @@ function describeGherkinOperations ({
         }
       };
 
-      methods.test(title, testFn, timeout);
+      const testMethod = step.skip ? methods.test.skip : methods.test;
 
+      testMethod(title, testFn, timeout);
     };
   }
 
@@ -221,7 +222,6 @@ function describeGherkinOperations ({
   Given.forEach(AssignStep('Given:'));
   When.forEach(AssignStep('When:'));
   Then.forEach(AssignStep('Then:'));
-
 }
 
 /** Resolves to the correct skipping test method based on configuration options */

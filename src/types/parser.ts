@@ -47,6 +47,7 @@ export type IGherkinOperationStore<
 
 export interface IGherkinStepOptions {
   timeout?: number;
+  skip?: boolean;
 }
 
 export interface IGherkinStep<
