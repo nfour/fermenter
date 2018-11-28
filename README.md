@@ -166,6 +166,12 @@ Feature('./test.feature', ({ Scenario }) => {
 })
 ```
 
+Skipping behaviour:
+- When a **individual step** is skipped:
+  - The skipped function is replaced with `(v) => v`. A state **passthrough** function.
+  - Steps after it are **NOT** skipped.
+- When an entire **Scenario** is skipped:
+  - **All steps** are skipped
 
 Now lets take the original example for instance, lets make it more concise:
 
