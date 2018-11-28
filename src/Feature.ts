@@ -89,7 +89,10 @@ function describeFeature ({ featureBuilder, ast, configure, methods, defaultTime
 }) {
 
   let error: undefined|Error;
-  const title = formatTitle(ast.feature);
+  const title = formatTitle({
+    ...ast.feature,
+    prefix: 'Feature:',
+  });
 
   methods.describe(title, async () => {
     try {
@@ -148,7 +151,11 @@ function describeScenario ({
   methods: ITestMethods;
   defaultTimeout?: number;
 }) {
-  const title = formatTitle(scenario.gherkin);
+  const title = formatTitle({
+    ...scenario.gherkin,
+    prefix: `Scenario:`,
+  });
+
   const { skip, only } = scenario;
   const describe = narrowTestMethod(methods.describe, { skip, only });
 
