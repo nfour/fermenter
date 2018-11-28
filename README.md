@@ -8,9 +8,9 @@ It aims to be a **function programming** alternative to **[CucumberJS](https://g
 
 You use the same test runner you are used to: **Jest**, **Mocha**, **Ava**.
 
-References:
+You also use the same expression parsers as CucumberJS:
 - Gherkin language: [docs.cucumber.io/gherkin/reference](https://docs.cucumber.io/gherkin/reference)
-- Gherkin: [docs.cucumber.io/gherkin/reference](https://docs.cucumber.io/gherkin/reference)
+- Cucumber Expressions: [docs.cucumber.io/cucumber/cucumber-expressions](https://docs.cucumber.io/cucumber/cucumber-expressions/)
 
 -----------------------
 
