@@ -8,18 +8,26 @@ It aims to be a **function programming** alternative to **[CucumberJS](https://g
 
 You use the same test runner you are used to: **Jest**, **Mocha**, **Ava**.
 
+References:
+- Gherkin language: [docs.cucumber.io/gherkin/reference](https://docs.cucumber.io/gherkin/reference)
+- Gherkin: [docs.cucumber.io/gherkin/reference](https://docs.cucumber.io/gherkin/reference)
 
 -----------------------
 
 - [Fermenter](#fermenter)
   - [Examples](#examples)
     - [Advanced example](#advanced-example)
+  - [Api](#api)
+    - [Scenarios and skipping steps](#scenarios-and-skipping-steps)
+    - [Background](#background)
+    - [Tables](#tables)
+    - [Scenario Outlines](#scenario-outlines)
+    - [Typescript tips](#typescript-tips)
   - [How it works](#how-it-works)
     - [Coming from CucumberJS](#coming-from-cucumberjs)
-    - [How it works](#how-it-works-1)
+    - [How it runs](#how-it-runs)
     - [Using other test runners](#using-other-test-runners)
-  - [CONTRIBUTING.md](#contributingmd)
-  - [Changelog](#changelog)
+  - [More info](#more-info)
 
 
 ## Examples
@@ -210,6 +218,43 @@ Some things to note:
 - **Scenario** can be provided an initial state generic
 
 
+### Tables
+
+To use tables defined in your Gherkin, do this:
+
+```ts
+import { Feature, IGherkinTableParam } from 'fermenter';
+
+Feature('./features/calculator.feature', ({ Scenario, }) => {
+  Scenario('A simple addition test')
+    .Given('I have the following numbers:', (state = {}, table: IGherkinTableParam) => {
+      const [{ a, b }] = table.rows.mapByTop();
+
+      return {
+        ...state,
+        a: parseInt(a, 10),
+        b: parseInt(b, 10),
+      };
+    });
+});
+```
+
+- See the `IGherkinTableParam` type for more methods
+- Try running the table test for more info: [src/lib/\_\_tests\_\_/GherkinTableReader.spec.ts](src/lib/__tests__/GherkinTableReader.spec.ts)
+
+### Scenario Outlines
+
+**Scenario Outlines** function just like **Scenarios**, but are run for each provided example in the `.feature`.
+
+```ts
+Feature('./test.feature', ({ ScenarioOutline }) => {
+  ScenarioOutline('My outline')
+    .When('foo is {string}')
+});
+```
+
+See the **Scenario** section for more info.
+
 
 ### Typescript tips
 
@@ -249,7 +294,8 @@ Notes:
 - The first **Scenario**'s **Given** will be run after the **Background** is complete
 - Using `AsyncReturnType` allows one to retrieve the promisified (or not) return value of any function
 
-## How it's built
+
+## How it works
 
 ### Coming from CucumberJS
 
