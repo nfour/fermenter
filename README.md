@@ -23,10 +23,10 @@ You also use the same expression parsers as CucumberJS:
     - [Tables](#tables)
     - [Scenario Outlines](#scenario-outlines)
     - [Typescript tips](#typescript-tips)
+    - [Using other test runners](#using-other-test-runners)
   - [How it works](#how-it-works)
     - [Coming from CucumberJS](#coming-from-cucumberjs)
     - [How it runs](#how-it-runs)
-    - [Using other test runners](#using-other-test-runners)
   - [More info](#more-info)
 
 
@@ -294,6 +294,28 @@ Notes:
 - The first **Scenario**'s **Given** will be run after the **Background** is complete
 - Using `AsyncReturnType` allows one to retrieve the promisified (or not) return value of any function
 
+### Using other test runners
+
+To set your own test runner, pass its test methods when configuring a feature:
+
+```ts
+Feature({
+  feature: '...',
+  methods: { test, afterAll, beforeAll, describe }
+}, () => {})
+
+// or
+
+/** Here we wrap `Feature` and give it the global variables mocha provides as test methods */
+export const MochaFeature = (...args: Parameters<typeof Feature>) =>
+  Feature(
+    { methods: { test, describe, afterAll: after, beforeAll: before  }, ...args[0] },
+    args[1]
+  )
+```
+
+The framework has been tested in **Mocha**, **Jest** and **Cypress** but is expected to work with any which satisfy the test runner method interfaces.
+
 
 ## How it works
 
@@ -321,28 +343,6 @@ If you're coming from **CucumberJS** then some functionality is carried over:
   - Each **Scenario** will also be run **synchronously** after another for a given `Feature()` definition
     - This is the default in **Jest**
   - It is possible to define multiple `Feature()` calls to the same `.feature` file within many `.test.ts` files, which can allow the same feature to be run in parallel inside **Jest** for example.
-
-### Using other test runners
-
-To set your own test runner, pass its test methods when configuring a feature:
-
-```ts
-Feature({
-  feature: '...',
-  methods: { test, afterAll, beforeAll, describe }
-}, () => {})
-
-// or
-
-/** Here we wrap `Feature` and give it the global variables mocha provides as test methods */
-export const MochaFeature = (...args: Parameters<typeof Feature>) =>
-  Feature(
-    { methods: { test, describe, afterAll: after, beforeAll: before  }, ...args[0] },
-    args[1]
-  )
-```
-
-The framework has been tested in **Mocha**, **Jest** and **Cypress** but is expected to work with any which satisfy the test runner method interfaces.
 
 --------------------
 
