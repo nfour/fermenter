@@ -1,11 +1,9 @@
-import { map } from 'lodash';
-
 import { FeatureBuilder } from './FeatureBuilder';
 import { getGlobalTestMethods } from './lib/getGlobalTestMethods';
 import { IGherkinParserConfig, parseFeature } from './lib/parseFeature';
 import {
-  IGherkinAst, IGherkinAstEntity, IGherkinAstStep, IGherkinBackground, IGherkinFeatureTest, IGherkinMethods,
-  IGherkinOperationStore, IGherkinScenario, IGherkinStep, IGherkinTestSupportFlags, IHookFn, IMatch,
+  IGherkinAst, IGherkinAstEntity, IGherkinBackground, IGherkinFeatureTest, IGherkinMethods, IGherkinScenario,
+  IGherkinStep, IGherkinTestSupportFlags, IHookFn,
 } from './types';
 
 export type IConfigureFn = (t: IGherkinMethods) => void;
@@ -91,7 +89,10 @@ function describeFeature ({ featureBuilder, ast, configure, methods, defaultTime
 }) {
 
   let error: undefined|Error;
-  const title = formatTitle(ast.feature);
+  const title = formatTitle({
+    ...ast.feature,
+    prefix: 'Feature:',
+  });
 
   methods.describe(title, async () => {
     try {
@@ -125,31 +126,6 @@ function describeFeature ({ featureBuilder, ast, configure, methods, defaultTime
   if (error) { throw error; }
 }
 
-/** Instruments step functions in the test framework */
-function describeGherkinOperations ({
-  state, steps, methods, defaultTimeout,
-}: {
-  steps: IGherkinOperationStore,
-  state: PromiseLike<any>;
-  methods: ITestMethods;
-  defaultTimeout?: number;
-}) {
-  let reducedState = state;
-
-  steps.forEach((step) => {
-    const title = formatTitle({ name: step.name });
-    const timeout = step.timeout || defaultTimeout;
-
-    const execute = async () => {
-      reducedState = await executeStep(step, reducedState);
-
-      return reducedState;
-    };
-
-    methods.test(title, execute, timeout);
-  });
-}
-
 /** Executes a step function and ensures state passing */
 async function executeStep (step: IGherkinStep, initialState: any) {
   const state = await step.fn(initialState, ...step.params);
@@ -175,29 +151,87 @@ function describeScenario ({
   methods: ITestMethods;
   defaultTimeout?: number;
 }) {
-  const title = formatTitle(scenario.gherkin);
-  const { skip, only } = scenario;
-  const describeMethod = narrowTestMethod(methods.describe, { skip, only });
+  const title = formatTitle({
+    ...scenario.gherkin,
+    prefix: `Scenario:`,
+  });
 
-  describeMethod(title, () => {
+  const { skip, only } = scenario;
+  const describe = narrowTestMethod(methods.describe, { skip, only });
+
+  describe(title, () => {
     if (!skip) {
       afterEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.afterAll(fn, timeout); });
       beforeEachHooks.forEach(({ fn, timeout = defaultTimeout }) => { methods.beforeAll(fn, timeout); });
     }
 
-    const scenarioSteps = new Map([
-      ...background && background.Given
-        ? augmentBackgroundStepNames(background.Given)
-        : [],
-      ...scenario.Given || [],
-      ...scenario.When || [],
-      ...scenario.Then || [],
-    ]);
+    const steps: ICategorizedSteps = {
+      Background: background && background.Given,
+      Given: scenario.Given!,
+      When: scenario.When!,
+      Then: scenario.Then!,
+    };
 
-    describeGherkinOperations({ steps: scenarioSteps, state: initialState, methods });
+    describeGherkinOperations({ steps, state: initialState, methods });
   });
 }
 
+export type ICategorizedSteps = (
+  Pick<Required<IGherkinScenario>, 'Given' | 'When' | 'Then'> &
+  { Background?: IGherkinBackground['Given']; }
+);
+
+/** Instruments step functions in the test framework */
+function describeGherkinOperations ({
+  state, methods, defaultTimeout,
+  steps: {
+    Given, Then, When,
+    Background = new Map(),
+  },
+}: {
+  steps: ICategorizedSteps,
+  state: PromiseLike<any>;
+  methods: ITestMethods;
+  defaultTimeout?: number;
+}) {
+  /** Used to determine if previous dependent steps have failed */
+  let aStepHasFailed = false;
+  let reducedState = state;
+
+  /** Curried fn which assigns a step function to the test framework method 'test' */
+  function AssignStep (prefix: string = '') {
+    return (step: IGherkinStep) => {
+      const title = formatTitle({ name: step.name, prefix });
+      const timeout = step.timeout || defaultTimeout;
+
+      const testFn = async () => {
+        /** If a previous step failed, just return so we dont get bad execution errors */
+        if (aStepHasFailed) { return; }
+
+        try {
+          reducedState = await executeStep(step, reducedState);
+
+          return reducedState;
+        } catch (error) {
+          aStepHasFailed = true;
+
+          throw error;
+        }
+      };
+
+      const testMethod = step.skip ? methods.test.skip : methods.test;
+
+      testMethod(title, testFn, timeout);
+    };
+  }
+
+  Background.forEach(AssignStep('(Background) Given:'));
+  Given.forEach(AssignStep('Given:'));
+  When.forEach(AssignStep('When:'));
+  Then.forEach(AssignStep('Then:'));
+}
+
+/** Resolves to the correct skipping test method based on configuration options */
 function narrowTestMethod (method: ITest, { skip, only }: IGherkinTestSupportFlags) {
   if (only) { return method.only; }
   if (skip) { return method.skip; }
@@ -205,21 +239,13 @@ function narrowTestMethod (method: ITest, { skip, only }: IGherkinTestSupportFla
   return method;
 }
 
-function augmentBackgroundStepNames (steps: Map<IMatch, IGherkinStep<IGherkinAstStep>>) {
-  return new Map(
-    map([...steps], ([match, step]) => {
-      return [match, {
-        ...step,
-        name: `(Background) ${step.name}`,
-      }] as [IMatch, IGherkinStep<IGherkinAstStep>];
-    }),
-  );
-}
-
 /** Formats a test title based on tags, name and description */
 function formatTitle ({
-  tags: inputTags, name, description = '',
-}: Pick<IGherkinAstEntity, 'description' | 'name' | 'tags'>) {
+  name,
+  tags: inputTags,
+  description = '',
+  prefix = '',
+}: Pick<IGherkinAstEntity, 'description' | 'name' | 'tags'> & { prefix?: string }) {
   const leftPadLines = (str: string, pad = '  ') =>
     str.split('\n').map((line) => `${pad}${line}`).join('\n');
 
@@ -227,8 +253,10 @@ function formatTitle ({
     ? ` ${inputTags.map((tag) => tag.name).join(' ')}`
     : '';
 
+  const title = `${prefix && `${prefix} `}${name}${tags}`;
+
   return [
-    `${name}${tags}`,
+    title,
     `${leftPadLines(description)}`,
   ]
     .filter(Boolean)

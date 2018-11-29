@@ -41,30 +41,68 @@ export type IGherkinHook = (callback: IHookCallback, options?: IGherkinStepOptio
 export type IHookFn = (callback: IHookCallback, timeout?: number) => any;
 export type IHookCallback = () => any;
 
-export type IFluidFn<Fluid> = (key: RegExp|string, fn: IFluidCb, options?: IGherkinStepOptions) => Fluid;
+/**
+ * TODO: When typescript supports Higher Order kinds, this can be used to dry up the below fluid types
+ * See: https://github.com/Microsoft/TypeScript/issues/1213
+ */
+export interface IFluidFn<Fluid> {
+  (key: RegExp|string, fn?: IFluidCb, options?: IGherkinStepOptions): Fluid;
+  skip (key: RegExp|string, fn?: IFluidCb, options?: IGherkinStepOptions): Fluid;
+}
+
 export type IFluidCb<State = undefined> = (state: State, ...params: any[]) => any;
 
 export interface IScenarioFluid<S = any> {
-  Given: <F extends IFluidCb<S>>(key: IMatch, fn: F, options?: IGherkinStepOptions) => IGivenFluid<AsyncReturnType<F>>;
-  When: <F extends IFluidCb<S>>(key: IMatch, fn: F, options?: IGherkinStepOptions) => IWhenFluid<AsyncReturnType<F>>;
-  Then: <F extends IFluidCb<S>>(key: IMatch, fn: F, options?: IGherkinStepOptions) => IAndFluid<AsyncReturnType<F>>;
+  Given: {
+    <F extends IFluidCb<S>>(key: IMatch, fn?: F, options?: IGherkinStepOptions): IGivenFluid<AsyncReturnType<F>>
+    skip<F extends IFluidCb<S>> (key: IMatch, fn?: F, options?: IGherkinStepOptions): IGivenFluid<AsyncReturnType<F>>,
+  };
+  When: {
+    <F extends IFluidCb<S>>(key: IMatch, fn?: F, options?: IGherkinStepOptions): IWhenFluid<AsyncReturnType<F>>
+    skip<F extends IFluidCb<S>> (key: IMatch, fn?: F, options?: IGherkinStepOptions): IWhenFluid<AsyncReturnType<F>>,
+  };
+  Then: {
+    <F extends IFluidCb<S>>(key: IMatch, fn?: F, options?: IGherkinStepOptions): IAndFluid<AsyncReturnType<F>>
+    skip<F extends IFluidCb<S>> (key: IMatch, fn?: F, options?: IGherkinStepOptions): IAndFluid<AsyncReturnType<F>>,
+  };
 }
 
 export interface IBackgroundFluid<S = any> {
-  Given: <F extends IFluidCb<S>>(key: IMatch, fn: F, options?: IGherkinStepOptions) => IAndFluid<AsyncReturnType<F>>;
+  Given: {
+    <F extends IFluidCb<S>>(key: IMatch, fn?: F, options?: IGherkinStepOptions): IAndFluid<AsyncReturnType<F>>
+    skip<F extends IFluidCb<S>> (key: IMatch, fn?: F, options?: IGherkinStepOptions): IAndFluid<AsyncReturnType<F>>,
+  };
 }
 
 export interface IGivenFluid<S = any> {
-  When: <F extends IFluidCb<S>>(key: IMatch, fn: F, options?: IGherkinStepOptions) => IWhenFluid<AsyncReturnType<F>>;
-  Then: <F extends IFluidCb<S>>(key: IMatch, fn: F, options?: IGherkinStepOptions) => IAndFluid<AsyncReturnType<F>>;
-  And: <F extends IFluidCb<S>>(key: IMatch, fn: F, options?: IGherkinStepOptions) => IGivenFluid<AsyncReturnType<F>>;
+  When: {
+    <F extends IFluidCb<S>>(key: IMatch, fn?: F, options?: IGherkinStepOptions): IWhenFluid<AsyncReturnType<F>>
+    skip<F extends IFluidCb<S>> (key: IMatch, fn?: F, options?: IGherkinStepOptions): IWhenFluid<AsyncReturnType<F>>,
+  };
+  Then: {
+    <F extends IFluidCb<S>>(key: IMatch, fn?: F, options?: IGherkinStepOptions): IAndFluid<AsyncReturnType<F>>
+    skip<F extends IFluidCb<S>> (key: IMatch, fn?: F, options?: IGherkinStepOptions): IAndFluid<AsyncReturnType<F>>,
+  };
+  And: {
+    <F extends IFluidCb<S>>(key: IMatch, fn?: F, options?: IGherkinStepOptions): IGivenFluid<AsyncReturnType<F>>
+    skip<F extends IFluidCb<S>> (key: IMatch, fn?: F, options?: IGherkinStepOptions): IGivenFluid<AsyncReturnType<F>>,
+  };
 }
 
 export interface IWhenFluid<S = any> {
-  Then: <F extends IFluidCb<S>>(key: IMatch, fn: F, options?: IGherkinStepOptions) => IAndFluid<AsyncReturnType<F>>;
-  And: <F extends IFluidCb<S>>(key: IMatch, fn: F, options?: IGherkinStepOptions) => IWhenFluid<AsyncReturnType<F>>;
+  Then: {
+    <F extends IFluidCb<S>>(key: IMatch, fn?: F, options?: IGherkinStepOptions): IAndFluid<AsyncReturnType<F>>
+    skip<F extends IFluidCb<S>> (key: IMatch, fn?: F, options?: IGherkinStepOptions): IAndFluid<AsyncReturnType<F>>,
+  };
+  And: {
+    <F extends IFluidCb<S>>(key: IMatch, fn?: F, options?: IGherkinStepOptions): IWhenFluid<AsyncReturnType<F>>
+    skip<F extends IFluidCb<S>> (key: IMatch, fn?: F, options?: IGherkinStepOptions): IWhenFluid<AsyncReturnType<F>>,
+  };
 }
 
 export interface IAndFluid<S = any> {
-  And: <F extends IFluidCb<S>>(key: IMatch, fn: F, options?: IGherkinStepOptions) => IAndFluid<AsyncReturnType<F>>;
+  And: {
+    <F extends IFluidCb<S>>(key: IMatch, fn?: F, options?: IGherkinStepOptions): IAndFluid<AsyncReturnType<F>>
+    skip <F extends IFluidCb<S>> (key: IMatch, fn?: F, options?: IGherkinStepOptions): IAndFluid<AsyncReturnType<F>>;
+  };
 }

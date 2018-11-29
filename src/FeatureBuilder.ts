@@ -158,7 +158,7 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
   store: IGherkinOperationStore,
   collectionParams: Omit<IGherkinMatchCollectionParams, 'match'>,
 }): IFluidFn<R> {
-  return (match, fn, options = {}) => {
+  const fluidFn = <IFluidFn<R>> ((match, fn = identity, options = {}) => {
     const gherkin: IGherkinCollectionItemIndex = matchInGherkinCollection({
       match,
       ...collectionParams,
@@ -169,11 +169,16 @@ function FluidFn <R> ({ fluid, collectionParams, store }: {
       gherkin,
       name: gherkin[collectionParams.matchProperty],
       params: parseGherkinParameters(gherkin, match),
+      skip: fn === identity,
       ...options,
     });
 
     return fluid;
-  };
+  });
+
+  fluidFn.skip = (match, fn, options = {}) => fluidFn(match, fn, { ...options, skip: true });
+
+  return fluidFn;
 }
 
 /**
@@ -183,11 +188,20 @@ function LazyFluidFn <R> ({ fluid, store }: {
   fluid: R,
   store: IGherkinLazyOperationStore,
 }): IFluidFn<R> {
-  return (match, fn, options: IGherkinStepOptions = {}) => {
-    store.set(match, { fn, ...options });
+  const fluidFn = <IFluidFn<R>> ((match, fn = identity, options: IGherkinStepOptions = {}) => {
+    store.set(match, {
+      fn,
+      skip: fn === identity,
+      ...options,
+    });
 
     return fluid;
-  };
+  });
+
+  fluidFn.skip = (match, fn, options = {}) => fluidFn(match, fn, { ...options, skip: true });
+
+  return fluidFn;
+
 }
 
 function ScenarioFluidBuilder ({ match, gherkin, FluidFnFactory = FluidFn }: {
@@ -345,3 +359,5 @@ function BackgroundFluidBuilder ({ match, gherkin }: {
     steps: { Given },
   };
 }
+
+const identity = <V> (v: V) => v;
