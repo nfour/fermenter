@@ -58,9 +58,7 @@ The above test is explicitly mapped to the feature file`'./features/calculator.f
 ```gherkin
 Feature: Calculator
   Scenario: A simple addition test
-    Given I have the following numbers:
-      | a | b |
-      | 3 | 4 |
+    Given I have numbers 3 and 4:
     When I add the numbers
     Then I get 7
 ```
