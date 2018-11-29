@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.3.1][] - 2018-11-29
+
 ## [1.3.0][] - 2018-11-29
 
 - Scenario steps now support `.skip` and the omission of the step fn:
@@ -121,7 +123,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/nfour/fermenter/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/nfour/fermenter/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/nfour/fermenter/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/nfour/fermenter/compare/v1.0.1...v1.1.0
