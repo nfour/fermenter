@@ -13,6 +13,9 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Scenario steps which error will no longer execute following steps
   - They will appear as a pass in Jest, but they are actually just skipped
 
+- Steps are now prefixed with their step type name
+- README refactor. Should be much better documented.
+
 ## [1.2.0][] - 2018-11-12
 
 - Added browser support
