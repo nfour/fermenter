@@ -58,7 +58,7 @@ The above test is explicitly mapped to the feature file`'./features/calculator.f
 ```gherkin
 Feature: Calculator
   Scenario: A simple addition test
-    Given I have numbers 3 and 4:
+    Given I have numbers 3 and 4
     When I add the numbers
     Then I get 7
 ```
@@ -71,7 +71,7 @@ $> yarn jest
  PASS  src/tests/calculator.test.ts
   Feature: Calculator
     Scenario: A simple addition test
-      ✓ Given: I have the following numbers:
+      ✓ Given: I have numbers 3 and 4
       ✓ When: I add the numbers
       ✓ Then: I get 7
 ```
