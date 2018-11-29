@@ -32,7 +32,25 @@ You also use the same expression parsers as CucumberJS:
 
 ## Examples
 
-Below is an minimal example:
+Below is a very minimal example:
+
+```ts
+import { Feature } from 'fermenter';
+import { sum } from 'lodash';
+
+Feature('./features/calculator.feature', ({ Scenario }) => {
+  Scenario('A simple addition test')
+    .Given('I have numbers {int} and {int}', (state, num1, num2) => [num1, num2])
+    .When('I add the numbers', sum)
+    .Then('I get {int}', (summed, expectedResult) => {
+      expect(summed).toBe(expectedResult);
+    });
+});
+```
+
+In the above example `state` is strongly typed throughout each step.
+
+Below is a more realistic use of `state` with object spreading:
 
 ```ts
 import { Feature } from 'fermenter';
@@ -52,6 +70,7 @@ Feature('./features/calculator.feature', ({ Scenario }) => {
     });
 });
 ```
+
 
 The above test is explicitly mapped to the feature file`'./features/calculator.feature'`:
 
@@ -170,24 +189,6 @@ Skipping behaviour:
   - Steps after it are **NOT** skipped.
 - When an entire **Scenario** is skipped:
   - **All steps** are skipped
-
-Now lets take the original example for instance, lets make it more concise:
-
-```ts
-import { Feature } from 'fermenter';
-import { sum } from 'lodash';
-
-Feature('./features/calculator.feature', ({ Scenario }) => {
-  Scenario('A simple addition test')
-    .Given('I have numbers {int} and {int}', (state, num1, num2) => [num1, num2])
-    .When('I add the numbers', sum)
-    .Then('I get {int}', (summed, expectedResult) => {
-      expect(summed).toBe(expectedResult);
-    });
-});
-```
-
-In the above example `state` is strongly typed throughout each step.
 
 ### Background
 
