@@ -6,6 +6,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [1.3.1][] - 2018-11-29
 
+- Readme fixes
+
 ## [1.3.0][] - 2018-11-29
 
 - Scenario steps now support `.skip` and the omission of the step fn:
