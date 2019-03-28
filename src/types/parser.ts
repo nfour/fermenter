@@ -110,7 +110,6 @@ export interface IGherkinFeatureTest {
   beforeEach: IHookStep[];
 }
 
-// TODO: add a generic to populate table interfaces for known props
 export interface IGherkinTableParam {
 
   /**
@@ -132,7 +131,7 @@ export interface IGherkinTableParam {
    *
    */
   rows: {
-    (): string[][];
+    <T extends string>(): T[][];
 
     /**
      * With Gherkin:
@@ -154,7 +153,7 @@ export interface IGherkinTableParam {
      *   { a: '3', b: '4' },
      * ]
      */
-    mapByTop (): Array<IDict<string>>;
+    mapByTop <T extends {} = IDict<string>> (): T[];
   };
 
   /**
@@ -178,7 +177,7 @@ export interface IGherkinTableParam {
    *
    */
   dict: {
-    (): IDict<string[]>
+    <T extends {} = IDict<string[]>>(): T
 
     /**
      * With Gherkin:
@@ -199,7 +198,7 @@ export interface IGherkinTableParam {
      * }
      *
      */
-    left (): IDict<string[]>
+    left <T extends {} = IDict<string[]>> (): T
 
     /**
      * With Gherkin:
@@ -221,7 +220,7 @@ export interface IGherkinTableParam {
      * }
      *
      */
-    matrix (): IDict<IDict<string>>,
+    matrix <T extends {} = IDict<string>> (): T,
   };
 
   /**
@@ -241,5 +240,8 @@ export interface IGherkinTableParam {
    * ['a', 'b']
    *
    */
-  headers (): string[];
+  headers <T extends string[]> (): T;
 }
+
+/** Alias to IGherkinTableParam */
+export type ITable = IGherkinTableParam;

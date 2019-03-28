@@ -1,4 +1,4 @@
-import { IDict, IGherkinAstTableRow, IGherkinTableParam } from '../types';
+import { IDict, IGherkinAstTableRow, ITable } from '../types';
 
 /**
  * A gherkin feature file's table:
@@ -15,16 +15,16 @@ import { IDict, IGherkinAstTableRow, IGherkinTableParam } from '../types';
  */
 export function GherkinTableReader ({ rows: inputRows = [] }: {
   rows: IGherkinAstTableRow[],
-}): IGherkinTableParam {
+}): ITable {
   const rowValues = inputRows
     .map(({ cells }) => cells.map(({ value }) => value));
 
   const getLeft = () => rowValues.map((cells) => cells[0]);
   const getTop = () => rowValues[0];
 
-  const headers = <IGherkinTableParam['headers']> (() => getTop());
+  const headers = <ITable['headers']> (() => getTop());
 
-  const dict = <IGherkinTableParam['dict']> (() => {
+  const dict = <ITable['dict']> (() => {
     const keys = headers();
 
     const contentRows = rowValues.slice(1);
@@ -37,7 +37,7 @@ export function GherkinTableReader ({ rows: inputRows = [] }: {
     }, {} as IDict<string[]>);
   });
 
-  dict.left = () => {
+  dict.left = <ITable['dict']['left']> (() => {
     const keys = rowValues.map((cells) => cells[0]);
 
     return rowValues.reduce((o, cells, index) => {
@@ -48,10 +48,10 @@ export function GherkinTableReader ({ rows: inputRows = [] }: {
         ...o,
         [keys[index]]: contentCells,
       };
-    }, {});
-  };
+    }, {} as IDict<string[]>);
+  });
 
-  dict.matrix = () => {
+  dict.matrix = <ITable['dict']['matrix']> (() => {
     const topKeys = getTop()
       .slice(1); // Skip blank
 
@@ -77,11 +77,11 @@ export function GherkinTableReader ({ rows: inputRows = [] }: {
         [leftKey]: topMap,
       };
     }, {} as IDict<IDict<string>>);
-  };
+  });
 
-  const rows = <IGherkinTableParam['rows']> (() => rowValues);
+  const rows = <ITable['rows']> (() => rowValues);
 
-  rows.mapByTop = () => {
+  rows.mapByTop = <ITable['rows']['mapByTop']> ((): any => {
     const keys = getTop();
 
     const contentRows = rowValues.slice(1);
@@ -94,7 +94,7 @@ export function GherkinTableReader ({ rows: inputRows = [] }: {
         };
       }, {} as IDict<string>);
     });
-  };
+  });
 
   return { dict, headers, rows };
 }
