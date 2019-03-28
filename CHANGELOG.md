@@ -4,6 +4,9 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Can now assign type generics to IGherkinTableParam (alias: ITable) methods.
+  - eg. `const products = table.rows.mapByTop<IProduct>();`
+
 ## [1.3.1][] - 2018-11-29
 
 - Readme fixes
