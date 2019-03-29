@@ -220,7 +220,7 @@ export interface IGherkinTableParam {
      * }
      *
      */
-    matrix <T extends {} = IDict<string>> (): T,
+    matrix <T extends { [k: string]: {}} = IDict<IDict<string>>> (): T;
   };
 
   /**
@@ -241,6 +241,7 @@ export interface IGherkinTableParam {
    *
    */
   headers <T extends string[]> (): T;
+
 }
 
 /** Alias to IGherkinTableParam */
