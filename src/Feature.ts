@@ -94,7 +94,7 @@ function describeFeature ({ featureBuilder, ast, configure, methods, defaultTime
     prefix: 'Feature:',
   });
 
-  methods.describe(title, async () => {
+  methods.describe(title, () => {
     try {
       configureMethods({ configure, featureBuilder });
 

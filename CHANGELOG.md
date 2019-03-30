@@ -4,9 +4,9 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
-## [1.4.1][] - 2019-03-29
+- Fix for #27, `describe` is no longer incorrectly an async function
 
-## [1.4.0][] - 2019-03-28
+## [1.4.1][] - 2019-03-29
 
 - Can now assign type generics to IGherkinTableParam (alias: ITable) methods.
   - eg. `const products = table.rows.mapByTop<IProduct>();`
