@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.5.0][] - 2019-04-01
+
 - Fix issue with the table reader - mismatched indexes. Asynmmetric matrixes will now work correctly.
 
 ## [1.4.2][] - 2019-03-30
@@ -136,7 +138,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v1.4.2...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/nfour/fermenter/compare/v1.4.2...v1.5.0
 [1.4.2]: https://github.com/nfour/fermenter/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/nfour/fermenter/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/nfour/fermenter/compare/v1.3.1...v1.4.0
