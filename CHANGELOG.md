@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Fix issue with the table reader - mismatched indexes. Asynmmetric matrixes will now work correctly.
+
 ## [1.4.2][] - 2019-03-30
 
 - Fix for #27, `describe` is no longer incorrectly an async function

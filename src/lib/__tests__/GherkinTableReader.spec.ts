@@ -45,6 +45,14 @@ describe('GherkinTableReader', () => {
     ['b', '3', '4'],
   ];
 
+  const matrixTableAsymmetric = [
+    [' ', 'x', 'y'],
+    ['a', '1', '2'],
+    ['b', '3', '4'],
+    ['c', '5', '6'],
+    ['d', '7', '8'],
+  ];
+
   it([
     `table.rows() from a headerless table:`,
     ...rowsToGherkinTableLines(simpleContentTable),
@@ -101,6 +109,16 @@ describe('GherkinTableReader', () => {
     ``,
   ].join('\n'), () => {
     const table = GherkinTableReader({ rows: structureAsGherkinAstRows(matrixTable) });
+
+    expect(table.dict.matrix()).toMatchSnapshot();
+  });
+
+  it([
+    `table.dict.matrix() with asymmetric top and left keys:`,
+    ...rowsToGherkinTableLines(matrixTableAsymmetric),
+    ``,
+  ].join('\n'), () => {
+    const table = GherkinTableReader({ rows: structureAsGherkinAstRows(matrixTableAsymmetric) });
 
     expect(table.dict.matrix()).toMatchSnapshot();
   });

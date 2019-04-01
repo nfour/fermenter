@@ -64,11 +64,11 @@ export function GherkinTableReader ({ rows: inputRows = [] }: {
 
     return leftKeys.reduce((l, leftKey, leftIndex) => {
       const topMap = topKeys.reduce((t, topKey, topIndex) => {
-        const cells = contentRows[topIndex];
+        const cells = contentRows[leftIndex];
 
         return {
           ...t,
-          [topKey]: cells[leftIndex],
+          [topKey]: cells[topIndex],
         };
       }, {} as IDict<string>);
 

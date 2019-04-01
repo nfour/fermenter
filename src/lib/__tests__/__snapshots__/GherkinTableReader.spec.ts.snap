@@ -55,11 +55,38 @@ exports[`GherkinTableReader table.dict.matrix() from a table with a header on th
 Object {
   "a": Object {
     "x": "1",
-    "y": "3",
+    "y": "2",
   },
   "b": Object {
-    "x": "2",
+    "x": "3",
     "y": "4",
+  },
+}
+`;
+
+exports[`GherkinTableReader table.dict.matrix() with asymmetric top and left keys:
+|   | x | y |
+| a | 1 | 2 |
+| b | 3 | 4 |
+| c | 5 | 6 |
+| d | 7 | 8 |
+ 1`] = `
+Object {
+  "a": Object {
+    "x": "1",
+    "y": "2",
+  },
+  "b": Object {
+    "x": "3",
+    "y": "4",
+  },
+  "c": Object {
+    "x": "5",
+    "y": "6",
+  },
+  "d": Object {
+    "x": "7",
+    "y": "8",
   },
 }
 `;
