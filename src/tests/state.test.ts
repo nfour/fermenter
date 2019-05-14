@@ -1,6 +1,6 @@
 import { Feature } from '../';
 
-Feature('./features/state.feature', ({ Scenario, Background }) => {
+Feature('./state.feature', ({ Scenario, Background }) => {
   const expectedState = { a: 1 };
   type IInitialState = typeof expectedState;
 

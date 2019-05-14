@@ -1,7 +1,7 @@
 import { Feature } from '../';
 
 // TODO: Convert this test to match ./execution tests (in a shell with snaps)
-Feature('./features/skippingAndPending.feature', ({ Scenario }) => {
+Feature('./skippingAndPending.feature', ({ Scenario }) => {
   const fn = jest.fn();
 
   Scenario('I can pass a regular test')

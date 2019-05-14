@@ -4,8 +4,6 @@ import {
 } from './ast';
 import { IHookCallback } from './fluid';
 
-// tslint:disable-next-line
-
 export type IMatch = string | RegExp;
 
 export type IGherkinCollectionItemShape = IGherkinAstEntity | IGherkinAstStep;
@@ -57,6 +55,7 @@ export interface IGherkinStep<
   name: string;
   gherkin: G;
   params: IGherkinParameter[];
+  definition: IGherkinDefinition;
 }
 
 export type IGherkinLazyOperationStore = Map<IMatch, { fn: IFluidCb } & IGherkinStepOptions>;
@@ -66,12 +65,16 @@ export interface IGherkinTestSupportFlags {
   only: boolean;
 }
 
-export interface IGherkinScenarioBase extends IGherkinTestSupportFlags {
-  match: IMatch;
-  name: IGherkinAstScenario['name'];
+export interface IGherkinScenarioBase extends IGherkinTestSupportFlags, IGherkinDefinition {
   Given?: IGherkinOperationStore<IGherkinAstStep>;
   When?: IGherkinOperationStore<IGherkinAstStep>;
   Then?: IGherkinOperationStore<IGherkinAstStep>;
+}
+
+export interface IGherkinDefinition {
+  match: IMatch;
+  name: string;
+  gherkin: IGherkinAstScenario|IGherkinAstScenarioOutline|IGherkinAstBackground;
 }
 
 export interface IGherkinScenario extends IGherkinScenarioBase {
@@ -80,9 +83,6 @@ export interface IGherkinScenario extends IGherkinScenarioBase {
 
 export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
   gherkin: IGherkinAstScenarioOutline;
-
-  // TODO: remove this once it's clear it's not needed as we are pushing these to the feature.scenarios
-  scenarios: IGherkinScenario[];
 }
 
 export interface IGherkinBackground extends IGherkinTestSupportFlags {
@@ -109,6 +109,9 @@ export interface IGherkinFeatureTest {
   afterEach: IHookStep[];
   beforeEach: IHookStep[];
 }
+
+/** Alias to IGherkinTableParam */
+export type ITable = IGherkinTableParam;
 
 export interface IGherkinTableParam {
 
@@ -241,8 +244,4 @@ export interface IGherkinTableParam {
    *
    */
   headers <T extends string[]> (): T;
-
 }
-
-/** Alias to IGherkinTableParam */
-export type ITable = IGherkinTableParam;

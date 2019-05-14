@@ -1,4 +1,5 @@
 import { FeatureBuilder } from './FeatureBuilder';
+import { globalBeforeEachStepHooks } from './globallyBeforeEachStep';
 import { getGlobalTestMethods } from './lib/getGlobalTestMethods';
 import { IGherkinParserConfig, parseFeature } from './lib/parseFeature';
 import {
@@ -209,6 +210,13 @@ function describeGherkinOperations ({
         if (aStepHasFailed) { return; }
 
         try {
+          /** Execute the globalBeforeEachStepHooks before the step */
+          if (globalBeforeEachStepHooks.length) {
+            reducedState = globalBeforeEachStepHooks.reduce((nextState, callback) => {
+              return callback(step, nextState, ...step.params);
+            }, reducedState);
+          }
+
           reducedState = await executeStep(step, reducedState);
 
           return reducedState;
