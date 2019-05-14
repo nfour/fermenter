@@ -1,7 +1,7 @@
 import { Feature } from '../';
 
 // TODO: Convert this test to match ./execution tests (in a shell with snaps)
-Feature('./features/skippingWithOnly.feature', ({ Scenario }) => {
+Feature('./skippingWithOnly.feature', ({ Scenario }) => {
   const fn = jest.fn();
 
   Scenario('This shouldnt run')

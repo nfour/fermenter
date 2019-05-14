@@ -30,5 +30,8 @@ exports[`Fermenter execution matching snapshots failingStepTest 1`] = `
       at Object.<anonymous>.__awaiter (src/Feature.ts:3:12)
       at Object.testFn (src/Feature.ts:207:33)
 
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 2 passed, 3 total
+error Command failed with exit code 1.
 "
 `;
