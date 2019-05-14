@@ -1,12 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Middleware hook tests middlewareHookTest 1`] = `
-"PASS src/tests/middleware/middlewareHookTest.ts
+"FAIL src/tests/middleware/middlewareHookTest.ts
   Feature: Middleware COR for steps, globally
     Scenario: I have a scenario
-      ✓ Given: Something is set
-      ✓ Then: Check if Something is true
+      ✓ Given: Something is set by a middleware
+      ✕ Then: Check that Something is true
 
-Test Suites: 1 passed, 1 total
-Tests:       2 passed, 2 total"
+  ● Feature: Middleware COR for steps, globally › Scenario: I have a scenario › Then: Check that Something is true
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: undefined
+
+    Difference:
+
+      Comparing two different types of values. Expected boolean but received undefined.
+
+       7 |     })
+       8 |     .Then('Check that Something is true', (state) => {
+    >  9 |       expect(state.something).toBe(true);
+         |                               ^
+      10 |     });
+      11 | });
+      12 | 
+
+      at Object.Scenario.Given.Then [as fn] (src/tests/middleware/middlewareHookTest.ts:9:31)
+      at src/Feature.ts:131:28
+      at src/Feature.ts:7:71
+      at Object.<anonymous>.__awaiter (src/Feature.ts:3:12)
+      at executeStep (src/Feature.ts:75:12)
+      at src/Feature.ts:212:32
+      at src/Feature.ts:7:71
+      at Object.<anonymous>.__awaiter (src/Feature.ts:3:12)
+      at Object.testFn (src/Feature.ts:207:33)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 passed, 2 total
+error Command failed with exit code 1.
+"
 `;
