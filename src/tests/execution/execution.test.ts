@@ -2,6 +2,8 @@ import { resolve } from 'path';
 
 import { executeTest } from '../lib';
 
+jest.setTimeout(10000);
+
 describe('Fermenter execution matching snapshots', () => {
   it('failingStepTest', async () => {
     const output = await executeTest(resolve(__dirname, './failingStepTest.ts'));
