@@ -6,6 +6,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [1.6.0][] - 2019-05-15
 
+- Added global hooks via export `globallyBeforeEachStep`
+
 ## [1.5.0][] - 2019-04-01
 
 - Fix issue with the table reader - mismatched indexes. Asynmmetric matrixes will now work correctly.
