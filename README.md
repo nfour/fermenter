@@ -14,20 +14,20 @@ You also use the same expression parsers as CucumberJS:
 
 -----------------------
 
-- [Fermenter](#fermenter)
-  - [Examples](#examples)
-    - [Advanced example](#advanced-example)
-  - [Api](#api)
-    - [Scenarios and skipping steps](#scenarios-and-skipping-steps)
-    - [Background](#background)
-    - [Tables](#tables)
-    - [Scenario Outlines](#scenario-outlines)
-    - [Typescript tips](#typescript-tips)
-    - [Using other test runners](#using-other-test-runners)
-  - [How it works](#how-it-works)
-    - [Coming from CucumberJS](#coming-from-cucumberjs)
-    - [How it runs](#how-it-runs)
-  - [More info](#more-info)
++ [Examples](#examples)
+  + [Advanced example](#advanced-example)
++ [Api](#api)
+  + [Scenarios and skipping steps](#scenarios-and-skipping-steps)
+  + [Background](#background)
+  + [Tables](#tables)
+  + [Scenario Outlines](#scenario-outlines)
+  + [Global hooks](#global-hooks)
+  + [Typescript tips](#typescript-tips)
+  + [Using other test runners](#using-other-test-runners)
++ [How it works](#how-it-works)
+  + [Coming from CucumberJS](#coming-from-cucumberjs)
+  + [How it runs](#how-it-runs)
++ [More info](#more-info)
 
 
 ## Examples
@@ -260,6 +260,23 @@ Feature('./test.feature', ({ ScenarioOutline }) => {
 
 See the **Scenario** section for more info.
 
+### Global hooks
+
+You may utilize this global hook to instrument or alter your steps and their state:
+
+```ts
+import { globallyBeforeEachStep } from 'fermenter';
+
+globallyBeforeEachStep((step, state) => {
+  console.log({
+    stepName: step.name,
+    scenarioName: step.definition.name,
+    incomingState: state,
+  });
+
+  return state; // You can change this
+});
+```
 
 ### Typescript tips
 
