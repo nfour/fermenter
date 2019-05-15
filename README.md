@@ -21,8 +21,8 @@ You also use the same expression parsers as CucumberJS:
   + [Background](#background)
   + [Tables](#tables)
   + [Scenario Outlines](#scenario-outlines)
-  + [Global hooks](#global-hooks)
   + [Typescript tips](#typescript-tips)
+  + [Global hooks](#global-hooks)
   + [Using other test runners](#using-other-test-runners)
 + [How it works](#how-it-works)
   + [Coming from CucumberJS](#coming-from-cucumberjs)
@@ -260,23 +260,6 @@ Feature('./test.feature', ({ ScenarioOutline }) => {
 
 See the **Scenario** section for more info.
 
-### Global hooks
-
-You may utilize this global hook to instrument or alter your steps and their state:
-
-```ts
-import { globallyBeforeEachStep } from 'fermenter';
-
-globallyBeforeEachStep((step, state) => {
-  console.log({
-    stepName: step.name,
-    scenarioName: step.definition.name,
-    incomingState: state,
-  });
-
-  return state; // You can change this
-});
-```
 
 ### Typescript tips
 
@@ -315,6 +298,26 @@ Yay, we didn't have to define any plumbing types!
 Notes:
 - The first **Scenario**'s **Given** will be run after the **Background** is complete
 - Using `AsyncReturnType` allows one to retrieve the promisified (or not) return value of any function
+
+
+### Global hooks
+
+You may utilize this global hook to instrument or alter your steps and their state:
+
+```ts
+import { globallyBeforeEachStep } from 'fermenter';
+
+globallyBeforeEachStep((step, state) => {
+  console.log({
+    stepName: step.name,
+    scenarioName: step.definition.name,
+    featureName: step.definition.feature.name,
+    incomingState: state,
+  });
+
+  return state; // You can change this
+});
+```
 
 ### Using other test runners
 
