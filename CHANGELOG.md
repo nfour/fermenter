@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Added `feature` as `IGherkinAstFeature` to `IGherkinDefinition`. This means `globallyBeforeEachStep` can now access the running feature gherkin.
+
 ## [1.6.0][] - 2019-05-15
 
 - Added global hooks via export `globallyBeforeEachStep`

@@ -3,8 +3,9 @@ import { Feature, globallyBeforeEachStep } from '../../';
 globallyBeforeEachStep((step, state) => {
   const isRightStep = step.name === 'Something is set by a middleware';
   const isInRightScenario = step.definition.name === 'I have a scenario';
+  const isInRightFeature = step.definition.feature.name === 'Middleware COR for steps, globally';
 
-  if (isRightStep && isInRightScenario) {
+  if (isRightStep && isInRightScenario && isInRightFeature) {
     return 'banana';
   }
 

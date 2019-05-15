@@ -75,6 +75,7 @@ export interface IGherkinDefinition {
   match: IMatch;
   name: string;
   gherkin: IGherkinAstScenario|IGherkinAstScenarioOutline|IGherkinAstBackground;
+  feature: IGherkinAstFeature;
 }
 
 export interface IGherkinScenario extends IGherkinScenarioBase {
@@ -85,9 +86,7 @@ export interface IGherkinScenarioOutline extends IGherkinScenarioBase {
   gherkin: IGherkinAstScenarioOutline;
 }
 
-export interface IGherkinBackground extends IGherkinTestSupportFlags {
-  match: IMatch;
-  name: IGherkinAstBackground['name'];
+export interface IGherkinBackground extends IGherkinTestSupportFlags, IGherkinDefinition {
   gherkin: IGherkinAstBackground;
   Given: IGherkinOperationStore<IGherkinAstStep>;
 }
