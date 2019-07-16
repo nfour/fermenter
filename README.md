@@ -228,7 +228,7 @@ Some things to note:
 To use tables defined in your Gherkin, do this:
 
 ```ts
-import { Feature, IGherkinTableParam } from 'fermenter';
+import { Feature, ITable } from 'fermenter';
 
 Feature('./features/calculator.feature', ({ Scenario, }) => {
   Scenario('A simple addition test')
@@ -244,8 +244,9 @@ Feature('./features/calculator.feature', ({ Scenario, }) => {
 });
 ```
 
-- See the `IGherkinTableParam` type for more methods
-- Try running the table test for more info: [src/lib/\_\_tests\_\_/GherkinTableReader.spec.ts](src/lib/__tests__/GherkinTableReader.spec.ts)
+- See the `ITable` type for details and examples:
+  - [src/types/parser.ts#L115](src/types/parser.ts#L115)
+- There are also some tests here: [src/lib/\_\_tests\_\_/GherkinTableReader.spec.ts](src/lib/__tests__/GherkinTableReader.spec.ts)
 
 ### Scenario Outlines
 
