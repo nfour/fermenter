@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.8.0][] - 2020-02-28
+
 ## [1.7.0][] - 2019-05-15
 
 - Added `feature` as `IGherkinAstFeature` to `IGherkinDefinition`. This means `globallyBeforeEachStep` can now access the running feature gherkin.
@@ -146,7 +148,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/nfour/fermenter/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/nfour/fermenter/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/nfour/fermenter/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/nfour/fermenter/compare/v1.4.2...v1.5.0
