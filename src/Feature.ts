@@ -43,7 +43,7 @@ export function Feature (config: IGherkinTestParams | IGherkinTestParams['featur
       : config
   );
 
-  const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 3 });
+  const { featureBuilder, ast } = parseFeature({ feature, stackIndex: 2 });
 
   describeFeature({ ast, configure, featureBuilder, methods, defaultTimeout });
 

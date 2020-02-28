@@ -1,7 +1,7 @@
 import * as errorParser from 'error-stack-parser';
 import * as Gherkin from 'gherkin';
 import * as isValidPath from 'is-valid-path';
-import { toUnix } from 'upath';
+import { isAbsolute, toUnix } from 'upath';
 
 import { FeatureBuilder } from '../FeatureBuilder';
 import { IGherkinAst } from '../types';
@@ -18,16 +18,21 @@ export interface IGherkinParserConfig {
   stackIndex?: number;
 }
 
-// TODO: make this pure functional, abstract the error stack relative shit out
 /** Parses a feature file from a relative filePath */
 export function parseFeature ({ feature, stackIndex = 1 }: IGherkinParserConfig): IGherkinParserOutput {
-  const error = new Error();
-  const { fileName: testFilePath } = errorParser.parse(error)[stackIndex];
-
   const text = (() => {
+    // Is a feature file body
     if (!isValidPath(feature)) { return feature; }
 
     const filePath = toUnix(feature);
+
+    const testFilePath = (() => {
+      if (isAbsolute(feature)) { return; }
+
+      const error = new Error();
+      /** Increment stackIndex due to the nested IIFE's it's within */
+      return errorParser.parse(error)[stackIndex + 2].fileName;
+    })();
 
     return readInputFile({ filePath, testFilePath });
   })();
