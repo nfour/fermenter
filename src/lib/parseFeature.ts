@@ -1,5 +1,7 @@
+import * as errorParser from 'error-stack-parser';
 import * as Gherkin from 'gherkin';
 import * as isValidPath from 'is-valid-path';
+import { toUnix } from 'upath';
 
 import { FeatureBuilder } from '../FeatureBuilder';
 import { IGherkinAst } from '../types';
@@ -18,15 +20,17 @@ export interface IGherkinParserConfig {
 
 // TODO: make this pure functional, abstract the error stack relative shit out
 /** Parses a feature file from a relative filePath */
-export function parseFeature ({ feature, stackIndex = 2 }: IGherkinParserConfig): IGherkinParserOutput {
-  const testFilePath = new Error().stack!
-    .split('\n')[stackIndex]
-    .match(/\(([^:]+):/ig)![0]
-    .replace(/^\(|:$/g, '');
+export function parseFeature ({ feature, stackIndex = 1 }: IGherkinParserConfig): IGherkinParserOutput {
+  const error = new Error();
+  const { fileName: testFilePath } = errorParser.parse(error)[stackIndex];
 
-  const text = isValidPath(feature)
-    ? readInputFile({ filePath: feature, testFilePath })
-    : feature;
+  const text = (() => {
+    if (!isValidPath(feature)) { return feature; }
+
+    const filePath = toUnix(feature);
+
+    return readInputFile({ filePath, testFilePath });
+  })();
 
   const parser = new Gherkin.Parser();
   const ast: IGherkinAst = parser.parse(text);
