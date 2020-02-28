@@ -14,7 +14,7 @@ describe('Fermenter execution matching snapshots', () => {
   it('skippingStepTest', async () => {
     const output = await executeTest(resolve(__dirname, './skippingStepTest.ts'));
 
-    expect(output).not.toMatch(/this test should be skipped/);
+    expect(output).toMatchSnapshot();
     expect(output).toMatch(/2 skipped, 4 passed, 6 total/);
   });
 });

@@ -1,10 +1,10 @@
-import { shell } from 'execa';
+import { command } from 'execa';
 import { resolve } from 'path';
 
 const cwd = resolve(__dirname, '../../');
 
 /** All lines which match get removed from the generated output */
-const lineFilters: Array<(line: string) => boolean> = [
+const lineFilters: ((line: string) => boolean)[] = [
   (line) => !/^Time:/.test(line),
   (line) => !/^Ran all test suites within paths/.test(line),
   (line) => !/^Snapshots:/.test(line),
@@ -12,7 +12,7 @@ const lineFilters: Array<(line: string) => boolean> = [
 ];
 
 export async function executeTest (testPath: string) {
-  const { stderr, stdout } = await shell(
+  const { stderr, stdout } = await command(
     `yarn --silent jest --verbose --testRegex . --runTestsByPath ${testPath}`,
     { cwd, reject: false },
   );

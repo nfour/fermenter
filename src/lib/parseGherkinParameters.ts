@@ -9,7 +9,7 @@ export function parseGherkinParameters (stepOrExamples: IGherkinAstStep | IGherk
 
   const matcher = ExpressionMatcher(match);
   const matches = matcher.match(text) || [];
-  const simpleParams = matches.map((arg) => arg.getValue());
+  const simpleParams = matches.map((arg) => arg.getValue(null));
 
   const paramSource = stepOrExamples.type === 'Step'
     ? stepOrExamples.argument

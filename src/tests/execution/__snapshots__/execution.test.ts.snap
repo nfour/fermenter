@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Fermenter execution matching snapshots failingStepTest 1`] = `
-"FAIL src/tests/execution/failingStepTest.ts
+" FAIL  src/tests/execution/failingStepTest.ts
   Feature: Test Execution
     Scenario: Failing steps exit a scenario gracefully
       ✓ Given: A step which passes
@@ -31,6 +31,21 @@ exports[`Fermenter execution matching snapshots failingStepTest 1`] = `
       at Object.testFn (src/Feature.ts:208:33)
 
 Test Suites: 1 failed, 1 total
-Tests:       1 failed, 2 passed, 3 total
-"
+Tests:       1 failed, 2 passed, 3 total"
+`;
+
+exports[`Fermenter execution matching snapshots skippingStepTest 1`] = `
+" PASS  src/tests/execution/skippingStepTest.ts
+  Feature: Test Execution
+    Scenario: Steps are skipped when their function is omitted
+      ✓ When: this test should not be skipped
+      ✓ Then: this test should not be skipped
+      ○ skipped Then: this test should be skipped
+    Scenario: Steps can be skipped explicitly with .skip
+      ✓ When: this test should not be skipped
+      ✓ Then: this test should not be skipped
+      ○ skipped Then: this test should be skipped
+
+Test Suites: 1 passed, 1 total
+Tests:       2 skipped, 4 passed, 6 total"
 `;

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Middleware hook tests middlewareHookTest 1`] = `
-"PASS src/tests/middleware/middlewareHookTest.ts
+" PASS  src/tests/middleware/middlewareHookTest.ts
   Feature: Middleware COR for steps, globally
     Scenario: I have a scenario
       ✓ Given: Something is set by a middleware
