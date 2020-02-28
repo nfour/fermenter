@@ -5,10 +5,9 @@ rm -rf build
 mkdir build
 
 # Copy latent, belonging to the index module
-rsync -am . ./build  --exclude '*/*' --include '*'
-
-# Copy latent files from source, recursively
-rsync -am  ./src/* ./build --exclude '*.ts' --exclude '*.snap'
+yarn cpy --dot '*' '!*/*' build
+# # Copy latent files from source, recursively
+yarn cpy --cwd src --parents '**/*' '!**/*.ts' '!**/*.snap' ../build
 
 # Build typescript
 yarn tsc
