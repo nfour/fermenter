@@ -20,7 +20,7 @@ exports[`Fermenter execution matching snapshots failingStepTest 1`] = `
        9 |     .Then(\`This step's function should not execute\`, () => {
       10 |       throw new Error('Shouldnt error');
 
-      at Object.Scenario.Given.When [as fn] (src/tests/execution/failingStepTest.ts:7:13)
+      at Object.fn (src/tests/execution/failingStepTest.ts:7:13)
       at src/Feature.ts:132:28
       at src/Feature.ts:7:71
       at Object.<anonymous>.__awaiter (src/Feature.ts:3:12)
@@ -32,6 +32,5 @@ exports[`Fermenter execution matching snapshots failingStepTest 1`] = `
 
 Test Suites: 1 failed, 1 total
 Tests:       1 failed, 2 passed, 3 total
-error Command failed with exit code 1.
 "
 `;
