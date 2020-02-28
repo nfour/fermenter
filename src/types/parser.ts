@@ -74,7 +74,7 @@ export interface IGherkinScenarioBase extends IGherkinTestSupportFlags, IGherkin
 export interface IGherkinDefinition {
   match: IMatch;
   name: string;
-  gherkin: IGherkinAstScenario|IGherkinAstScenarioOutline|IGherkinAstBackground;
+  gherkin: IGherkinAstScenario | IGherkinAstScenarioOutline | IGherkinAstBackground;
   feature: IGherkinAstFeature;
 }
 

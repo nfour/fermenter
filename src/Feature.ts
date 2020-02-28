@@ -10,13 +10,13 @@ import {
 export type IConfigureFn = (t: IGherkinMethods) => void;
 
 export interface IDescribe {
-  (name: string, fn: () => Promise<any>|any): void;
+  (name: string, fn: () => Promise<any> | any): void;
   skip: IDescribe;
   only: IDescribe;
 }
 
 export interface ITest {
-  (name: string, fn: () => Promise<any>|any, timeout?: number): void;
+  (name: string, fn: () => Promise<any> | any, timeout?: number): void;
   skip: ITest;
   only: ITest;
 }
@@ -37,9 +37,9 @@ export interface IGherkinTestParams extends IGherkinParserConfig {
  * Create a gherkin test based on a feature file
  */
 export function Feature (config: IGherkinTestParams | IGherkinTestParams['feature'], configure: IConfigureFn) {
-  const { feature, methods = getGlobalTestMethods(), defaultTimeout } = <IGherkinTestParams> (
+  const { feature, methods = getGlobalTestMethods(), defaultTimeout } = (
     typeof config === 'string'
-      ? { feature: config }
+      ? { feature: config } as IGherkinTestParams
       : config
   );
 
@@ -89,7 +89,7 @@ function describeFeature ({ featureBuilder, ast, configure, methods, defaultTime
   defaultTimeout?: number;
 }) {
 
-  let error: undefined|Error;
+  let error: undefined | Error;
   const title = formatTitle({
     ...ast.feature,
     prefix: 'Feature:',

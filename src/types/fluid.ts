@@ -46,8 +46,8 @@ export type IHookCallback = () => any;
  * See: https://github.com/Microsoft/TypeScript/issues/1213
  */
 export interface IFluidFn<Fluid> {
-  (key: RegExp|string, fn?: IFluidCb, options?: IGherkinStepOptions): Fluid;
-  skip (key: RegExp|string, fn?: IFluidCb, options?: IGherkinStepOptions): Fluid;
+  (key: RegExp | string, fn?: IFluidCb, options?: IGherkinStepOptions): Fluid;
+  skip (key: RegExp | string, fn?: IFluidCb, options?: IGherkinStepOptions): Fluid;
 }
 
 export type IFluidCb<State = undefined> = (state: State, ...params: any[]) => any;
