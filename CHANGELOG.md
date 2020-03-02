@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.8.1][] - 2020-03-02
+
 ## [1.8.0][] - 2020-02-28
 
 - Fixed issue #37, window filepaths being misinterpreted
@@ -151,7 +153,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Init
 
 
-[Unreleased]: https://github.com/nfour/fermenter/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/nfour/fermenter/compare/v1.8.1...HEAD
+[1.8.1]: https://github.com/nfour/fermenter/compare/v1.8.0...v1.8.1
 [1.8.0]: https://github.com/nfour/fermenter/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/nfour/fermenter/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/nfour/fermenter/compare/v1.5.0...v1.6.0

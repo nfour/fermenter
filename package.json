@@ -1,7 +1,7 @@
 {
   "name": "fermenter",
   "description": "A Gherkin Based test runner",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "main": "./build/index",
   "scripts": {
     "test": "jest",
@@ -15,10 +15,19 @@
     "postversion": "yarn build",
     "lint": "tslint --project tsconfig.json"
   },
-  "repository": { "type": "git", "url": "https://github.com/nfour/fermenter" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nfour/fermenter"
+  },
   "keywords": [
-    "gherkin", "cucumber", "bdd", "functional",
-    "procedural", "test", "jest", "framework"
+    "gherkin",
+    "cucumber",
+    "bdd",
+    "functional",
+    "procedural",
+    "test",
+    "jest",
+    "framework"
   ],
   "author": "nfour",
   "license": "ISC",
