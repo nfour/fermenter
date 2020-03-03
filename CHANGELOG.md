@@ -6,6 +6,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [1.8.1][] - 2020-03-02
 
+- Dependency audit & upgrade
+
 ## [1.8.0][] - 2020-02-28
 
 - Fixed issue #37, window filepaths being misinterpreted
