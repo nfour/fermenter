@@ -4,6 +4,8 @@ The format: [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+- Bump jest timeouts for CI tests
+
 ## [1.8.1][] - 2020-03-02
 
 - Dependency audit & upgrade
